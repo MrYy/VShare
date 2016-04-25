@@ -1,5 +1,8 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.Integrity.IntegrityCheck;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -8,6 +11,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Created by David on 16/4/21.
@@ -15,7 +19,7 @@ import java.util.Set;
 public class Client implements Runnable {
     private InetAddress remoteAddress;
     private int remotePort;
-
+    private Stack<Message> msgStack = new Stack<>();
     public Client(InetAddress remoteAddress, int remotePort) {
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
@@ -39,17 +43,41 @@ public class Client implements Runnable {
                 while (ite.hasNext()) {
                     mKey = (SelectionKey) ite.next();
                     if (mKey.isWritable()) {
-                        SocketChannel bSc = (SocketChannel) mKey.channel();
-                        Message msg = new Message();
-                        msg.setType(Message.Type.Message);
-                        msg.setMessage("give me fragment");
-                        Method.sendMessage(bSc,msg);
-                        //下面这句话很关键，决定下一个优先的事件
-                        //可以让客户端实现读写轮流
+                        if (!msgStack.empty()) {
+                            //ready to send
+                            //send the message in the stack
+                            SocketChannel bSc = (SocketChannel) mKey.channel();
+                            Method.sendMessage(bSc, msgStack.pop());
+                        }
+                        //this makes the channel to ready to read
                         mKey.interestOps(SelectionKey.OP_READ);
                     }else if (mKey.isReadable()) {
                         Message msg = Method.readMessage((SocketChannel) mKey.channel());
-                        System.out.println(msg.getType().getDescribe()+":"+msg.getMessage());
+                        if(msg==null) return;
+                        Message.Type type = msg.getType();
+                        if (type == Message.Type.Message) {
+                            System.out.println(msg.getType().getDescribe()+":"+msg.getMessage());
+                            Message.MessageType msgType = msg.getMsgType();
+                            if (msgType == Message.MessageType.GIVE) {
+                                //the server has some message to give
+                                int seg = msg.getSegIndex();
+                                int frag = msg.getStartFragmentIndex();
+                                Message reply = new Message();
+                                if (checkHas(seg, frag)) {
+                                    reply.setMsgType(Message.MessageType.WANT , seg ,frag);
+                                }else {
+                                    reply.setMsgType(Message.MessageType.NOT_WANT , seg ,frag);
+                                }
+                                msgStack.push(reply);
+                            }
+                        }else if(type== Message.Type.Fragment) {
+                            //receive fragment and insert into the segment
+                            FileFragment ff = msg.getFragment();
+                            IntegrityCheck.getInstance().insert(ff.getSegmentID(),ff);
+
+                            return;
+                        }
+
                         mKey.interestOps(SelectionKey.OP_WRITE);
                     }
                     ite.remove();
@@ -68,6 +96,12 @@ public class Client implements Runnable {
             }
         }
 
+    }
+
+    private boolean checkHas(int seg, int fragStart) {
+        //check whether the client want the message.
+        //should has a list kind of already downloaded fragments.
+        return false;
     }
 }
 
