@@ -8,7 +8,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
-import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.WiFi.WiFiFactory;
 import com.ANT.MiddleWare.WiFi.WiFiPulic;
 
@@ -25,10 +24,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -45,12 +41,16 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	private Process proc;
 	private String ip ;
 	private WifiManager wifi;
+	private static ExecutorService es = Executors.newCachedThreadPool();
+	private  ButtonInterface buttonListener = null;
 	private PipedInputStream pi = new PipedInputStream();
 	private PipedOutputStream po = new PipedOutputStream();
 	public static final int EMERGEN_SEND_TAG = -2;
 	public static final int FRAG_REQST_TAG = -3;
-	private HashMap<String, FileFragment> fragMap = new LinkedHashMap<>();
-	private Stack<Message> fragMsg = new Stack<>();
+	public interface ButtonInterface{
+		public void onClick();
+	}
+
 	public WiFiTCP(final Context contect) {
 		super(contect);
 		this.context = contect;
@@ -124,26 +124,22 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	private void makeToast(String msg){
 		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 	}
-
-	/**
-	 * The role of server, is only designed to send fragment to the client.
-	 * The role of a client , is only to receive the message and tell the server whether or not want the fragment.
-	 * As a result , in theory ,a node is not only a server but also a client.
-	 * And the connection method above , which is 'switch' statement should be changed to button.
-	 *
-	 */
+	public synchronized Stack<FileFragment> getTaskList() {
+		return taskList;
+	}
 	private  void serverThread() {
 		try {
 			System.out.println("start listen");
 			System.out.println(ip);
 			InetSocketAddress addr = new InetSocketAddress(InetAddress.getByName(ip), 12345);
+			boolean condition = true;
 			Selector selector = Selector.open();
 			ServerSocketChannel ssc = ServerSocketChannel.open();
 			ssc.configureBlocking(false);
 			ssc.socket().bind(addr);
 			ssc.register(selector, SelectionKey.OP_ACCEPT);
 			//client
-			while (true) {
+			while (condition) {
 				int readyChannel = selector.select();
 				if (readyChannel == 0) continue;
 				Set<SelectionKey> selectedChannel = selector.selectedKeys();
@@ -151,43 +147,22 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 				while (ite.hasNext()) {
 					SelectionKey mKey = (SelectionKey) ite.next();
 					if (mKey.isAcceptable()) {
+						System.out.println("accept new socket");
 						SocketChannel ss = ((ServerSocketChannel) mKey.channel()).accept();
 						ss.configureBlocking(false);
 						ss.register(mKey.selector(), SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
 					} else if (mKey.isReadable()) {
 						SocketChannel sc = ((SocketChannel) mKey.channel());
 						Message message = Method.readMessage(sc);
-						if (message==null) return;
-						int seg = message.getSegIndex();
-						int frag = message.getStartFragmentIndex();
-						String key = String.valueOf(seg) + String.valueOf(frag);
-						if (message.getMsgType() == Message.MessageType.WANT) {
-							//client want the fragment
-							//push the fragment message to stack
-							//ready to send
-							Message reply = new Message();
-							reply.setFragment(fragMap.get(key));
-							fragMsg.push(reply);
-						} //no answer if not want
-						fragMap.remove(key);
+						System.out.println(message.getType().getDescribe()+":"+message.getMessage());
 					} else if (mKey.isWritable()) {
-						SocketChannel sc = (SocketChannel) mKey.channel();
-						if (fragMsg.empty()) {
-							//has no fragment message ready to send
-							//send a message to ask whether client want
-							Message msgObj = new Message();
-							FileFragment ff = taskList.pop();
-							msgObj.setMsgType(Message.MessageType.GIVE, ff.getSegmentID(), ff.getStartIndex());
-							fragMap.put(String.valueOf(ff.getSegmentID())
-									+String.valueOf(ff.getStartIndex()),  ff);
-							Method.sendMessage(sc, msgObj);
-							TimeUnit.SECONDS.sleep(1);
-						}else {
-							//has fragment to send
-							//send fragment to client
-							Method.sendMessage(sc,fragMsg.pop());
-						}
-
+						//通道空闲，可写
+						Message msgObj = new Message();
+						msgObj.setMessage("want fragment");
+						msgObj.setType(Message.Type.Message);
+						Method.sendMessage((SocketChannel) mKey.channel(), msgObj);
+						TimeUnit.SECONDS.sleep(1);
+					} else if (mKey.isConnectable()) {
 					}
 					ite.remove();
 				}
