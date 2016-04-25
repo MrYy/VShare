@@ -42,6 +42,7 @@ public class Client implements Runnable {
                 while (ite.hasNext()) {
                     mKey = (SelectionKey) ite.next();
                     if (mKey.isReadable()) {
+                        //client is used to receive the fragment
                         Message msg = Method.readMessage((SocketChannel) mKey.channel());
                         if (msg==null) return;
                         System.out.println(msg.getType().getDescribe()+":"+msg.getMessage());

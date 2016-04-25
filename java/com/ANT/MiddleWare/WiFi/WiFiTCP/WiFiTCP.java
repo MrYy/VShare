@@ -41,16 +41,10 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	private Process proc;
 	private String ip ;
 	private WifiManager wifi;
-	private static ExecutorService es = Executors.newCachedThreadPool();
-	private  ButtonInterface buttonListener = null;
 	private PipedInputStream pi = new PipedInputStream();
 	private PipedOutputStream po = new PipedOutputStream();
 	public static final int EMERGEN_SEND_TAG = -2;
 	public static final int FRAG_REQST_TAG = -3;
-	public interface ButtonInterface{
-		public void onClick();
-	}
-
 	public WiFiTCP(final Context contect) {
 		super(contect);
 		this.context = contect;
@@ -77,14 +71,8 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 			os.writeBytes("exit\n");
 			os.flush();
 			proc.waitFor();
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					serverThread();
-				}
-			}).start();
+			ServerThread st = new ServerThread(WiFiTCP.this,ip);
+			st.start();
 			Client client = null;
 			switch (number) {
 				case 16:
@@ -124,47 +112,9 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	private void makeToast(String msg){
 		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 	}
-	public synchronized Stack<FileFragment> getTaskList() {
+
+	public Stack<FileFragment> getTaskList() {
 		return taskList;
-	}
-	private  void serverThread() {
-		try {
-			System.out.println("start listen");
-			System.out.println(ip);
-			InetSocketAddress addr = new InetSocketAddress(InetAddress.getByName(ip), 12345);
-			boolean condition = true;
-			Selector selector = Selector.open();
-			ServerSocketChannel ssc = ServerSocketChannel.open();
-			ssc.configureBlocking(false);
-			ssc.socket().bind(addr);
-			ssc.register(selector, SelectionKey.OP_ACCEPT);
-			//client
-			while (condition) {
-				int readyChannel = selector.select();
-				if (readyChannel == 0) continue;
-				Set<SelectionKey> selectedChannel = selector.selectedKeys();
-				Iterator ite = selectedChannel.iterator();
-				while (ite.hasNext()) {
-					SelectionKey mKey = (SelectionKey) ite.next();
-					if (mKey.isAcceptable()) {
-						System.out.println("accept new socket");
-						SocketChannel ss = ((ServerSocketChannel) mKey.channel()).accept();
-						ss.configureBlocking(false);
-						ss.register(mKey.selector(),SelectionKey.OP_WRITE);
-					}  else if (mKey.isWritable()) {
-						//can write ,send fragment
-						Message msgObj = new Message();
-						msgObj.setFragment(taskList.pop());
-						Method.sendMessage((SocketChannel) mKey.channel(), msgObj);
-					}
-					ite.remove();
-				}
-			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 
