@@ -150,19 +150,12 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 						System.out.println("accept new socket");
 						SocketChannel ss = ((ServerSocketChannel) mKey.channel()).accept();
 						ss.configureBlocking(false);
-						ss.register(mKey.selector(), SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-					} else if (mKey.isReadable()) {
-						SocketChannel sc = ((SocketChannel) mKey.channel());
-						Message message = Method.readMessage(sc);
-						System.out.println(message.getType().getDescribe()+":"+message.getMessage());
-					} else if (mKey.isWritable()) {
-						//通道空闲，可写
+						ss.register(mKey.selector(),SelectionKey.OP_WRITE);
+					}  else if (mKey.isWritable()) {
+						//can write ,send fragment
 						Message msgObj = new Message();
-						msgObj.setMessage("want fragment");
-						msgObj.setType(Message.Type.Message);
+						msgObj.setFragment(taskList.pop());
 						Method.sendMessage((SocketChannel) mKey.channel(), msgObj);
-						TimeUnit.SECONDS.sleep(1);
-					} else if (mKey.isConnectable()) {
 					}
 					ite.remove();
 				}
@@ -170,8 +163,6 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}

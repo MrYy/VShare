@@ -1,5 +1,8 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.Integrity.IntegrityCheck;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -30,7 +33,7 @@ public class Client implements Runnable {
             sc.connect(new InetSocketAddress(remoteAddress.getHostAddress(), remotePort));
             sc.configureBlocking(false);
             Selector selector = Selector.open();
-            sc.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+            sc.register(selector, SelectionKey.OP_READ);
             while (!Thread.interrupted()) {
                 int selected = selector.select();
                 if (selected == 0) continue;
@@ -38,19 +41,12 @@ public class Client implements Runnable {
                 Iterator ite = mKeys.iterator();
                 while (ite.hasNext()) {
                     mKey = (SelectionKey) ite.next();
-                    if (mKey.isWritable()) {
-                        SocketChannel bSc = (SocketChannel) mKey.channel();
-                        Message msg = new Message();
-                        msg.setType(Message.Type.Message);
-                        msg.setMessage("give me fragment");
-                        Method.sendMessage(bSc,msg);
-                        //下面这句话很关键，决定下一个优先的事件
-                        //可以让客户端实现读写轮流
-                        mKey.interestOps(SelectionKey.OP_READ);
-                    }else if (mKey.isReadable()) {
+                    if (mKey.isReadable()) {
                         Message msg = Method.readMessage((SocketChannel) mKey.channel());
+                        if (msg==null) return;
                         System.out.println(msg.getType().getDescribe()+":"+msg.getMessage());
-                        mKey.interestOps(SelectionKey.OP_WRITE);
+                        FileFragment ff = msg.getFragment();
+                        IntegrityCheck.getInstance().insert(ff.getSegmentID(),ff);
                     }
                     ite.remove();
                 }
