@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Inter Component</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="url">Please give the url:</string>
+    <string name="hint">Enter the URL here</string>
+    <string name="inter_service">InterComponent Service</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="play">PLAY</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="player">choose 3rd party video player</string>
+    <string name="choose">CHOOSE PLAYER</string>
+    <string name="action_settings">SETTING</string>
+    <string name="localmode">Local Mode</string>
+    <string name="Gmode">Celluar Mode</string>
+    <string name="cooperativemode">Cooperative Mode</string>
+    <string name="alerttitle">WORKING MODE:</string>
+    <string name="bt_confirm">CONFIRM</string>
+    <string name="captain">GROUPING</string>
+    <string name="bt_port">12345</string>
+
+</resources>

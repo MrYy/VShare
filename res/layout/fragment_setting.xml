@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:gravity="center">
+    
+    <RadioGroup 
+        android:id="@+id/radioGroup" 
+        android:contentDescription="setting" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        >
+        
+    	<RadioButton 
+    	    android:layout_width="wrap_content" 
+    	    android:layout_height="wrap_content" 
+    	    android:id="@+id/local_mode" 
+    	    android:text="@string/localmode" 
+    	    >
+    	</RadioButton>
+    	
+    	<RadioButton 
+    	    android:layout_width="wrap_content" 
+    	    android:layout_height="wrap_content" 
+    	    android:id="@+id/G_mode"  
+    	    android:text="@string/Gmode">
+    	</RadioButton>  
+    	
+    	<RadioButton 
+    	    android:layout_width="wrap_content" 
+    	    android:layout_height="wrap_content" 
+    	    android:id="@+id/cooperative_mode"  
+    	    android:text="@string/cooperativemode">
+    	</RadioButton>
+    	
+    </RadioGroup>
+    
+    <Button 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btalertconfirm"
+        android:text="@string/bt_confirm"
+        android:padding="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        />
+    
+
+</LinearLayout>

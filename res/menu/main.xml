@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/actionsettings"
+        android:showAsAction="never"
+        android:orderInCategory="0"
+        android:title="@string/action_settings"
+        android:icon="@android:drawable/ic_menu_manage"
+        />
+
+
+</menu>
