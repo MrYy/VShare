@@ -26,51 +26,18 @@ public  class Message implements Serializable {
             return describe;
         }
     }
-    public static enum MessageType{
-        WANT,GIVE
-    }
-    private int segIndex;
-    private int startFragmentIndex;
     private Type type;
     private FileFragment fragment = null;
-    private String message = "";
     public FileFragment getFragment() {
         return fragment;
     }
-
     public void setFragment(FileFragment fragment) {
         this.fragment = fragment;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
+        this.type = Type.Fragment;
     }
 
     public Type getType() {
         return type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public int getSegIndex() {
-        return segIndex;
-    }
-
-    public void setSegIndex(int segIndex) {
-        this.segIndex = segIndex;
-    }
-
-    public int getStartFragmentIndex() {
-        return startFragmentIndex;
-    }
-
-    public void setStartFragmentIndex(int startFragmentIndex) {
-        this.startFragmentIndex = startFragmentIndex;
-    }
 }

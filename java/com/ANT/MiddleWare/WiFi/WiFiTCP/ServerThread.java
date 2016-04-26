@@ -1,5 +1,7 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import com.ANT.MiddleWare.Entities.FileFragment;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -10,6 +12,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Created by ge on 2016/4/25.
@@ -17,6 +20,8 @@ import java.util.Set;
 public class ServerThread extends Thread {
     private String ip;
     private WiFiTCP wiFiTCP;
+    private Stack<LocalTask> localTask = new Stack<>();
+
     public ServerThread(WiFiTCP wiFiTCP, String ip) {
         this.ip = ip;
         this.wiFiTCP = wiFiTCP;
@@ -50,9 +55,34 @@ public class ServerThread extends Thread {
                         ss.register(mKey.selector(), SelectionKey.OP_WRITE);
                     } else if (mKey.isWritable()) {
                         //can write ,send fragment
+                        SocketChannel sc = (SocketChannel) mKey.channel();
+                        InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
-                        msgObj.setFragment(wiFiTCP.getTaskList().pop());
-                        Method.sendMessage((SocketChannel) mKey.channel(), msgObj);
+                        Stack<FileFragment> taskList = wiFiTCP.getTaskList();
+                        if (!taskList.empty()) {
+                            //taskList has value.
+                            //send fragment in taskList to any one of the clients
+                            FileFragment ff = taskList.pop();
+                            msgObj.setFragment(ff);
+                            Method.sendMessage(sc, msgObj);
+                            LocalTask mTask = new LocalTask(ff, mAddr);
+                            localTask.push(mTask);
+                        } else {
+                            //taskList is empty.
+                            //some fragments may only be sent to one client,
+                            // then pick them and send to another client
+                            if (!localTask.empty()) {
+                                LocalTask lt = localTask.pop();
+                                if (mAddr != lt.getIa()) {
+                                    //send the frament to another client who does not have the fragment
+                                    Message msg = new Message();
+                                    msg.setFragment(lt.getFf());
+                                    Method.sendMessage(sc, msg);
+                                }
+                            }
+                        }
+
+
                     }
                     ite.remove();
                 }
@@ -63,5 +93,23 @@ public class ServerThread extends Thread {
             e.printStackTrace();
         }
 
+    }
+
+    class LocalTask {
+        private FileFragment ff;
+        private InetAddress ia;
+
+        public LocalTask(FileFragment ff, InetAddress ia) {
+            this.ff = ff;
+            this.ia = ia;
+        }
+
+        public FileFragment getFf() {
+            return ff;
+        }
+
+        public InetAddress getIa() {
+            return ia;
+        }
     }
 }

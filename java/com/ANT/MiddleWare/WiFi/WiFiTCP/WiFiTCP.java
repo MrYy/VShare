@@ -43,8 +43,6 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	private WifiManager wifi;
 	private PipedInputStream pi = new PipedInputStream();
 	private PipedOutputStream po = new PipedOutputStream();
-	public static final int EMERGEN_SEND_TAG = -2;
-	public static final int FRAG_REQST_TAG = -3;
 	public WiFiTCP(final Context contect) {
 		super(contect);
 		this.context = contect;
