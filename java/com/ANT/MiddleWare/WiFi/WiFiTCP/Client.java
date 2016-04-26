@@ -45,7 +45,7 @@ public class Client implements Runnable {
                         //client is used to receive the fragment
                         Message msg = Method.readMessage((SocketChannel) mKey.channel());
                         if (msg==null) return;
-                        System.out.println(msg.getType().getDescribe()+":"+msg.getMessage());
+                        System.out.println(msg.getType().getDescribe());
                         FileFragment ff = msg.getFragment();
                         IntegrityCheck.getInstance().insert(ff.getSegmentID(),ff);
                     }
