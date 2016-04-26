@@ -72,12 +72,13 @@ public class ServerThread extends Thread {
                             //some fragments may only be sent to one client,
                             // then pick them and send to another client
                             if (!localTask.empty()) {
-                                LocalTask lt = localTask.pop();
+                                LocalTask lt = localTask.peek();
                                 if (mAddr != lt.getIa()) {
                                     //send the frament to another client who does not have the fragment
                                     Message msg = new Message();
                                     msg.setFragment(lt.getFf());
                                     Method.sendMessage(sc, msg);
+                                    localTask.pop();
                                 }
                             }
                         }
