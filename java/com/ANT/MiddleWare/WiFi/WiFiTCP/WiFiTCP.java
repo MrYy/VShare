@@ -71,25 +71,6 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 			proc.waitFor();
 			ServerThread st = new ServerThread(WiFiTCP.this,ip);
 			st.start();
-			Client client = null;
-			switch (number) {
-				case 16:
-					client=new Client(InetAddress.getByName("192.168.1.89"), 12345);
-				    new Thread(client).start();
-					break;
-				case 51:
-					client=new Client(InetAddress.getByName("192.168.1.89"), 12345);
-					new Thread(client).start();
-					break;
-				case 89:
-					client = new Client(InetAddress.getByName("192.168.1.51"), 12345);
-					new Thread(client).start();
-				default:
-					Toast.makeText(contect, "无法获得本机ip", Toast.LENGTH_SHORT).show();
-					break;
-
-			}
-
 
 
 		} catch (IOException e) {

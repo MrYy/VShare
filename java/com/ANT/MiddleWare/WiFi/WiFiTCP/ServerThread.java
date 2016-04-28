@@ -61,11 +61,11 @@ public class ServerThread extends Thread {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mAddr = sc.socket().getInetAddress();
-//                        try {
-//                            TimeUnit.MILLISECONDS.sleep(500);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         Message msgObj = new Message();
 //                        msgObj.setMessage("hi");
 //                        Method.sendMessage(sc,msgObj);
