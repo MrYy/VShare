@@ -15,6 +15,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ge on 2016/4/25.
@@ -60,6 +61,11 @@ public class ServerThread extends Thread {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mAddr = sc.socket().getInetAddress();
+                        try {
+                            TimeUnit.SECONDS.sleep(1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         Message msgObj = new Message();
                         msgObj.setMessage("hi");
                         Method.sendMessage(sc,msgObj);
