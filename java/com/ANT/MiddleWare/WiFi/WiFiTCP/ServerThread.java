@@ -62,7 +62,7 @@ public class ServerThread extends Thread {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mAddr = sc.socket().getInetAddress();
                         try {
-                            TimeUnit.MILLISECONDS.sleep(100);
+                            TimeUnit.MILLISECONDS.sleep(500);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
