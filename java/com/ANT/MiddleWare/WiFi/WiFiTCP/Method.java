@@ -12,7 +12,7 @@ import java.nio.channels.SocketChannel;
  * Created by David on 16/4/21.
  */
 public class Method {
-    public static void sendMessage(SocketChannel bSc,Message msgObj) {
+    public static void sendMessage(SocketChannel bSc, Message msgObj) {
 
         byte[] bytesObj = null;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -36,19 +36,18 @@ public class Method {
         ByteBuffer buf = ByteBuffer.allocate(bytesObj.length);
         buf.put(bytesObj);
         buf.flip();
-        while (buf.hasRemaining()) {
-            try {
-                bSc.write(buf);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            bSc.write(buf);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
     public static Message readMessage(SocketChannel sc) {
         try {
-            ByteBuffer buf = ByteBuffer.allocate(1024);
+            ByteBuffer buf = ByteBuffer.allocate(20 * 1024);
             int byteRead = sc.read(buf);
-            if (byteRead >0) {
+            if (byteRead > 0) {
                 buf.flip();
                 byte[] content = new byte[buf.limit()];
                 buf.get(content);
