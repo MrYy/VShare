@@ -50,6 +50,7 @@ public class Client implements Runnable {
                         if (msg==null) return;
                         if(msg.getType()== Message.Type.Message) {
                             Log.d(TAG, msg.getMessage());
+                            return;
                         }
                         System.out.println(msg.getType().getDescribe());
                         FileFragment ff = msg.getFragment();
