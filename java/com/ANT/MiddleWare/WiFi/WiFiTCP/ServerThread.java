@@ -20,9 +20,10 @@ import java.util.Stack;
  * Created by ge on 2016/4/25.
  */
 public class ServerThread extends Thread {
+    private static final String TAG = ServerThread.class.getSimpleName();
     private String ip;
     private WiFiTCP wiFiTCP;
-    private Stack<LocalTask> localTask = new Stack<>();
+    private Stack<LocalTask> localTask = new Stack<LocalTask>();
 
     public ServerThread(WiFiTCP wiFiTCP, String ip) {
         this.ip = ip;
@@ -56,18 +57,18 @@ public class ServerThread extends Thread {
                         ss.configureBlocking(false);
                         ss.register(mKey.selector(), SelectionKey.OP_WRITE);
                     } else if (mKey.isWritable()) {
-                        System.out.println("can write");
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
+                        msgObj.setMessage("hi");
+                        Method.sendMessage(sc,msgObj);
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
-                        System.out.print(taskList.empty());
                         if (!taskList.empty()) {
                             //taskList has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskList.pop();
-                            Log.d("write fragment", String.valueOf(ff.getStartIndex()));
+                            Log.d(TAG, String.valueOf(ff.getStartIndex()));
                             msgObj.setFragment(ff);
                             Method.sendMessage(sc, msgObj);
                             LocalTask mTask = new LocalTask(ff, mAddr);

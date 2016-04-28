@@ -27,6 +27,7 @@ public  class Message implements Serializable {
         }
     }
     private Type type;
+    private String message = "";
     private FileFragment fragment = null;
     public FileFragment getFragment() {
         return fragment;
@@ -34,6 +35,15 @@ public  class Message implements Serializable {
     public void setFragment(FileFragment fragment) {
         this.fragment = fragment;
         this.type = Type.Fragment;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+        this.type = Type.Message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public Type getType() {

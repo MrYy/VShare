@@ -20,7 +20,7 @@ import java.util.Set;
 public class Client implements Runnable {
     private InetAddress remoteAddress;
     private int remotePort;
-
+    private static final String TAG = Client.class.getSimpleName();
     public Client(InetAddress remoteAddress, int remotePort) {
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
@@ -48,10 +48,13 @@ public class Client implements Runnable {
                         //client is used to receive the fragment
                         Message msg = Method.readMessage((SocketChannel) mKey.channel());
                         if (msg==null) return;
+                        if(msg.getType()== Message.Type.Message) {
+                            Log.d(TAG, msg.getMessage());
+                        }
                         System.out.println(msg.getType().getDescribe());
                         FileFragment ff = msg.getFragment();
                         Log.d("insert fragment", String.valueOf(ff.getStartIndex()));
-                        IntegrityCheck.getInstance().insert(ff.getSegmentID(),ff,this);
+                        IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);
                     }
                     ite.remove();
                 }
