@@ -50,12 +50,13 @@ public class Client implements Runnable {
                         if (msg==null) continue;
                         if(msg.getType()== Message.Type.Message) {
                             Log.d(TAG, msg.getMessage());
-                            continue;
+                        }else {
+                            System.out.println(msg.getType().getDescribe());
+                            FileFragment ff = msg.getFragment();
+                            Log.d("insert fragment", String.valueOf(ff.getStartIndex()));
+                            IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);
                         }
-                        System.out.println(msg.getType().getDescribe());
-                        FileFragment ff = msg.getFragment();
-                        Log.d("insert fragment", String.valueOf(ff.getStartIndex()));
-                        IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);
+
                     }
                     ite.remove();
                 }
