@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,9 +34,12 @@ import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
 import com.ANT.MiddleWare.WiFi.WiFiFactory;
 import com.ANT.MiddleWare.WiFi.WiFiFactory.WiFiType;
+import com.ANT.MiddleWare.WiFi.WiFiTCP.Client;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,6 +70,7 @@ public class MainFragment extends Fragment {
 
 	private Handler myHandler;
 	private boolean adhocSelect = false;
+	private boolean tcpSelect=false;
 
 	private List<String> list = new ArrayList<String>();
 	private ArrayAdapter<String> adapter;
@@ -114,9 +119,11 @@ public class MainFragment extends Fragment {
 				switch (arg2) {
 				case 0: // none
 					adhocSelect = false;
+					tcpSelect = false;
 					break;
 				case 1: // adhoc
 					adhocSelect = true;
+					tcpSelect = false;
 					try {
 						WiFiFactory.changeInstance(getActivity(),
 								WiFiType.BROAD);
@@ -128,19 +135,25 @@ public class MainFragment extends Fragment {
 					break;
 				case 2: // bt
 					adhocSelect = false;
+					tcpSelect = false;
 					break;
 				case 3: // ncp2
 					adhocSelect = false;
+					tcpSelect = false;
 					break;
 				case 4: // tcp
+					tcpSelect =true;
+					adhocSelect = false;
 					try {
-						WiFiFactory.changeInstance(getActivity(),WiFiType.TCP_ALL);
+						btCaptain.setText("tcp send");
+						WiFiFactory.changeInstance(getActivity(),
+								WiFiType.TCP_ALL);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					adhocSelect = false;
+
 					break;
 
 				}
@@ -180,10 +193,41 @@ public class MainFragment extends Fragment {
 									Toast.LENGTH_SHORT).show();
 						}
 					});
-				}
+				} else if (tcpSelect) {
+					TelephonyManager tm = (TelephonyManager) getActivity().
+							getSystemService(Activity.TELEPHONY_SERVICE);
+					String s = tm.getDeviceId();
+					int len = s.length();
+					final int number = Integer.parseInt(s.substring(len - 2));
+					String ip = "192.168.1." + number;
+					Log.v(TAG, "ip " + ip);
+					try {
+						Client client = null;
+						switch (number) {
+							case 16:
+								client = new Client(InetAddress.getByName("192.168.1.89"), 12345);
+								new Thread(client).start();
+								break;
+							case 51:
+								client = new Client(InetAddress.getByName("192.168.1.16"), 12345);
+								new Thread(client).start();
+								break;
+							case 89:
+								client = new Client(InetAddress.getByName("192.168.1.16"), 12345);
+								new Thread(client).start();
+							default:
+								Toast.makeText(getActivity(), "无法获得本机ip", Toast.LENGTH_SHORT).show();
+								break;
 
-			}
-		});
+						}
+					} catch (UnknownHostException e) {
+						e.printStackTrace();
+					} catch (IOException ex){
+						ex.printStackTrace();
+					}
+
+				}
+			}});
 
 		// btLow = (Button) v.findViewById(R.id.rate_low);
 		// btMid = (Button) v.findViewById(R.id.rate_mid);
