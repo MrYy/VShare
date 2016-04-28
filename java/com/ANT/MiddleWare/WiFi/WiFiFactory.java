@@ -59,7 +59,7 @@ public class WiFiFactory {
 
 	public static void insertF(FileFragment fm) {
 		synchronized (TAG) {
-			if(!(instance instanceof WiFiTCP))instance.insertF(fm.clone());
+			instance.insertF(fm.clone());
 		}
 	}
 

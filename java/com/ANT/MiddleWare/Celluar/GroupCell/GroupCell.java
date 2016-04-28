@@ -35,8 +35,8 @@ public class GroupCell extends Thread {
 				uurl = new URL(IntegrityCheck.JUNIT_TAG);
 			} else {
 				uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=" + url
-						+ ".mp4&sessionid=lykfr9oyqipf2q3tvy"
-						+ MainFragment.taskID + "&rate=" + MainFragment.rateTag);
+						+ ".mp4&sessionid=lykfr9oyqipf2q3tvy1461659191748"+
+						 "&rate=" + MainFragment.rateTag);
 			}
 			Log.d(TAG, "" + uurl);
 			while (true) {
@@ -78,6 +78,7 @@ public class GroupCell extends Thread {
 					IC.setSegLength(url, totalLength);
 					FileFragment fm = new FileFragment(startOffset, endOffset,
 							url,totalLength);
+					Log.d(TAG, String.valueOf(startOffset));
 					Log.d(TAG, "" + url + " " + fm);
 					fm.setData(tmpbuff);
 					IC.insert(url, fm);

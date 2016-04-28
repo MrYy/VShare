@@ -1,5 +1,7 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import android.util.Log;
+
 import com.ANT.MiddleWare.Entities.FileFragment;
 
 import java.io.IOException;
@@ -54,15 +56,18 @@ public class ServerThread extends Thread {
                         ss.configureBlocking(false);
                         ss.register(mKey.selector(), SelectionKey.OP_WRITE);
                     } else if (mKey.isWritable()) {
+                        System.out.println("can write");
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
+                        System.out.print(taskList.empty());
                         if (!taskList.empty()) {
                             //taskList has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskList.pop();
+                            Log.d("write fragment", String.valueOf(ff.getStartIndex()));
                             msgObj.setFragment(ff);
                             Method.sendMessage(sc, msgObj);
                             LocalTask mTask = new LocalTask(ff, mAddr);

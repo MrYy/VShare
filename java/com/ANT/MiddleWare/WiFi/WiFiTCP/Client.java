@@ -1,5 +1,7 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import android.util.Log;
+
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 
@@ -31,6 +33,7 @@ public class Client implements Runnable {
         try {
             sc = SocketChannel.open();
             sc.connect(new InetSocketAddress(remoteAddress.getHostAddress(), remotePort));
+            System.out.println("client connect");
             sc.configureBlocking(false);
             Selector selector = Selector.open();
             sc.register(selector, SelectionKey.OP_READ);
@@ -47,7 +50,8 @@ public class Client implements Runnable {
                         if (msg==null) return;
                         System.out.println(msg.getType().getDescribe());
                         FileFragment ff = msg.getFragment();
-                        IntegrityCheck.getInstance().insert(ff.getSegmentID(),ff);
+                        Log.d("insert fragment", String.valueOf(ff.getStartIndex()));
+                        IntegrityCheck.getInstance().insert(ff.getSegmentID(),ff,this);
                     }
                     ite.remove();
                 }
