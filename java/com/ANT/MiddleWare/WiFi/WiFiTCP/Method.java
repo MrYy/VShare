@@ -45,7 +45,7 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) {
         try {
-            ByteBuffer buf = ByteBuffer.allocate(20 * 1024);
+            ByteBuffer buf = ByteBuffer.allocate(2 * 1024);
             int byteRead = sc.read(buf);
             if (byteRead > 0) {
                 buf.flip();

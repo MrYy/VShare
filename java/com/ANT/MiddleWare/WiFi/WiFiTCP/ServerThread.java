@@ -61,11 +61,11 @@ public class ServerThread extends Thread {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mAddr = sc.socket().getInetAddress();
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            TimeUnit.MILLISECONDS.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
                         Message msgObj = new Message();
 //                        msgObj.setMessage("hi");
 //                        Method.sendMessage(sc,msgObj);
@@ -74,7 +74,7 @@ public class ServerThread extends Thread {
                             //taskList has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskList.pop();
-                            Log.d(TAG, String.valueOf(ff.getStartIndex()));
+                            Log.d(TAG, "send fragment"+String.valueOf(ff.getStartIndex()));
                             msgObj.setFragment(ff);
                             Method.sendMessage(sc, msgObj);
                             LocalTask mTask = new LocalTask(ff, mAddr);
