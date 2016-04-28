@@ -46,6 +46,7 @@ public class ServerThread extends Thread {
             ssc.register(selector, SelectionKey.OP_ACCEPT);
             //client
             while (true) {
+
                 int readyChannel = selector.select();
                 if (readyChannel == 0) continue;
                 Set<SelectionKey> selectedChannel = selector.selectedKeys();
@@ -70,10 +71,12 @@ public class ServerThread extends Thread {
 //                        msgObj.setMessage("hi");
 //                        Method.sendMessage(sc,msgObj);
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
+
                         if (!taskList.empty()) {
                             //taskList has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskList.pop();
+                            Log.d(TAG, "after send " + String.valueOf(taskList.size()));
                             Log.d(TAG, "send fragment"+String.valueOf(ff.getStartIndex()));
                             msgObj.setFragment(ff);
                             Method.sendMessage(sc, msgObj);

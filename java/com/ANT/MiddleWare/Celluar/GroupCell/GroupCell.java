@@ -35,7 +35,7 @@ public class GroupCell extends Thread {
 				uurl = new URL(IntegrityCheck.JUNIT_TAG);
 			} else {
 				uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=" + url
-						+ ".mp4&sessionid=lykfr9oyqipf2q3tvy1461659191748"+
+						+ ".mp4&sessionid=lykfr9oyqipf2q3tvy1461659191749"+
 						 "&rate=" + MainFragment.rateTag);
 			}
 			Log.d(TAG, "" + uurl);
@@ -47,22 +47,22 @@ public class GroupCell extends Thread {
 				connection.setDoInput(true);
 				connection.setRequestProperty("Accept-Encoding", "");
 				connection.setDoOutput(true);
-				Log.d(TAG,
-						"ResponseCode " + url + " "
-								+ connection.getResponseCode());
+//				Log.d(TAG,
+//						"ResponseCode " + url + " "
+//								+ connection.getResponseCode());
 
 				if (connection.getResponseCode() == 206) {
 					InputStream in = connection.getInputStream();
 					String contentRange = connection.getHeaderField(
 							"Content-Range").toString();
-					Log.d(TAG, "Content-Range " + contentRange);
+//					Log.d(TAG, "Content-Range " + contentRange);
 					String range = contentRange.split(" ")[1].trim();
 					String start = range.split("-")[0];
 					String end = range.split("-")[1].split("/")[0];
 					String total = range.split("-")[1].split("/")[1];
-					Log.d(TAG, "Total " + url + " " + total);
-					Log.d(TAG, "PieceStart " + url + " " + start);
-					Log.d(TAG, "PieceEnd " + url + " " + end);
+//					Log.d(TAG, "Total " + url + " " + total);
+//					Log.d(TAG, "PieceStart " + url + " " + start);
+//					Log.d(TAG, "PieceEnd " + url + " " + end);
 					int startOffset = Integer.parseInt(start);
 					int endOffset = Integer.parseInt(end);
 					int totalLength = Integer.parseInt(total);
@@ -78,15 +78,15 @@ public class GroupCell extends Thread {
 					IC.setSegLength(url, totalLength);
 					FileFragment fm = new FileFragment(startOffset, endOffset,
 							url,totalLength);
-					Log.d(TAG, String.valueOf(startOffset));
-					Log.d(TAG, "" + url + " " + fm);
+//					Log.d(TAG, String.valueOf(startOffset));
+//					Log.d(TAG, "" + url + " " + fm);
 					fm.setData(tmpbuff);
 					IC.insert(url, fm);
 				} else if (connection.getResponseCode() == 200) {
-					Log.d(TAG, "else " + url);
-					CellularDown.queryFragment(CellularDown.CellType.WiFiMore,
-							url);
-					break;
+					Log.d(TAG, "finish");
+//					CellularDown.queryFragment(CellularDown.CellType.WiFiMore,
+//							url);
+//					break;
 				}
 			}
 		} catch (MalformedURLException e) {

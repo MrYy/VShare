@@ -70,7 +70,7 @@ public class Segment {
 					percent -= prev.getFragLength();
 					prev.setData(next.getData(), next.getStartIndex());
 					percent += prev.getFragLength();
-					Log.d(TAG, "" + segLength + " " + prev.getStopIndex());
+//					Log.d(TAG, "" + segLength + " " + prev.getStopIndex());
 				}
 				segmentList.remove(i + 1);
 				percent -= next.getFragLength();
