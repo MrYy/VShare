@@ -35,7 +35,7 @@ public class GroupCell extends Thread {
 				uurl = new URL(IntegrityCheck.JUNIT_TAG);
 			} else {
 				uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=" + url
-						+ ".mp4&sessionid=lykfr9oyqipf2q3tvy1461659191749"+
+						+ ".mp4&sessionid=lykfr9oyqipf2q3tvy1461659191849"+
 						 "&rate=" + MainFragment.rateTag);
 			}
 			Log.d(TAG, "" + uurl);
@@ -83,7 +83,9 @@ public class GroupCell extends Thread {
 					fm.setData(tmpbuff);
 					IC.insert(url, fm);
 				} else if (connection.getResponseCode() == 200) {
-					Log.d(TAG, "finish");
+					//php should change ,otherwise only one host get the 200,and the others don't know download ends.
+					Log.d(TAG, "finish download");
+					break;
 //					CellularDown.queryFragment(CellularDown.CellType.WiFiMore,
 //							url);
 //					break;
