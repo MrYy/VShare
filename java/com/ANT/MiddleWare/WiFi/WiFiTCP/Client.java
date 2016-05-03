@@ -49,6 +49,7 @@ public class Client implements Runnable {
                         Message msg = Method.readMessage((SocketChannel) mKey.channel());
                         if (msg==null) continue;
                         if(msg.getType()== Message.Type.Message) {
+                            //intent to send sessionid
                             Log.d(TAG, msg.getMessage());
                         }else {
                             System.out.println(msg.getType().getDescribe());

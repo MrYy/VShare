@@ -205,7 +205,7 @@ public class MainFragment extends Fragment {
 						Client client = null;
 						switch (number) {
 							case 16:
-								client = new Client(InetAddress.getByName("192.168.1.89"), 12345);
+								client = new Client(InetAddress.getByName("192.168.1.51"), 12345);
 								new Thread(client).start();
 								break;
 							case 51:

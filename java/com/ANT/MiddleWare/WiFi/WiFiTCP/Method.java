@@ -20,6 +20,7 @@ public class Method {
         try {
             objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(msgObj);
+            objectOutputStream.flush();
             bytesObj = byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,7 +46,7 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) {
         try {
-            ByteBuffer buf = ByteBuffer.allocate(2 * 1024);
+            ByteBuffer buf = ByteBuffer.allocate(1024);
             int byteRead = sc.read(buf);
             if (byteRead > 0) {
                 buf.flip();
