@@ -93,7 +93,9 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	}
 
 	public Stack<FileFragment> getTaskList() {
-		return taskList;
+		synchronized (this) {
+			return taskList;
+		}
 	}
 
 
