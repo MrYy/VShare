@@ -1,6 +1,9 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 
@@ -26,12 +29,14 @@ public class ServerThread extends Thread {
     private static final String TAG = ServerThread.class.getSimpleName();
     private String ip;
     private WiFiTCP wiFiTCP;
+    private Context context;
     private Queue<LocalTask> localTask = new ConcurrentLinkedDeque<LocalTask>();
     protected final static Queue<FileFragment> taskQueue = new ConcurrentLinkedDeque<FileFragment>();
 
-    public ServerThread(WiFiTCP wiFiTCP, String ip) {
+    public ServerThread(WiFiTCP wiFiTCP, String ip,Context context) {
         this.ip = ip;
         this.wiFiTCP = wiFiTCP;
+        this.context = context;
     }
 
     @Override
@@ -56,6 +61,13 @@ public class ServerThread extends Thread {
                     SelectionKey mKey = (SelectionKey) ite.next();
                     if (mKey.isAcceptable()) {
                         System.out.println("accept new socket");
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "accept new socket",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         SocketChannel ss = ((ServerSocketChannel) mKey.channel()).accept();
                         ss.configureBlocking(false);
                         ss.register(mKey.selector(), SelectionKey.OP_WRITE);
@@ -101,7 +113,7 @@ public class ServerThread extends Thread {
                                     }
                                 }
                             }
-                            //taskList is empty.
+                            //taskQueue is empty.
                             //some fragments may only be sent to one client,
                             // then pick them and send to another client
                             if (!localTask.isEmpty()) {

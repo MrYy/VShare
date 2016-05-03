@@ -69,7 +69,7 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 			os.writeBytes("exit\n");
 			os.flush();
 			proc.waitFor();
-			ServerThread st = new ServerThread(WiFiTCP.this,ip);
+			ServerThread st = new ServerThread(WiFiTCP.this,ip,context);
 			st.start();
 
 

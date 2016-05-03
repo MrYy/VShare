@@ -1,6 +1,9 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
@@ -21,9 +24,11 @@ public class Client implements Runnable {
     private InetAddress remoteAddress;
     private int remotePort;
     private static final String TAG = Client.class.getSimpleName();
-    public Client(InetAddress remoteAddress, int remotePort) {
+    private Context context;
+    public Client(InetAddress remoteAddress, int remotePort,Context context) {
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
+        this.context = context;
     }
 
     @Override
@@ -34,6 +39,13 @@ public class Client implements Runnable {
             sc = SocketChannel.open();
             sc.connect(new InetSocketAddress(remoteAddress.getHostAddress(), remotePort));
             System.out.println("client connect");
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "client is connected",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
             sc.configureBlocking(false);
             Selector selector = Selector.open();
             sc.register(selector, SelectionKey.OP_READ);
