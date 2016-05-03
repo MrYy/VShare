@@ -60,9 +60,6 @@ public class GroupCell extends Thread {
 					String start = range.split("-")[0];
 					String end = range.split("-")[1].split("/")[0];
 					String total = range.split("-")[1].split("/")[1];
-//					Log.d(TAG, "Total " + url + " " + total);
-//					Log.d(TAG, "PieceStart " + url + " " + start);
-//					Log.d(TAG, "PieceEnd " + url + " " + end);
 					int startOffset = Integer.parseInt(start);
 					int endOffset = Integer.parseInt(end);
 					int totalLength = Integer.parseInt(total);
@@ -78,14 +75,14 @@ public class GroupCell extends Thread {
 					IC.setSegLength(url, totalLength);
 					FileFragment fm = new FileFragment(startOffset, endOffset,
 							url,totalLength);
-//					Log.d(TAG, String.valueOf(startOffset));
 //					Log.d(TAG, "" + url + " " + fm);
 					fm.setData(tmpbuff);
 					IC.insert(url, fm);
+					IC.getSeg(url).checkIntegrity();
 				} else if (connection.getResponseCode() == 200) {
 					//php should change ,otherwise only one host get the 200,and the others don't know download ends.
-					Log.d(TAG, "finish download");
-					break;
+//					Log.d(TAG, "finish download");
+//					break;
 //					CellularDown.queryFragment(CellularDown.CellType.WiFiMore,
 //							url);
 //					break;

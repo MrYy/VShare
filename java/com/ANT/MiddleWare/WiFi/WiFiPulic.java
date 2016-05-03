@@ -1,12 +1,14 @@
 package com.ANT.MiddleWare.WiFi;
 
-import java.io.IOException;
-import java.util.Stack;
-
 import android.content.Context;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
+
+import java.io.IOException;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public abstract class WiFiPulic {
 	protected final static Stack<FileFragment> taskList = new Stack<FileFragment>();

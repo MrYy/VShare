@@ -13,8 +13,10 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,7 +26,8 @@ public class ServerThread extends Thread {
     private static final String TAG = ServerThread.class.getSimpleName();
     private String ip;
     private WiFiTCP wiFiTCP;
-    private Stack<LocalTask> localTask = new Stack<LocalTask>();
+    private Queue<LocalTask> localTask = new ConcurrentLinkedDeque<LocalTask>();
+    protected final static Queue<FileFragment> taskQueue = new ConcurrentLinkedDeque<FileFragment>();
 
     public ServerThread(WiFiTCP wiFiTCP, String ip) {
         this.ip = ip;
@@ -34,7 +37,6 @@ public class ServerThread extends Thread {
     @Override
     public void run() {
         super.run();
-
         try {
             System.out.println("start listen");
             System.out.println(ip);
@@ -46,7 +48,6 @@ public class ServerThread extends Thread {
             ssc.register(selector, SelectionKey.OP_ACCEPT);
             //client
             while (true) {
-
                 int readyChannel = selector.select();
                 if (readyChannel == 0) continue;
                 Set<SelectionKey> selectedChannel = selector.selectedKeys();
@@ -62,60 +63,58 @@ public class ServerThread extends Thread {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mAddr = sc.socket().getInetAddress();
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         Message msgObj = new Message();
 //                        msgObj.setMessage("hi");
 //                        Method.sendMessage(sc,msgObj);
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
 
-                        if (!taskList.empty()) {
-                            //taskList has value.
+                        if (!taskQueue.isEmpty()) {
+                            try {
+                                TimeUnit.MILLISECONDS.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            //taskQueue has value.
                             //send fragment in taskList to any one of the clients
-                            FileFragment ff = taskList.pop();
-                            if (ff.isTooBig()) {
-                                //split big fragment
-                                FileFragment[] fragArray = null;
-                                try {
-                                    fragArray = ff.split();
-                                    for (FileFragment f : fragArray) {
-                                        synchronized (taskList) {
-                                            taskList.add(f);
-                                            Log.d(TAG, "split fragment");
-                                        }
-                                    }
-                                } catch (FileFragment.FileFragmentException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }else {
-                                Log.d(TAG, "after send " + String.valueOf(taskList.size()));
-                                Log.d(TAG, "send fragment"+String.valueOf(ff.getStartIndex()));
+                                FileFragment ff = taskQueue.poll();
+                                Log.d(TAG, "send fragment"+String.valueOf(ff.getFragLength()));
                                 msgObj.setFragment(ff);
                                 Method.sendMessage(sc, msgObj);
                                 LocalTask mTask = new LocalTask(ff, mAddr);
-                                localTask.push(mTask);
-                            }
+                                localTask.add(mTask);
                         } else {
+                            // no fragments to send
+                            // handle the big fragment
+                            if (!taskList.empty()) {
+                                FileFragment ff = taskList.pop();
+                                if (ff.isTooBig()) {
+                                    //split big fragment
+                                    FileFragment[] fragArray = null;
+                                    try {
+                                        fragArray = ff.split();
+                                        for (FileFragment f : fragArray) {
+                                            taskQueue.add(f);
+                                            Log.d(TAG, "split fragment");
+                                        }
+                                    } catch (FileFragment.FileFragmentException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                             //taskList is empty.
                             //some fragments may only be sent to one client,
                             // then pick them and send to another client
-                            if (!localTask.empty()) {
+                            if (!localTask.isEmpty()) {
                                 LocalTask lt = localTask.peek();
                                 if (mAddr != lt.getIa()) {
                                     //send the frament to another client who does not have the fragment
                                     Message msg = new Message();
                                     msg.setFragment(lt.getFf());
                                     Method.sendMessage(sc, msg);
-                                    localTask.pop();
+                                    localTask.poll();
                                 }
                             }
                         }
-
-
                     }
                     ite.remove();
                 }
@@ -125,7 +124,6 @@ public class ServerThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     class LocalTask {

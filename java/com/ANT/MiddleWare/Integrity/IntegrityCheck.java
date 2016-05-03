@@ -89,6 +89,7 @@ public class IntegrityCheck {
 		}
 		Segment s = urlMap.get(id);
 		s.insert(fm);
+		s.checkIntegrity();
 	}
 	public Segment getSeg(int id) {
 		return urlMap.get(id);
