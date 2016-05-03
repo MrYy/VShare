@@ -76,12 +76,29 @@ public class ServerThread extends Thread {
                             //taskList has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskList.pop();
-                            Log.d(TAG, "after send " + String.valueOf(taskList.size()));
-                            Log.d(TAG, "send fragment"+String.valueOf(ff.getStartIndex()));
-                            msgObj.setFragment(ff);
-                            Method.sendMessage(sc, msgObj);
-                            LocalTask mTask = new LocalTask(ff, mAddr);
-                            localTask.push(mTask);
+                            if (ff.isTooBig()) {
+                                //split big fragment
+                                FileFragment[] fragArray = null;
+                                try {
+                                    fragArray = ff.split();
+                                    for (FileFragment f : fragArray) {
+                                        synchronized (taskList) {
+                                            taskList.add(f);
+                                            Log.d(TAG, "split fragment");
+                                        }
+                                    }
+                                } catch (FileFragment.FileFragmentException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }else {
+                                Log.d(TAG, "after send " + String.valueOf(taskList.size()));
+                                Log.d(TAG, "send fragment"+String.valueOf(ff.getStartIndex()));
+                                msgObj.setFragment(ff);
+                                Method.sendMessage(sc, msgObj);
+                                LocalTask mTask = new LocalTask(ff, mAddr);
+                                localTask.push(mTask);
+                            }
                         } else {
                             //taskList is empty.
                             //some fragments may only be sent to one client,
