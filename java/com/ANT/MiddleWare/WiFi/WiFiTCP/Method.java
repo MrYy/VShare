@@ -31,17 +31,18 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) {
         try {
-            ByteBuffer buf = ByteBuffer.allocate(309);
+            int wantSize = 326;
+            ByteBuffer buf = ByteBuffer.allocate(wantSize);
             int byteRead = sc.read(buf);
             Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
-            if (byteRead > 0) {
+
+            if (byteRead > 0&&wantSize==byteRead) {
                 buf.flip();
                 byte[] content = new byte[buf.limit()];
                 buf.get(content);
                 ByteArrayInputStream byteArrayInputStream =
                         new ByteArrayInputStream(content);
                 ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-
                 Message message = (Message) objectInputStream.readObject();
                 objectInputStream.close();
                 byteArrayInputStream.close();
@@ -57,6 +58,7 @@ public class Method {
         } catch (EOFException e) {
             //exception because of the end of stream
             //reconnect
+            e.printStackTrace();
         }catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
