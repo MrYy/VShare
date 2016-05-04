@@ -24,7 +24,6 @@ public class Method {
         try {
             objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(msgObj);
-            Log.d(TAG, "发送字节数: "+String.valueOf(msgObj.toString().getBytes().length));
             objectOutputStream.flush();
             bytesObj = byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
@@ -51,7 +50,7 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) {
             try {
-                ByteBuffer buf = ByteBuffer.allocate(1024);
+                ByteBuffer buf = ByteBuffer.allocate(309);
                 int byteRead = sc.read(buf);
                 Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
                 if (byteRead > 0) {

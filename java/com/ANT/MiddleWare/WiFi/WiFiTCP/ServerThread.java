@@ -80,11 +80,6 @@ public class ServerThread extends Thread {
                         msgObj.setMessage("hi");
                         Method.sendMessage(sc, msgObj);
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         if (!taskQueue.isEmpty()) {
                             try {
                                 TimeUnit.MILLISECONDS.sleep(500);
