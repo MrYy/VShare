@@ -24,11 +24,16 @@ public class Client implements Runnable {
     private InetAddress remoteAddress;
     private int remotePort;
     private static final String TAG = Client.class.getSimpleName();
-    private Context context;
+    private Context context = null;
     public Client(InetAddress remoteAddress, int remotePort,Context context) {
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
         this.context = context;
+    }
+
+    public Client(InetAddress remoteAddress,int remotePort ) {
+        this.remotePort = remotePort;
+        this.remoteAddress = remoteAddress;
     }
 
     @Override
@@ -39,13 +44,15 @@ public class Client implements Runnable {
             sc = SocketChannel.open();
             sc.connect(new InetSocketAddress(remoteAddress.getHostAddress(), remotePort));
             System.out.println("client connect");
-            ((Activity) context).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, "client is connected",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+            if (context != null) {
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "client is connected",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
             sc.configureBlocking(false);
             Selector selector = Selector.open();
             sc.register(selector, SelectionKey.OP_READ);
@@ -59,7 +66,8 @@ public class Client implements Runnable {
                     if (mKey.isReadable()) {
                         //client is used to receive the fragment
                         Message msg = Method.readMessage((SocketChannel) mKey.channel());
-                        if (msg==null) continue;
+                        //msg null,finish the client .
+                        if (msg==null) break;
                         if(msg.getType()== Message.Type.Message) {
                             //intent to send sessionid
                             Log.d(TAG, msg.getMessage());

@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
@@ -36,7 +38,7 @@ public class Method {
             int byteRead = sc.read(buf);
             Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
 
-            if (byteRead > 0&&wantSize==byteRead) {
+            if (byteRead > 0) {
                 buf.flip();
                 byte[] content = new byte[buf.limit()];
                 buf.get(content);
@@ -58,7 +60,11 @@ public class Method {
         } catch (EOFException e) {
             //exception because of the end of stream
             //reconnect
-            e.printStackTrace();
+            try {
+                new Thread(new Client(InetAddress.getByName("192.168.1.89"), 12345)).start();
+            } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            }
         }catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

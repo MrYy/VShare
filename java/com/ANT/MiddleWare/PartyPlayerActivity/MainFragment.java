@@ -215,6 +215,7 @@ public class MainFragment extends Fragment {
 							case 89:
 								client = new Client(InetAddress.getByName("192.168.1.51"), 12345,getActivity());
 								new Thread(client).start();
+								break;
 							default:
 								Toast.makeText(getActivity(), "无法获得本机ip", Toast.LENGTH_SHORT).show();
 								break;
