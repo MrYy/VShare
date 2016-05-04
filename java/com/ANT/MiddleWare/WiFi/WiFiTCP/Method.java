@@ -4,7 +4,9 @@ import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
@@ -16,28 +18,7 @@ import java.nio.channels.SocketChannel;
  */
 public class Method {
     private static final String TAG = Method.class.getSimpleName();
-    public static void sendMessage(SocketChannel bSc, Message msgObj) {
-
-        byte[] bytesObj = null;
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = null;
-        try {
-            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(msgObj);
-            objectOutputStream.flush();
-            bytesObj = byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        } finally {
-            if (objectOutputStream != null) {
-                try {
-                    objectOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public static void sendMessage(SocketChannel bSc, byte[] bytesObj) {
         ByteBuffer buf = ByteBuffer.allocate(bytesObj.length);
         buf.put(bytesObj);
         buf.flip();
@@ -49,35 +30,39 @@ public class Method {
     }
 
     public static Message readMessage(SocketChannel sc) {
-            try {
-                ByteBuffer buf = ByteBuffer.allocate(309);
-                int byteRead = sc.read(buf);
-                Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
-                if (byteRead > 0) {
-                    buf.flip();
-                    byte[] content = new byte[buf.limit()];
-                    buf.get(content);
-                    ByteArrayInputStream byteArrayInputStream =
-                            new ByteArrayInputStream(content);
-                    ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-                    Message message = (Message) objectInputStream.readObject();
-                    objectInputStream.close();
-                    byteArrayInputStream.close();
-                    buf.clear();
-                    return message;
+        try {
+            ByteBuffer buf = ByteBuffer.allocate(309);
+            int byteRead = sc.read(buf);
+            Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
+            if (byteRead > 0) {
+                buf.flip();
+                byte[] content = new byte[buf.limit()];
+                buf.get(content);
+                ByteArrayInputStream byteArrayInputStream =
+                        new ByteArrayInputStream(content);
+                ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 
-                }
+                Message message = (Message) objectInputStream.readObject();
+                objectInputStream.close();
+                byteArrayInputStream.close();
+                buf.clear();
+                return message;
 
-            } catch (StreamCorruptedException e) {
-                // Thrown when control information that was read from an object
-                // stream violates internal consistency checks.
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
             }
-            return null;
+
+        } catch (StreamCorruptedException e) {
+            // Thrown when control information that was read from an object
+            // stream violates internal consistency checks.
+            e.printStackTrace();
+        } catch (EOFException e) {
+            //exception because of the end of stream
+            //reconnect
+        }catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        return null;
+    }
 
 }

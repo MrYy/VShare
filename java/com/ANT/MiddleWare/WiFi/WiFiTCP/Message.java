@@ -2,6 +2,7 @@ package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,8 +30,14 @@ public  class Message implements Serializable {
     private Type type;
     private String message = "";
     private FileFragment fragment = null;
+    private byte[] bytesObj = null;
     public FileFragment getFragment() {
         return fragment;
+    }
+
+    public int getLength() {
+        if(bytesObj!=null) return bytesObj.length;
+        return -1;
     }
     public void setFragment(FileFragment fragment) {
         this.fragment = fragment;
@@ -50,4 +57,34 @@ public  class Message implements Serializable {
         return type;
     }
 
+    public byte[] getBytes() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = null;
+        try {
+            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.flush();
+            bytesObj = byteArrayOutputStream.toByteArray();
+            return bytesObj;
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } finally {
+
+                try {
+                    byteArrayOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            if (objectOutputStream != null) {
+                try {
+                    objectOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
 }

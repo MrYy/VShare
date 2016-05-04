@@ -78,7 +78,7 @@ public class ServerThread extends Thread {
                         Message msgObj = new Message();
                         //test code
                         msgObj.setMessage("hi");
-                        Method.sendMessage(sc, msgObj);
+                        Method.sendMessage(sc, msgObj.getBytes());
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
                         if (!taskQueue.isEmpty()) {
                             try {
@@ -91,7 +91,7 @@ public class ServerThread extends Thread {
                                 FileFragment ff = taskQueue.poll();
                                 Log.d(TAG, "send fragment"+String.valueOf(ff.getFragLength()));
                                 msgObj.setFragment(ff);
-                                Method.sendMessage(sc, msgObj);
+                                Method.sendMessage(sc, msgObj.getBytes());
                                 LocalTask mTask = new LocalTask(ff, mAddr);
                                 localTask.add(mTask);
                         } else {
@@ -122,7 +122,7 @@ public class ServerThread extends Thread {
                                     //send the frament to another client who does not have the fragment
                                     Message msg = new Message();
                                     msg.setFragment(lt.getFf());
-                                    Method.sendMessage(sc, msg);
+                                    Method.sendMessage(sc, msg.getBytes());
                                     localTask.poll();
                                 }
                             }
