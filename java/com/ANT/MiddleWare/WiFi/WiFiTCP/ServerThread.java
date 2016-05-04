@@ -76,10 +76,15 @@ public class ServerThread extends Thread {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
-//                        msgObj.setMessage("hi");
-//                        Method.sendMessage(sc,msgObj);
+                        //test code
+                        msgObj.setMessage("hi");
+                        Method.sendMessage(sc, msgObj);
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
-
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         if (!taskQueue.isEmpty()) {
                             try {
                                 TimeUnit.MILLISECONDS.sleep(500);
