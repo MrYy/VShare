@@ -10,7 +10,6 @@ import com.ANT.MiddleWare.Entities.FileFragment;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -21,7 +20,7 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,8 +31,8 @@ public class ServerThread extends Thread {
     private String ip;
     private WiFiTCP wiFiTCP;
     private Context context;
-    private Queue<LocalTask> localTask = new ConcurrentLinkedDeque<LocalTask>();
-    protected final static Queue<FileFragment> taskQueue = new ConcurrentLinkedDeque<FileFragment>();
+    private Queue<LocalTask> localTask = new ConcurrentLinkedQueue<LocalTask>();
+    protected final static Queue<FileFragment> taskQueue = new ConcurrentLinkedQueue<FileFragment>();
 
     public ServerThread(WiFiTCP wiFiTCP, String ip,Context context) {
         this.ip = ip;
