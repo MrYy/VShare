@@ -80,24 +80,18 @@ public class ServerThread extends Thread {
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
                         //test code
-                        msgObj.setMessage("hi");
-                        msgObj.setCount(count++);
-                        Log.d(TAG, "send:"+String.valueOf(count));
-                        if (isConn){
-                            try {
-                                Method.sendMessage(sc, msgObj.getBytes());
-                            } catch (MyException e) {
-
-                                Log.d(TAG, "catch");
-                            }
-                        }
+//                        msgObj.setMessage("hi");
+//                        msgObj.setCount(count++);
+//                        Log.d(TAG, "send:"+String.valueOf(count));
+//                        if (isConn){
+//                            try {
+//                                Method.sendMessage(sc, msgObj.getBytes());
+//                            } catch (MyException e) {
+//                                Log.d(TAG, "catch");
+//                            }
+//                        }
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
                         if (!taskQueue.isEmpty()) {
-                            try {
-                                TimeUnit.MILLISECONDS.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
