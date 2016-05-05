@@ -41,7 +41,7 @@ public class Client implements Runnable {
         SocketChannel sc = null;
         SelectionKey mKey = null;
         try {
-            Log.d(TAG, "运行线程数:" + String.valueOf(Thread.activeCount()));
+
             sc = SocketChannel.open();
             sc.connect(new InetSocketAddress(remoteAddress.getHostAddress(), remotePort));
             System.out.println("client connect");
@@ -63,6 +63,7 @@ public class Client implements Runnable {
                     Log.d(TAG, "client finish");
                     break;
                 }
+
                 int selected = selector.select();
                 if (selected == 0) continue;
                 Set<SelectionKey> mKeys = selector.selectedKeys();
@@ -83,6 +84,7 @@ public class Client implements Runnable {
                         if (msg.getType() == Message.Type.Message) {
                             //intent to send sessionid
                             Log.d(TAG, msg.getMessage() + ":" + msg.getCount());
+                            Log.d(TAG, "运行线程数:" + String.valueOf(Thread.activeCount()));
                         } else {
                             System.out.println(msg.getType().getDescribe());
                             FileFragment ff = msg.getFragment();

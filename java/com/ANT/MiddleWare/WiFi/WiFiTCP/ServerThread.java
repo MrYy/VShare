@@ -82,11 +82,12 @@ public class ServerThread extends Thread {
                         //test code
                         msgObj.setMessage("hi");
                         msgObj.setCount(count++);
+                        Log.d(TAG, "send:"+String.valueOf(count));
                         if (isConn){
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
                             } catch (MyException e) {
-                                sc.socket().close();
+
                                 Log.d(TAG, "catch");
                             }
                         }
