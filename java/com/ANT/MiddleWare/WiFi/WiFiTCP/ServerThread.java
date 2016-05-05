@@ -10,7 +10,9 @@ import com.ANT.MiddleWare.Entities.FileFragment;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -52,6 +54,7 @@ public class ServerThread extends Thread {
             ssc.socket().bind(addr);
             ssc.register(selector, SelectionKey.OP_ACCEPT);
             //client
+            int count = 0;
             while (true) {
                 int readyChannel = selector.select();
                 if (readyChannel == 0) continue;
@@ -74,11 +77,21 @@ public class ServerThread extends Thread {
                     } else if (mKey.isWritable()) {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
+                        boolean isConn = sc.isConnected();
+                        Log.d(TAG, "连接状态：" + String.valueOf(sc.isConnected()));
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
                         //test code
                         msgObj.setMessage("hi");
-                        Method.sendMessage(sc, msgObj.getBytes());
+                        count++;
+                        if (isConn){
+                            try {
+                                Method.sendMessage(sc, msgObj.getBytes());
+                            } catch (MyException e) {
+                                sc.socket().close();
+                                Log.d(TAG, "catch");
+                            }
+                        }
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
                         if (!taskQueue.isEmpty()) {
                             try {
@@ -88,12 +101,16 @@ public class ServerThread extends Thread {
                             }
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
-                                FileFragment ff = taskQueue.poll();
-                                Log.d(TAG, "send fragment"+String.valueOf(ff.getFragLength()));
-                                msgObj.setFragment(ff);
+                            FileFragment ff = taskQueue.poll();
+                            Log.d(TAG, "send fragment" + String.valueOf(ff.getFragLength()));
+                            msgObj.setFragment(ff);
+                            try {
                                 Method.sendMessage(sc, msgObj.getBytes());
-                                LocalTask mTask = new LocalTask(ff, mAddr);
-                                localTask.add(mTask);
+                            } catch (MyException e) {
+                                e.printStackTrace();
+                            }
+                            LocalTask mTask = new LocalTask(ff, mAddr);
+                            localTask.add(mTask);
                         } else {
                             // no fragments to send
                             // handle the big fragment
@@ -122,7 +139,11 @@ public class ServerThread extends Thread {
                                     //send the frament to another client who does not have the fragment
                                     Message msg = new Message();
                                     msg.setFragment(lt.getFf());
-                                    Method.sendMessage(sc, msg.getBytes());
+                                    try {
+                                        Method.sendMessage(sc, msg.getBytes());
+                                    } catch (MyException e) {
+                                        e.printStackTrace();
+                                    }
                                     localTask.poll();
                                 }
                             }
@@ -132,6 +153,8 @@ public class ServerThread extends Thread {
                 }
             }
         } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (ClosedChannelException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

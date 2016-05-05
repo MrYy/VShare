@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -20,12 +21,16 @@ import java.nio.channels.SocketChannel;
  */
 public class Method {
     private static final String TAG = Method.class.getSimpleName();
-    public static void sendMessage(SocketChannel bSc, byte[] bytesObj) {
+    public static void sendMessage(SocketChannel bSc, byte[] bytesObj) throws MyException {
         ByteBuffer buf = ByteBuffer.allocate(bytesObj.length);
         buf.put(bytesObj);
         buf.flip();
         try {
-            bSc.write(buf);
+            try {
+                bSc.write(buf);
+            } catch (SocketException e) {
+                throw new MyException();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,7 +42,6 @@ public class Method {
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             int byteRead = sc.read(buf);
             Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
-
             if (byteRead > 0) {
                 buf.flip();
                 byte[] content = new byte[buf.limit()];
@@ -61,7 +65,7 @@ public class Method {
             //exception because of the end of stream
             //reconnect
             try {
-                sc.close();
+                sc.socket().close();
                 new Thread(new Client(InetAddress.getByName("192.168.1.51"), 12345)).start();
             } catch (UnknownHostException e1) {
                 e1.printStackTrace();
