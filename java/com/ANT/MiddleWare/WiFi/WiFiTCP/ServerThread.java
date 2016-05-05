@@ -120,6 +120,8 @@ public class ServerThread extends Thread {
                                     } catch (FileFragment.FileFragmentException e) {
                                         e.printStackTrace();
                                     }
+                                }else {
+                                    taskQueue.add(ff);
                                 }
                             }
                             //taskQueue is empty.
