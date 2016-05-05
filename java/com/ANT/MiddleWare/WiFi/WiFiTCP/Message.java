@@ -28,11 +28,20 @@ public  class Message implements Serializable {
         }
     }
     private Type type;
+    private int count;
     private String message = "";
     private FileFragment fragment = null;
     private byte[] bytesObj = null;
     public FileFragment getFragment() {
         return fragment;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public int getLength() {

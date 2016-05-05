@@ -36,7 +36,7 @@ public class Method {
         }
     }
 
-    public static Message readMessage(SocketChannel sc) {
+    public static Message readMessage(SocketChannel sc) throws MyException {
         try {
             int wantSize = 326;
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
@@ -67,6 +67,7 @@ public class Method {
             try {
                 sc.socket().close();
                 new Thread(new Client(InetAddress.getByName("192.168.1.51"), 12345)).start();
+                throw new MyException();
             } catch (UnknownHostException e1) {
                 e1.printStackTrace();
             } catch (IOException e1) {

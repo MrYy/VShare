@@ -56,7 +56,8 @@ public class Client implements Runnable {
             sc.configureBlocking(false);
             Selector selector = Selector.open();
             sc.register(selector, SelectionKey.OP_READ);
-            while (!Thread.interrupted()) {
+            boolean flag = true;
+            while (flag) {
                 if(!sc.isConnected()) {
                     Log.d(TAG, "client finish");
                     break;
@@ -69,12 +70,18 @@ public class Client implements Runnable {
                     mKey = (SelectionKey) ite.next();
                     if (mKey.isReadable()) {
                         //client is used to receive the fragment
-                        Message msg = Method.readMessage((SocketChannel) mKey.channel());
+                        Message msg = null;
+                        try {
+                            msg = Method.readMessage((SocketChannel) mKey.channel());
+                        } catch (MyException e) {
+                            flag = false;
+                            break;
+                        }
                         //msg null,finish the client .
                         if (msg==null) break;
                         if(msg.getType()== Message.Type.Message) {
                             //intent to send sessionid
-                            Log.d(TAG, msg.getMessage());
+                            Log.d(TAG, msg.getMessage()+":"+msg.getCount());
                         }else {
                             System.out.println(msg.getType().getDescribe());
                             FileFragment ff = msg.getFragment();

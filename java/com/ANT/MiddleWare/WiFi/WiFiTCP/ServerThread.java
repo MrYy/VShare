@@ -78,12 +78,11 @@ public class ServerThread extends Thread {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         boolean isConn = sc.isConnected();
-                        Log.d(TAG, "连接状态：" + String.valueOf(sc.isConnected()));
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
                         //test code
                         msgObj.setMessage("hi");
-                        count++;
+                        msgObj.setCount(count++);
                         if (isConn){
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
