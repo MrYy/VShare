@@ -35,8 +35,12 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) throws MyException {
         try {
+<<<<<<< HEAD
 //            1017
             int wantSize = 11584;
+=======
+            int wantSize = 1017;
+>>>>>>> parent of 561212e... 换大片
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             int byteRead = sc.read(buf);
             Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
