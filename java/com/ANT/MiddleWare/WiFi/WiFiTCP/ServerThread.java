@@ -95,12 +95,11 @@ public class ServerThread extends Thread {
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
-                            Log.d(TAG, "send fragment" + String.valueOf(ff.getFragLength()));
+                            Log.d(TAG, "send fragment" + String.valueOf(ff.getStartIndex()));
                             msgObj.setFragment(ff);
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
                             } catch (MyException e) {
-                                e.printStackTrace();
                             }
                             LocalTask mTask = new LocalTask(ff, mAddr);
                             localTask.add(mTask);
@@ -135,7 +134,6 @@ public class ServerThread extends Thread {
                                     try {
                                         Method.sendMessage(sc, msg.getBytes());
                                     } catch (MyException e) {
-                                        e.printStackTrace();
                                     }
                                     localTask.poll();
                                 }
