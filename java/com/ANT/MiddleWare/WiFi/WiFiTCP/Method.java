@@ -3,12 +3,9 @@ package com.ANT.MiddleWare.WiFi.WiFiTCP;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -38,7 +35,7 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) throws MyException {
         try {
-            int wantSize = 326;
+            int wantSize = 338;
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             int byteRead = sc.read(buf);
             Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
