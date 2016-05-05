@@ -35,7 +35,8 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) throws MyException {
         try {
-            int wantSize = 1017;
+//            1017
+            int wantSize = 1024*100;
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             int byteRead = sc.read(buf);
             Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
