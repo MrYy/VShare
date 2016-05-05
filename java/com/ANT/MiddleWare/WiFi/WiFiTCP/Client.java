@@ -57,6 +57,10 @@ public class Client implements Runnable {
             Selector selector = Selector.open();
             sc.register(selector, SelectionKey.OP_READ);
             while (!Thread.interrupted()) {
+                if(!sc.isConnected()) {
+                    Log.d(TAG, "client finish");
+                    break;
+                }
                 int selected = selector.select();
                 if (selected == 0) continue;
                 Set<SelectionKey> mKeys = selector.selectedKeys();

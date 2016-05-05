@@ -61,8 +61,11 @@ public class Method {
             //exception because of the end of stream
             //reconnect
             try {
-                new Thread(new Client(InetAddress.getByName("192.168.1.89"), 12345)).start();
+                sc.close();
+                new Thread(new Client(InetAddress.getByName("192.168.1.51"), 12345)).start();
             } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         }catch (IOException e) {
