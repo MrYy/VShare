@@ -15,7 +15,7 @@ public class FileFragment implements Comparable<FileFragment>, Serializable,
 
 	private static final String TAG = FileFragment.class.getSimpleName();
 	private static boolean TRY_LESS_GC = false;// Almost Same??
-	public static int LIMIT_LEN = 1024*100;
+	public static int LIMIT_LEN = 1024;
 	private int startIndex;
 	private int stopIndex;
 	private int segmentID;
