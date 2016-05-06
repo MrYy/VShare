@@ -37,14 +37,14 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) throws MyException {
         try {
-
-            int wantSize = 338;
-
+            int wantSize = 20*1024;
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             //read in while
             int byteRead = 0 ;
-            while (byteRead<wantSize) {
-                byteRead += sc.read(buf);
+            while (byteRead<buf.limit()) {
+                int count = sc.read(buf);
+                if (count < 0) break;
+                byteRead += count;
             }
             Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             if (byteRead > 0) {
