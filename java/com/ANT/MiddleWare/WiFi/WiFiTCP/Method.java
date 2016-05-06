@@ -24,7 +24,9 @@ public class Method {
         buf.flip();
         try {
             try {
-                bSc.write(buf);
+                while (buf.hasRemaining()) {
+                    bSc.write(buf);
+                }
             } catch (SocketException e) {
                 throw new MyException();
             }
@@ -36,10 +38,14 @@ public class Method {
     public static Message readMessage(SocketChannel sc) throws MyException {
         try {
 
-            int wantSize = 1017;
+            int wantSize = 338;
 
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
-            int byteRead = sc.read(buf);
+            //read in while
+            int byteRead = 0 ;
+            while (byteRead<wantSize) {
+                byteRead += sc.read(buf);
+            }
             Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             if (byteRead > 0) {
                 buf.flip();
