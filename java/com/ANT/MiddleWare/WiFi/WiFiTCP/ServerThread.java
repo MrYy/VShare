@@ -21,7 +21,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ge on 2016/4/25.
@@ -129,25 +128,30 @@ public class ServerThread extends Thread {
 //                            }
                             LocalTask mTask = new LocalTask(ff, mAddr);
                             localTask.add(mTask);
-                        }
-
-                        //taskQueue is empty.
-                        //some fragments may only be sent to one client,
-                        // then pick them and send to another client
-                        if (!localTask.isEmpty()) {
-                            LocalTask lt = localTask.peek();
-                            if (mAddr != lt.getIa()) {
-                                //send the frament to another client who does not have the fragment
-                                Message msg = new Message();
-                                msg.setFragment(lt.getFf());
-                                try {
-                                    Method.sendMessage(sc, msg.getBytes());
-                                    Log.d(TAG, "send local task");
-                                } catch (MyException e) {
+                        }else {
+                            //taskQueue is empty.
+                            //some fragments may only be sent to one client,
+                            // then pick them and send to another client
+                            if (!localTask.isEmpty()) {
+                                LocalTask lt = localTask.peek();
+                                if (mAddr != lt.getIa()) {
+                                    //send the frament to another client who does not have the fragment
+                                    Message msg = new Message();
+                                    msg.setFragment(lt.getFf());
+                                    try {
+                                        Method.sendMessage(sc, msg.getBytes());
+                                        Log.d(TAG, "send local task");
+                                    } catch (MyException e) {
+                                    }
+                                    localTask.poll();
                                 }
-                                localTask.poll();
+                            }else {
+
+                                sc.close();
                             }
                         }
+
+
 
                     }
                     ite.remove();

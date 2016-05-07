@@ -47,7 +47,7 @@ public class Method {
                 int count = sc.read(buf);
                 if (count < 0) break;
                 byteRead += count;
-                if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
+//                if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             }
             if (byteRead > 0) {
                 buf.flip();
