@@ -104,10 +104,7 @@ public class ServerThread extends Thread {
                             msgObj.setFragment(ff);
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
-                                TimeUnit.SECONDS.sleep(15);
                             } catch (MyException e) {
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
                             }
                             LocalTask mTask = new LocalTask(ff, mAddr);
                             localTask.add(mTask);
@@ -116,21 +113,7 @@ public class ServerThread extends Thread {
                             // handle the big fragment
                             if (!taskList.empty()) {
                                 FileFragment ff = taskList.pop();
-                                if (ff.isTooBig()) {
-                                    //split big fragment
-                                    FileFragment[] fragArray = null;
-                                    try {
-                                        fragArray = ff.split();
-                                        for (FileFragment f : fragArray) {
-                                            taskQueue.add(f);
-                                            Log.d(TAG, "split fragment");
-                                        }
-                                    } catch (FileFragment.FileFragmentException e) {
-                                        e.printStackTrace();
-                                    }
-                                }else {
-                                    taskQueue.add(ff);
-                                }
+                                taskQueue.add(ff);
                             }
                             //taskQueue is empty.
                             //some fragments may only be sent to one client,
