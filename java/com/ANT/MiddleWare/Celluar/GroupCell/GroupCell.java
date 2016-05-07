@@ -83,9 +83,9 @@ public class GroupCell extends Thread {
 					//php should change ,otherwise only one host get the 200,and the others don't know download ends.
 //					Log.d(TAG, "finish download");
 //					break;
-//					CellularDown.queryFragment(CellularDown.CellType.WiFiMore,
-//							url);
-//					break;
+					CellularDown.queryFragment(CellularDown.CellType.CellMore,
+							url);
+					break;
 				}
 			}
 		} catch (MalformedURLException e) {
