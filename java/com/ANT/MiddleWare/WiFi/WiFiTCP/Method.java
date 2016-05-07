@@ -37,7 +37,8 @@ public class Method {
 
     public static Message readMessage(SocketChannel sc) throws MyException {
         try {
-            int wantSize = 33787;
+            //33787
+            int wantSize = 16889;
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             //read in while
             int byteRead = 0 ;

@@ -101,11 +101,11 @@ public class ServerThread extends Thread {
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
-                            Log.d(TAG, "send fragment" + String.valueOf(ff.getStartIndex()));
                             msgObj.setFragment(ff);
+                            Log.d(TAG, "send fragment" + String.valueOf(ff.getStartIndex())+"message size:"+msgObj.getBytes().length);
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
-                                TimeUnit.SECONDS.sleep(40);
+                                TimeUnit.SECONDS.sleep(1);
                             } catch (MyException e) {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
