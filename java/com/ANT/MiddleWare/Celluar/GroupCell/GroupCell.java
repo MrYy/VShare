@@ -81,10 +81,11 @@ public class GroupCell extends Thread {
 					IC.getSeg(url).checkIntegrity();
 				} else if (connection.getResponseCode() == 200) {
 					//php should change ,otherwise only one host get the 200,and the others don't know download ends.
-					Log.d(TAG, "finish download");
-					CellularDown.queryFragment(CellularDown.CellType.CellMore,
-							url);
-					break;
+//					Log.d(TAG, "finish download");
+//					break;
+//					CellularDown.queryFragment(CellularDown.CellType.WiFiMore,
+//							url);
+//					break;
 				}
 			}
 		} catch (MalformedURLException e) {
