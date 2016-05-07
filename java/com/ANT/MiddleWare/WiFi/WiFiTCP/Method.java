@@ -43,11 +43,16 @@ public class Method {
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             //read in while
             int byteRead = 0 ;
+            int i = 0;
             while (byteRead<buf.limit()) {
                 int count = sc.read(buf);
                 if (count < 0) break;
                 byteRead += count;
-                if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
+                //check the last fragment,
+                //try to read 100 times
+                if(count==0) i++;
+                if (i>100) break;
+//                if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             }
             if (byteRead > 0) {
                 buf.flip();
