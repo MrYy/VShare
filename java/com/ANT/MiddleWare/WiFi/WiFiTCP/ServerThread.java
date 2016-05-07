@@ -105,7 +105,10 @@ public class ServerThread extends Thread {
                             msgObj.setFragment(ff);
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
+                                TimeUnit.SECONDS.sleep(40);
                             } catch (MyException e) {
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
                             LocalTask mTask = new LocalTask(ff, mAddr);
                             localTask.add(mTask);
