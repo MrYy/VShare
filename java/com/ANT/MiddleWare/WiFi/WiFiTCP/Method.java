@@ -67,8 +67,8 @@ public class Method {
         } catch (StreamCorruptedException e) {
             // Thrown when control information that was read from an object
             // stream violates internal consistency checks.
-            e.printStackTrace();
-            Log.d(TAG, "此处下最后一片");
+//            e.printStackTrace();
+            Log.d(TAG, "下载完毕");
         } catch (EOFException e) {
             //exception because of the end of stream
             //reconnect

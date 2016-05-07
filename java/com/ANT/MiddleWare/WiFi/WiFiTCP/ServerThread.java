@@ -32,6 +32,7 @@ public class ServerThread extends Thread {
     private String ip;
     private WiFiTCP wiFiTCP;
     private Context context;
+    private Stack<FileFragment> convertStack = new Stack<FileFragment>();
     private Queue<LocalTask> localTask = new ConcurrentLinkedQueue<LocalTask>();
 
     public ServerThread(WiFiTCP wiFiTCP, String ip, Context context) {
@@ -99,25 +100,33 @@ public class ServerThread extends Thread {
                         // no fragments to send
                         // handle the big fragment
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
+
                         while (!taskList.empty()) {
-                            Log.d(TAG, "before send,taskList size:" + String.valueOf(taskList.size()));
+//                            Log.d(TAG, "before enqueue,taskList size: " + String.valueOf(taskList.size()));
                             FileFragment ff = taskList.pop();
+                            convertStack.add(ff);
+                        }
+                        while (!convertStack.empty()) {
+                            //I need a queue in wifi public
+                            FileFragment ff = convertStack.pop();
                             taskQueue.add(ff);
-                            Log.d(TAG, "taskList size:" + String.valueOf(taskList.size()) + "taskQueue enqueue:" + " " + ff.getStartIndex());
+//                            Log.d(TAG, "after enqueue,taskList size: " + String.valueOf(taskList.size()) + "taskQueue enqueue:" + " " + ff.getStartIndex());
                         }
                         if (!taskQueue.isEmpty()) {
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
                             msgObj.setFragment(ff);
-                            Log.d(TAG, "send fragment" + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length);
+                            Log.d(TAG, "send fragment" + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length+" after send ,queue size:"+
+                            String.valueOf(taskQueue.size()));
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
-                                TimeUnit.SECONDS.sleep(1);
+//                                TimeUnit.MILLISECONDS.sleep(50);
                             } catch (MyException e) {
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
                             }
+//                            catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
                             LocalTask mTask = new LocalTask(ff, mAddr);
                             localTask.add(mTask);
                         }
