@@ -12,6 +12,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by David on 16/4/21.
@@ -49,9 +50,16 @@ public class Method {
                 if (count < 0) break;
                 byteRead += count;
                 //check the last fragment,
-                //try to read 100 times
-                if(count==0) i++;
-                if (i>100) break;
+                //try to wait 10 seconds.
+                if(count==0) {
+                    i++;
+                    TimeUnit.SECONDS.sleep(1);
+                    if (i>10) {
+                        Log.d(TAG, "最后一片读取");
+                        break;
+                    }
+                }
+
 //                if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             }
             if (byteRead > 0) {
@@ -89,6 +97,8 @@ public class Method {
         }catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return null;
