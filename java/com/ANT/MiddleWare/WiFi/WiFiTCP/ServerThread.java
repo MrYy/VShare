@@ -27,14 +27,14 @@ import java.util.concurrent.TimeUnit;
  * Created by ge on 2016/4/25.
  */
 public class ServerThread extends Thread {
+    protected final static Queue<FileFragment> taskQueue = new ConcurrentLinkedQueue<FileFragment>();
     private static final String TAG = ServerThread.class.getSimpleName();
     private String ip;
     private WiFiTCP wiFiTCP;
     private Context context;
     private Queue<LocalTask> localTask = new ConcurrentLinkedQueue<LocalTask>();
-    protected final static Queue<FileFragment> taskQueue = new ConcurrentLinkedQueue<FileFragment>();
 
-    public ServerThread(WiFiTCP wiFiTCP, String ip,Context context) {
+    public ServerThread(WiFiTCP wiFiTCP, String ip, Context context) {
         this.ip = ip;
         this.wiFiTCP = wiFiTCP;
         this.context = context;
@@ -96,13 +96,20 @@ public class ServerThread extends Thread {
                         //--------------------testcode
 
 
+                        // no fragments to send
+                        // handle the big fragment
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
+                        if (!taskList.empty()) {
+                            FileFragment ff = taskList.pop();
+                            taskQueue.add(ff);
+                            Log.d(TAG, "taskQueue enqueue:" + " " + ff.getStartIndex());
+                        }
                         if (!taskQueue.isEmpty()) {
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
                             msgObj.setFragment(ff);
-                            Log.d(TAG, "send fragment" + String.valueOf(ff.getStartIndex())+"message size:"+msgObj.getBytes().length);
+                            Log.d(TAG, "send fragment" + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length);
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
                                 TimeUnit.SECONDS.sleep(1);
@@ -112,30 +119,26 @@ public class ServerThread extends Thread {
                             }
                             LocalTask mTask = new LocalTask(ff, mAddr);
                             localTask.add(mTask);
-                        } else {
-                            // no fragments to send
-                            // handle the big fragment
-                            if (!taskList.empty()) {
-                                FileFragment ff = taskList.pop();
-                                taskQueue.add(ff);
-                            }
-                            //taskQueue is empty.
-                            //some fragments may only be sent to one client,
-                            // then pick them and send to another client
-                            if (!localTask.isEmpty()) {
-                                LocalTask lt = localTask.peek();
-                                if (mAddr != lt.getIa()) {
-                                    //send the frament to another client who does not have the fragment
-                                    Message msg = new Message();
-                                    msg.setFragment(lt.getFf());
-                                    try {
-                                        Method.sendMessage(sc, msg.getBytes());
-                                    } catch (MyException e) {
-                                    }
-                                    localTask.poll();
+                        }
+
+                        //taskQueue is empty.
+                        //some fragments may only be sent to one client,
+                        // then pick them and send to another client
+                        if (!localTask.isEmpty()) {
+                            LocalTask lt = localTask.peek();
+                            if (mAddr != lt.getIa()) {
+                                //send the frament to another client who does not have the fragment
+                                Message msg = new Message();
+                                msg.setFragment(lt.getFf());
+                                try {
+                                    Method.sendMessage(sc, msg.getBytes());
+                                    Log.d(TAG, "send local task");
+                                } catch (MyException e) {
                                 }
+                                localTask.poll();
                             }
                         }
+
                     }
                     ite.remove();
                 }
