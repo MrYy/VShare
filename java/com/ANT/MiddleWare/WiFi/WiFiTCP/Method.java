@@ -50,7 +50,7 @@ public class Method {
                 if (count < 0) break;
                 byteRead += count;
                 //check the last fragment,
-                //try to wait 10 seconds.
+                //try to wait  seconds.
                 if(count==0) {
                     i++;
                     TimeUnit.SECONDS.sleep(1);
