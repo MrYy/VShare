@@ -55,6 +55,7 @@ public class Client implements Runnable {
                 });
             }
             sc.configureBlocking(false);
+            sc.socket().getTcpNoDelay();
             Selector selector = Selector.open();
             sc.register(selector, SelectionKey.OP_READ);
             boolean flag = true;

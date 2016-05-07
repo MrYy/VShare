@@ -76,6 +76,7 @@ public class ServerThread extends Thread {
                     } else if (mKey.isWritable()) {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
+                        sc.socket().setTcpNoDelay(false);
                         boolean isConn = sc.isConnected();
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
