@@ -99,10 +99,11 @@ public class ServerThread extends Thread {
                         // no fragments to send
                         // handle the big fragment
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
-                        if (!taskList.empty()) {
+                        while (!taskList.empty()) {
+                            Log.d(TAG, "before send,taskList size:" + String.valueOf(taskList.size()));
                             FileFragment ff = taskList.pop();
                             taskQueue.add(ff);
-                            Log.d(TAG, "taskQueue enqueue:" + " " + ff.getStartIndex());
+                            Log.d(TAG, "taskList size:" + String.valueOf(taskList.size()) + "taskQueue enqueue:" + " " + ff.getStartIndex());
                         }
                         if (!taskQueue.isEmpty()) {
                             //taskQueue has value.
