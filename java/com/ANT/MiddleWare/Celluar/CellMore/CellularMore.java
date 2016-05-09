@@ -2,6 +2,7 @@ package com.ANT.MiddleWare.Celluar.CellMore;
 
 import android.util.Log;
 
+import com.ANT.MiddleWare.Celluar.GroupCell.GroupCell;
 import com.ANT.MiddleWare.Entities.Segment;
 import com.ANT.MiddleWare.Entities.Segment.SegmentException;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
@@ -28,9 +29,11 @@ public class CellularMore extends Thread {
 					e.printStackTrace();
 					break;
 				}
-				Log.v(TAG, "no " + url + " " + miss);
+				Log.v(TAG, "no " + url + "  miss" + miss);
 				try {
+					Log.d(TAG,"start sleep");
 					Thread.sleep(100);
+					new GroupCell(url).start();
 				} catch (InterruptedException e) {
 				}
 			}

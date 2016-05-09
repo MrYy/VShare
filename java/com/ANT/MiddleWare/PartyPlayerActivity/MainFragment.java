@@ -56,6 +56,7 @@ public class MainFragment extends Fragment {
 	// private Button btConfirm;
 	private Button btCaptain;
 	private Button btPlayer;
+	private Button clearBuff;
 	// private Button btLow;
 	// private Button btMid;
 	// private Button btHigh;
@@ -101,6 +102,7 @@ public class MainFragment extends Fragment {
 		// btConfirm = (Button) v.findViewById(R.id.btConfirm);
 		btPlayer = (Button) v.findViewById(R.id.btChoose);
 		btCaptain = (Button) v.findViewById(R.id.btCaptain);
+		clearBuff=(Button)v.findViewById(R.id.btClear);
 		// btCaptain.setClickable(false);
 		// etUrl = (EditText) v.findViewById(R.id.url_edit_text);
 
@@ -369,6 +371,18 @@ public class MainFragment extends Fragment {
 					startActivity(j);
 				}
 
+			}
+		});
+
+
+		clearBuff.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//PHP端清除缓存
+				Intent i = getActivity().getPackageManager()
+						.getLaunchIntentForPackage(getActivity().getPackageName());
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(i);
 			}
 		});
 
