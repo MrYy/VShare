@@ -20,5 +20,7 @@
     <string name="bt_confirm">CONFIRM</string>
     <string name="captain">GROUPING</string>
     <string name="bt_port">12345</string>
+    <string name="clear">RESTART
+    </string>
 
 </resources>
