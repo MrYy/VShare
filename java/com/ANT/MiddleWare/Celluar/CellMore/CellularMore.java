@@ -33,7 +33,6 @@ public class CellularMore extends Thread {
 				try {
 					Log.d(TAG,"start sleep");
 					Thread.sleep(100);
-					new GroupCell(url).start();
 				} catch (InterruptedException e) {
 				}
 			}
