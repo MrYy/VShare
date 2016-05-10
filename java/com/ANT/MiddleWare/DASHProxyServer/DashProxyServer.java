@@ -54,11 +54,9 @@ public class DashProxyServer extends NanoHTTPD {
 					String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/video/4/";
 					int i=Integer.parseInt(session.getUri().substring(1, 2).toString());
 					Log.d("pianming",Integer.toString(i));
-//						if(i>1) try {
-//							TimeUnit.SECONDS.sleep(2);
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						}
+					if (i > 1) {
+						while (!IntegrityCheck.getInstance().getSeg(i - 1).checkIntegrity()) {}
+					}
 						File file=new File(dir, i+".mp4");
 						int len=(int) file.length();
 						try {
@@ -76,7 +74,6 @@ public class DashProxyServer extends NanoHTTPD {
 							FileFragment f =new FileFragment(0,len,i,len);
 							f.setData(content);
 							IntegrityCheck IC = IntegrityCheck.getInstance();
-
 								if (f.isTooBig()) {
 								FileFragment[] fragArray = null;
 								try {
@@ -84,9 +81,10 @@ public class DashProxyServer extends NanoHTTPD {
 								} catch (FileFragment.FileFragmentException e) {
 									e.printStackTrace();
 								}
-								for (FileFragment ff : fragArray) {
-									IC.insert(i, ff);
-								}
+										for (FileFragment ff : fragArray) {
+											IC.insert(i, ff);
+											Log.d(TAG, "insert into stack:" + String.valueOf(ff.getSegmentID()));
+										}
 							} else {
 								IC.insert(i, f);
 							}
