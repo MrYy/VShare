@@ -121,7 +121,11 @@ public class ServerThread extends Thread {
                             String.valueOf(taskQueue.size()));
                             try {
                                 Method.sendMessage(sc, msgObj.getBytes());
+//                                if(msgObj.getBytes().length<16889){
+//                                    TimeUnit.SECONDS.sleep(3);
+//                                }
 //                                TimeUnit.MILLISECONDS.sleep(50);
+
                             } catch (MyException e) {
                             }
 //                            catch (InterruptedException e) {

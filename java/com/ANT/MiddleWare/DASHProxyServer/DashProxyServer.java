@@ -44,6 +44,7 @@ public class DashProxyServer extends NanoHTTPD {
 			if (!getFileName(session, ".m3u8").equals("")) {
 				Log.v("TAG", "filename" + session.getUri());
 				return localFile("/video/4/index.m3u8");
+
 			} else {
 				Log.v("TAG", "DashProxy uri:" + session.getUri());
 				String playist = getFileName(session, ".mp4");
@@ -51,12 +52,13 @@ public class DashProxyServer extends NanoHTTPD {
 				switch (MainFragment.configureData.getWorkingMode()) {
 				case LOCAL_MODE:
 					String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/video/4/";
-					for(int i=1;i<6;i++){
-						if(i>1) try {
-							TimeUnit.SECONDS.sleep(2);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+					int i=Integer.parseInt(session.getUri().substring(1, 2).toString());
+					Log.d("pianming",Integer.toString(i));
+//						if(i>1) try {
+//							TimeUnit.SECONDS.sleep(2);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
 						File file=new File(dir, i+".mp4");
 						int len=(int) file.length();
 						try {
@@ -74,7 +76,8 @@ public class DashProxyServer extends NanoHTTPD {
 							FileFragment f =new FileFragment(0,len,i,len);
 							f.setData(content);
 							IntegrityCheck IC = IntegrityCheck.getInstance();
-							if (f.isTooBig()) {
+
+								if (f.isTooBig()) {
 								FileFragment[] fragArray = null;
 								try {
 									fragArray = f.split();
@@ -100,8 +103,10 @@ public class DashProxyServer extends NanoHTTPD {
 							e.printStackTrace();
 						}
 
-					}
+
+
 					return localFile("/video/4/" + playist);
+
 				case G_MDOE:
 					IntegrityCheck iTC = IntegrityCheck.getInstance();
 					int tmpp = Integer.parseInt(playist.substring(0, 1));
