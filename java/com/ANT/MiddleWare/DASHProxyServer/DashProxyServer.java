@@ -83,7 +83,7 @@ public class DashProxyServer extends NanoHTTPD {
 								}
 										for (FileFragment ff : fragArray) {
 											IC.insert(i, ff);
-											Log.d(TAG, "insert into stack:" + String.valueOf(ff.getSegmentID()));
+//											Log.d(TAG, "insert into stack:" + String.valueOf(ff.getSegmentID())+" "+String.valueOf(ff.getStartIndex()));
 										}
 							} else {
 								IC.insert(i, f);
