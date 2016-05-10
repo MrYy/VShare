@@ -34,7 +34,7 @@ public class ServerThread extends Thread {
     private Context context;
     private Stack<FileFragment> convertStack = new Stack<FileFragment>();
     private Queue<LocalTask> localTask = new ConcurrentLinkedQueue<LocalTask>();
-
+    private int oldStart = 0;
     public ServerThread(WiFiTCP wiFiTCP, String ip, Context context) {
         this.ip = ip;
         this.wiFiTCP = wiFiTCP;
@@ -117,15 +117,19 @@ public class ServerThread extends Thread {
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
                             msgObj.setFragment(ff);
-                            Log.d(TAG, "send fragment" + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length+" after send ,queue size:"+
+                            Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length+" after send ,queue size:"+
                             String.valueOf(taskQueue.size()));
                             try {
+                                if (ff.getStartIndex() < oldStart) {
+                                    try {
+                                        TimeUnit.SECONDS.sleep(3);
+                                        Log.d(TAG, "开始发送第二段");
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                oldStart = ff.getStartIndex();
                                 Method.sendMessage(sc, msgObj.getBytes());
-//                                if(msgObj.getBytes().length<16889){
-//                                    TimeUnit.SECONDS.sleep(3);
-//                                }
-//                                TimeUnit.MILLISECONDS.sleep(50);
-
                             } catch (MyException e) {
                             }
 //                            catch (InterruptedException e) {
@@ -144,6 +148,7 @@ public class ServerThread extends Thread {
                                 //send the frament to another client who does not have the fragment
                                 Message msg = new Message();
                                 msg.setFragment(lt.getFf());
+
                                 try {
                                     Method.sendMessage(sc, msg.getBytes());
                                     Log.d(TAG, "send local task");
