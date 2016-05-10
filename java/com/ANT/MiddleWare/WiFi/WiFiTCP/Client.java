@@ -90,6 +90,7 @@ public class Client implements Runnable {
                             System.out.println(msg.getType().getDescribe());
                             FileFragment ff = msg.getFragment();
                             Log.d("insert fragment", String.valueOf(ff.getStartIndex()));
+                            Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
                             IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);
                         }
 

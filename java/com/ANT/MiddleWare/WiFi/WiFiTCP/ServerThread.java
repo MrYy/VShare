@@ -123,7 +123,7 @@ public class ServerThread extends Thread {
                                 if (ff.getStartIndex() < oldStart) {
                                     try {
                                         TimeUnit.SECONDS.sleep(3);
-                                        Log.d(TAG, "开始发送第二段");
+                                        Log.d(TAG, "开始发送下一段");
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
