@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 import android.os.Environment;
 import android.util.Log;
@@ -51,6 +52,11 @@ public class DashProxyServer extends NanoHTTPD {
 				case LOCAL_MODE:
 					String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/video/4/";
 					for(int i=1;i<6;i++){
+						if(i>1) try {
+							TimeUnit.SECONDS.sleep(2);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 						File file=new File(dir, i+".mp4");
 						int len=(int) file.length();
 						try {
@@ -81,7 +87,7 @@ public class DashProxyServer extends NanoHTTPD {
 							} else {
 								IC.insert(i, f);
 							}
-							IC.getSeg(i).checkIntegrity();
+
 							in.close();
 						} catch (FileNotFoundException e1) {
 							// TODO Auto-generated catch block
