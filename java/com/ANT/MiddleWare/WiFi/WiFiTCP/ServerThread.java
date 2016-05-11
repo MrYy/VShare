@@ -125,33 +125,28 @@ public class ServerThread extends Thread {
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
                             msgObj.setFragment(ff);
+                            byte[] msgByte = msgObj.getBytes();
                             if (count == 0) {
-                                fragSize = msgObj.getBytes().length;
+                                fragSize = msgByte.length;
                                 count++;
                             }
                             try {
                                 if (ff.getStartIndex() < oldStart) {
-                                    try {
-                                        TimeUnit.SECONDS.sleep(5);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
                                     Log.d(TAG, "开始发送下一段");
                                 }
                                 oldStart = ff.getStartIndex();
-                                byte[] msg;
-                                int length = msgObj.getBytes().length;
-                                Log.d(TAG, "fragSize:" + fragSize);
+                                int length = msgByte.length;
+                                Log.d(TAG, "fragSize:" + fragSize+" length:"+length);
                                 if (length < fragSize) {
                                     Log.d(TAG, "最后一片补偿");
                                     byte[] addMsg = new byte[fragSize - length];
-                                    msg = byteMerger(msgObj.getBytes(), addMsg);
+                                    Method.sendMessage(sc, byteMerger(msgByte, addMsg));
                                 } else {
-                                    msg = msgObj.getBytes();
+                                    Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgByte.length + " after send ,queue size:" +
+                                            String.valueOf(taskQueue.size()));
+                                    Method.sendMessage(sc, msgByte);
                                 }
-                                Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msg.length + " after send ,queue size:" +
-                                        String.valueOf(taskQueue.size()));
-                                Method.sendMessage(sc, msg);
+
                                 //test code ------
 //                                try {
 //                                    TimeUnit.SECONDS.sleep(40);
