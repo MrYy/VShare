@@ -35,12 +35,20 @@ public class ServerThread extends Thread {
     private Stack<FileFragment> convertStack = new Stack<FileFragment>();
     private Queue<LocalTask> localTask = new ConcurrentLinkedQueue<LocalTask>();
     private int oldStart = 0;
+    private int count = 0;
+    private int fragSize;
+
     public ServerThread(WiFiTCP wiFiTCP, String ip, Context context) {
         this.ip = ip;
         this.wiFiTCP = wiFiTCP;
         this.context = context;
     }
-
+    private  byte[] byteMerger(byte[] byte_1, byte[] byte_2){
+        byte[] byte_3 = new byte[byte_1.length+byte_2.length];
+        System.arraycopy(byte_1, 0, byte_3, 0, byte_1.length);
+        System.arraycopy(byte_2, 0, byte_3, byte_1.length, byte_2.length);
+        return byte_3;
+    }
     @Override
     public void run() {
         super.run();
@@ -117,6 +125,10 @@ public class ServerThread extends Thread {
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
                             msgObj.setFragment(ff);
+                            if (count == 0) {
+                                fragSize = msgObj.getBytes().length;
+                                count++;
+                            }
                             try {
                                 if (ff.getStartIndex() < oldStart) {
                                     try {
@@ -127,15 +139,19 @@ public class ServerThread extends Thread {
                                     Log.d(TAG, "开始发送下一段");
                                 }
                                 oldStart = ff.getStartIndex();
-                                Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length+" after send ,queue size:"+
-                                        String.valueOf(taskQueue.size()));
-                                Method.sendMessage(sc, msgObj.getBytes());
+                                byte[] msg;
                                 int length = msgObj.getBytes().length;
-                                if (length < 164345) {
+                                Log.d(TAG, "fragSize:" + fragSize);
+                                if (length < fragSize) {
                                     Log.d(TAG, "最后一片补偿");
-                                    byte[] addMsg = new byte[164345 - length];
-                                    Method.sendMessage(sc,addMsg);
+                                    byte[] addMsg = new byte[fragSize - length];
+                                    msg = byteMerger(msgObj.getBytes(), addMsg);
+                                } else {
+                                    msg = msgObj.getBytes();
                                 }
+                                Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msg.length + " after send ,queue size:" +
+                                        String.valueOf(taskQueue.size()));
+                                Method.sendMessage(sc, msg);
                                 //test code ------
 //                                try {
 //                                    TimeUnit.SECONDS.sleep(40);
@@ -200,5 +216,6 @@ public class ServerThread extends Thread {
         public InetAddress getIa() {
             return ia;
         }
+
     }
 }

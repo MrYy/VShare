@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class Method {
     private static final String TAG = Method.class.getSimpleName();
     public static void sendMessage(SocketChannel bSc, byte[] bytesObj) throws MyException {
+
         ByteBuffer buf = ByteBuffer.allocate(bytesObj.length);
         buf.put(bytesObj);
         buf.flip();
