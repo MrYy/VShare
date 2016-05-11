@@ -82,7 +82,7 @@ public class ServerThread extends Thread {
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
                         //----------------------------test code
-//                        msgObj.setMessage("hi");
+//                        msgObj.setMessage("d");
 //                        msgObj.setCount(count++);
 //                        Log.d(TAG, "send:"+String.valueOf(count));
 //                        if (isConn){
@@ -120,14 +120,19 @@ public class ServerThread extends Thread {
 
                             try {
                                 if (ff.getStartIndex() < oldStart) {
+                                    Log.d(TAG, "发送分隔符");
+                                    Message dMsg = new Message();
+                                    dMsg.setMessage("d");
+                                    dMsg.setCount(count++);
+                                    Method.sendMessage(sc, dMsg.getBytes());
                                     try {
                                         TimeUnit.SECONDS.sleep(5);
-                                        Log.d(TAG, "开始发送下一段");
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
                                 }
                                 oldStart = ff.getStartIndex();
+                                Log.d(TAG, "开始发送下一段");
                                 Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length+" after send ,queue size:"+
                                         String.valueOf(taskQueue.size()));
                                 Method.sendMessage(sc, msgObj.getBytes());

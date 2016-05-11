@@ -39,8 +39,8 @@ public class Method {
     public static Message readMessage(SocketChannel sc) throws MyException {
         try {
             //33787
-            //16889
             //328699
+            //message 696
             int wantSize = 328699;
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             //read in while
@@ -55,9 +55,8 @@ public class Method {
                 if(count==0) {
                     i++;
                     TimeUnit.SECONDS.sleep(1);
-                    if (i>8) {
-                        Log.d(TAG, "最后一片读取");
-                        break;
+                    if (i>3) {
+                        if(byteRead==696) {  Log.d(TAG, "最后一片读取");  break;}
                     }
                 }
 
