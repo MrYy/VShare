@@ -129,6 +129,7 @@ public class ServerThread extends Thread {
                                     }
                                 }
                                 oldStart = ff.getStartIndex();
+                                Method.sendMessage(sc, msgObj.getBytes());
                                 //test code ------
                                 try {
                                     TimeUnit.SECONDS.sleep(40);
@@ -136,8 +137,6 @@ public class ServerThread extends Thread {
                                     e.printStackTrace();
                                 }
                                 //-----
-
-                                Method.sendMessage(sc, msgObj.getBytes());
                             } catch (MyException e) {
                             }
 //                            catch (InterruptedException e) {
