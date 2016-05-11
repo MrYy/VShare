@@ -117,18 +117,19 @@ public class ServerThread extends Thread {
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
                             msgObj.setFragment(ff);
-                            Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length+" after send ,queue size:"+
-                            String.valueOf(taskQueue.size()));
+
                             try {
                                 if (ff.getStartIndex() < oldStart) {
                                     try {
-                                        TimeUnit.SECONDS.sleep(3);
+                                        TimeUnit.SECONDS.sleep(5);
                                         Log.d(TAG, "开始发送下一段");
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
                                 }
                                 oldStart = ff.getStartIndex();
+                                Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length+" after send ,queue size:"+
+                                        String.valueOf(taskQueue.size()));
                                 Method.sendMessage(sc, msgObj.getBytes());
                                 //test code ------
 //                                try {

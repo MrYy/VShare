@@ -55,7 +55,7 @@ public class Method {
                 if(count==0) {
                     i++;
                     TimeUnit.SECONDS.sleep(1);
-                    if (i>1) {
+                    if (i>8) {
                         Log.d(TAG, "最后一片读取");
                         break;
                     }
