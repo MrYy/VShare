@@ -42,7 +42,7 @@ public class Method {
             //33787
             //328699
             //message 696
-            int wantSize = 328699;
+            int wantSize = 164345;
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             //read in while
             int byteRead = 0 ;
