@@ -52,13 +52,13 @@ public class Method {
                 byteRead += count;
                 //check the last fragment,
                 //try to wait  seconds.
-                if(count==0) {
-                    i++;
-                    TimeUnit.SECONDS.sleep(1);
-                    if (i>3) {
-                        if(byteRead==696) {  Log.d(TAG, "最后一片读取");  break;}
-                    }
-                }
+//                if(count==0) {
+//                    i++;
+//                    TimeUnit.SECONDS.sleep(1);
+//                    if (i>6) {
+//                        if(byteRead==696) {  Log.d(TAG, "最后一片读取");  break;}
+//                    }
+//                }
 
                 if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             }
@@ -99,9 +99,9 @@ public class Method {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return null;
     }
 

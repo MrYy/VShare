@@ -117,25 +117,25 @@ public class ServerThread extends Thread {
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
                             msgObj.setFragment(ff);
-
                             try {
                                 if (ff.getStartIndex() < oldStart) {
-                                    Log.d(TAG, "发送分隔符");
-                                    Message dMsg = new Message();
-                                    dMsg.setMessage("d");
-                                    dMsg.setCount(count++);
-                                    Method.sendMessage(sc, dMsg.getBytes());
                                     try {
                                         TimeUnit.SECONDS.sleep(5);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
+                                    Log.d(TAG, "开始发送下一段");
                                 }
                                 oldStart = ff.getStartIndex();
-                                Log.d(TAG, "开始发送下一段");
                                 Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgObj.getBytes().length+" after send ,queue size:"+
                                         String.valueOf(taskQueue.size()));
                                 Method.sendMessage(sc, msgObj.getBytes());
+                                int length = msgObj.getBytes().length;
+                                if (length < 164345) {
+                                    Log.d(TAG, "最后一片补偿");
+                                    byte[] addMsg = new byte[164345 - length];
+                                    Method.sendMessage(sc,addMsg);
+                                }
                                 //test code ------
 //                                try {
 //                                    TimeUnit.SECONDS.sleep(40);
