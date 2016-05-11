@@ -129,6 +129,14 @@ public class ServerThread extends Thread {
                                     }
                                 }
                                 oldStart = ff.getStartIndex();
+                                //test code ------
+                                try {
+                                    TimeUnit.SECONDS.sleep(40);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                //-----
+
                                 Method.sendMessage(sc, msgObj.getBytes());
                             } catch (MyException e) {
                             }
