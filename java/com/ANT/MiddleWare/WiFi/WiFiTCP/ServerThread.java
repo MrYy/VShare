@@ -131,11 +131,11 @@ public class ServerThread extends Thread {
                                 oldStart = ff.getStartIndex();
                                 Method.sendMessage(sc, msgObj.getBytes());
                                 //test code ------
-                                try {
-                                    TimeUnit.SECONDS.sleep(40);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+//                                try {
+//                                    TimeUnit.SECONDS.sleep(40);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
                                 //-----
                             } catch (MyException e) {
                             }

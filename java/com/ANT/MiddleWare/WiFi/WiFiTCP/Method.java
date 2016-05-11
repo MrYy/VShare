@@ -40,7 +40,8 @@ public class Method {
         try {
             //33787
             //16889
-            int wantSize = 33787;
+            //328699
+            int wantSize = 328699;
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             //read in while
             int byteRead = 0 ;
@@ -60,7 +61,7 @@ public class Method {
                     }
                 }
 
-//                if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
+                if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             }
             if (byteRead > 0) {
                 buf.flip();
@@ -98,7 +99,8 @@ public class Method {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
         return null;
