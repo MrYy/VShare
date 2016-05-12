@@ -124,6 +124,7 @@ public class ServerThread extends Thread {
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
                             FileFragment ff = taskQueue.poll();
+                            Method.record(ff,"send");
                             msgObj.setFragment(ff);
                             byte[] msgByte = msgObj.getBytes();
                             if (count == 0) {

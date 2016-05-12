@@ -1,9 +1,15 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import android.os.Environment;
 import android.util.Log;
+
+import com.ANT.MiddleWare.Entities.FileFragment;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
@@ -12,13 +18,49 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.TimeUnit;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by David on 16/4/21.
  */
 public class Method {
     private static final String TAG = Method.class.getSimpleName();
+
+    public static void record(FileFragment f,String type) {
+        String startOffset=String.valueOf(f.getStartIndex());
+        String stopOffset=String.valueOf(f.getStopIndex());
+        String segId=String.valueOf(f.getSegmentID());
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss:SSS");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = format.format(curDate);
+        String text="sId:"+segId+"\t start:"+startOffset+"\t stop:"
+                +stopOffset+"\t time:"+System.currentTimeMillis()+"\t "+str+"\n";
+        String dir= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ltcptest/";
+        File filedir=new File(dir);
+        filedir.mkdir();
+        File file=new File(dir, "l"+type+"_ch1_sp0.txt");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file, true);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.write(text.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static void sendMessage(SocketChannel bSc, byte[] bytesObj) throws MyException {
         Log.d("send size:", String.valueOf(bytesObj.length));
         ByteBuffer buf = ByteBuffer.allocate(bytesObj.length);
