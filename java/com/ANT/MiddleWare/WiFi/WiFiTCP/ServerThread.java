@@ -85,7 +85,7 @@ public class ServerThread extends Thread {
                         ss.register(mKey.selector(), SelectionKey.OP_WRITE);
 
                         //deal with threads
-                        Set<String> links = WiFiTCP.links;
+                        Set<String> links = WiFiTCP.getLinks();
                         if (!links.isEmpty()) {
                             Queue<String> toLink = new LinkedList<>();
                             for (String link : links) {

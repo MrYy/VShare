@@ -30,7 +30,7 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	private PipedInputStream pi = new PipedInputStream();
 	private PipedOutputStream po = new PipedOutputStream();
 
-	public static Set<String> links = new HashSet<>();
+	private static Set<String> links = new HashSet<>();
 	public WiFiTCP(final Context contect) {
 		super(contect);
 		this.context = contect;
@@ -88,6 +88,9 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 		}
 	}
 
+	public static synchronized Set<String> getLinks() {
+		return links;
+	}
 
 
 
