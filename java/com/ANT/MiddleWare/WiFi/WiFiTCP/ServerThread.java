@@ -85,18 +85,18 @@ public class ServerThread extends Thread {
                         ss.register(mKey.selector(), SelectionKey.OP_WRITE);
 
                         //deal with threads
-                        Set<String> links = WiFiTCP.getLinks();
-                        if (!links.isEmpty()) {
+                        Set<String> links = WiFiTCP.links;
+                        if (links!=null) {
                             Queue<String> toLink = new LinkedList<>();
                             for (String link : links) {
                                 toLink.add(link);
-                                links.remove(link);
                             }
                             while (!toLink.isEmpty()) {
                                 String ip = toLink.poll();
                                 Log.d(TAG, "即将连接ip：" + ip);
                                 new Thread(new Client(InetAddress.getByName(ip), 12345, context)).start();
                             }
+                            WiFiTCP.links = null ;
                         }
                     } else if (mKey.isWritable()) {
                         //can write ,send fragment
