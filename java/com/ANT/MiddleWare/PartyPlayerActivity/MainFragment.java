@@ -30,8 +30,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.ANT.MiddleWare.Celluar.CellularDown;
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
+import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.WiFi.WiFiFactory;
 import com.ANT.MiddleWare.WiFi.WiFiFactory.WiFiType;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Client;
@@ -39,7 +41,10 @@ import com.ANT.MiddleWare.WiFi.WiFiTCP.WiFiTCP;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -385,10 +390,35 @@ public class MainFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				//PHP端清除缓存
-				Intent i = getActivity().getPackageManager()
-						.getLaunchIntentForPackage(getActivity().getPackageName());
-				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(i);
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						HttpURLConnection connection = null;
+						try {
+							URL uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=4.mp4&sessionid=lykfr9oyqipq2q3tvy14616291918cw"+
+									"&rate=" + MainFragment.rateTag+"&clear=1");
+							connection = (HttpURLConnection)uurl.openConnection();
+							connection.setRequestMethod("GET");
+							connection.setConnectTimeout(5000);
+							connection.setUseCaches(false);
+							connection.setDoInput(true);
+							connection.setRequestProperty("Accept-Encoding", "");
+							connection.setDoOutput(true);
+							if (connection.getResponseCode() == 200) {
+								//php should change ,otherwise only one host get the 200,and the others don't know download ends.
+								Log.d(TAG, "restart success");
+							}
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}finally {
+							if (connection != null) {
+								connection.disconnect();
+							}
+						}
+					}
+				}).start();
 			}
 		});
 
