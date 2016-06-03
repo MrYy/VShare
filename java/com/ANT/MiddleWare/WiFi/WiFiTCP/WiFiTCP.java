@@ -14,6 +14,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 
@@ -27,11 +29,15 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	private WifiManager wifi;
 	private PipedInputStream pi = new PipedInputStream();
 	private PipedOutputStream po = new PipedOutputStream();
+
+	public static Set<String> links = new HashSet<>();
 	public WiFiTCP(final Context contect) {
 		super(contect);
 		this.context = contect;
 		makeToast("I am TCP");
-
+		links.add("192.168.1.71");
+		links.add("192.168.1.89");
+		links.add("192.168.1.40");
 		tm = (TelephonyManager) contect
 				.getSystemService(Activity.TELEPHONY_SERVICE);
 		try{pi.connect(po);
@@ -43,7 +49,7 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 		final int number = Integer.parseInt(s.substring(len - 2));
 		ip = "192.168.1." + number;
 		Log.v(TAG, "ip " + ip);
-
+		links.remove(ip);
 		try {
 			proc = Runtime.getRuntime().exec("su");
 			DataOutputStream os = new DataOutputStream(proc.getOutputStream());

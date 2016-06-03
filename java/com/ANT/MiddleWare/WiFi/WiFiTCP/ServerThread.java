@@ -17,6 +17,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -82,6 +83,21 @@ public class ServerThread extends Thread {
                         SocketChannel ss = ((ServerSocketChannel) mKey.channel()).accept();
                         ss.configureBlocking(false);
                         ss.register(mKey.selector(), SelectionKey.OP_WRITE);
+
+                        //deal with threads
+                        Set<String> links = WiFiTCP.links;
+                        if (!links.isEmpty()) {
+                            Queue<String> toLink = new LinkedList<>();
+                            for (String link : links) {
+                                toLink.add(link);
+                                links.remove(link);
+                            }
+                            while (!toLink.isEmpty()) {
+                                String ip = toLink.poll();
+                                Log.d(TAG, "即将连接ip：" + ip);
+                                new Thread(new Client(InetAddress.getByName(ip), 12345, context)).start();
+                            }
+                        }
                     } else if (mKey.isWritable()) {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();

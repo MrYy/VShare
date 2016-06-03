@@ -35,6 +35,7 @@ import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
 import com.ANT.MiddleWare.WiFi.WiFiFactory;
 import com.ANT.MiddleWare.WiFi.WiFiFactory.WiFiType;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Client;
+import com.ANT.MiddleWare.WiFi.WiFiTCP.WiFiTCP;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -205,17 +206,21 @@ public class MainFragment extends Fragment {
 					Log.v(TAG, "ip " + ip);
 					try {
 						Client client = null;
+						String linkIp = "";
 						switch (number) {
-							case 16:
-								client = new Client(InetAddress.getByName("192.168.1.89"), 12345,getActivity());
+							case 71:
+								linkIp = "192.168.1.89";
+								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
 								new Thread(client).start();
 								break;
-							case 51:
-								client = new Client(InetAddress.getByName("192.168.1.89"), 12345,getActivity());
+							case 40:
+								linkIp = "192.168.1.89";
+								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
 								new Thread(client).start();
 								break;
 							case 89:
-								client = new Client(InetAddress.getByName("192.168.1.51"), 12345,getActivity());
+								linkIp = "192.168.1.40";
+								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
 								new Thread(client).start();
 								break;
 							default:
@@ -223,6 +228,7 @@ public class MainFragment extends Fragment {
 								break;
 
 						}
+						WiFiTCP.links.remove(linkIp);
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					} catch (IOException ex){
