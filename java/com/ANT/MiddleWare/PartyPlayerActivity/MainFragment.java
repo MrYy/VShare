@@ -228,7 +228,7 @@ public class MainFragment extends Fragment {
 								break;
 
 						}
-						WiFiTCP.links.remove(linkIp);
+						WiFiTCP.getLinks().remove(linkIp);
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					} catch (IOException ex){
