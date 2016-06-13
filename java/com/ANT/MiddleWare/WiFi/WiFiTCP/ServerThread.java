@@ -16,12 +16,14 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -102,45 +104,29 @@ public class ServerThread extends Thread {
                         //can write ,send fragment
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         sc.socket().setTcpNoDelay(true);
-                        boolean isConn = sc.isConnected();
                         InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
-                        //----------------------------test code
-//                        msgObj.setMessage("d");
-//                        msgObj.setCount(count++);
-//                        Log.d(TAG, "send:"+String.valueOf(count));
-//                        if (isConn){
-//                            try {
-//                                Log.d(TAG, "发送的长度:" + msgObj.getBytes().length);
-//                                Method.sendMessage(sc, msgObj.getBytes());
-//                            } catch (MyException e) {
-//                                Log.d(TAG, "catch");
-//                            }
-//                        }
 
-                        //--------------------testcode
-
-
-                        // no fragments to send
-                        // handle the big fragment
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
-
                         while (!taskList.empty()) {
 //                            Log.d(TAG, "before enqueue,taskList size: " + String.valueOf(taskList.size()));
                             FileFragment ff = taskList.pop();
                             convertStack.add(ff);
                         }
                         while (!convertStack.empty()) {
-                            //I need a queue in wifi public
+                            //LocalTask is a wrapper,
+                            //wrap a address set which records the address that already has been sent to.
                             FileFragment ff = convertStack.pop();
-                            taskQueue.add(ff);
-//                            Log.d(TAG, "after enqueue,taskList size: " + String.valueOf(taskList.size()) + "taskQueue enqueue:" + " " + ff.getStartIndex());
+                            LocalTask lt = new LocalTask(ff);
+                            localTask.add(lt);
                         }
-                        if (!taskQueue.isEmpty()) {
+                        if (!localTask.isEmpty()) {
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
-                            FileFragment ff = taskQueue.poll();
-                            Method.record(ff,"send");
+                            LocalTask taskToSend= localTask.peek();
+                            if (taskToSend.getAddrs().contains(mAddr)) return;
+                            FileFragment ff = taskToSend.getFf();
+                            Method.record(ff,"send to address:"+mAddr.toString());
                             msgObj.setFragment(ff);
                             byte[] msgByte = msgObj.getBytes();
                             if (count == 0) {
@@ -159,46 +145,20 @@ public class ServerThread extends Thread {
                                     byte[] addMsg = new byte[fragSize - length];
                                     Method.sendMessage(sc, byteMerger(msgByte, addMsg));
                                 } else {
-                                    Log.d(TAG, "send fragment,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgByte.length + " after send ,queue size:" +
+                                    Log.d(TAG, "send fragment to:"+mAddr.toString()+" ,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgByte.length + " after send ,queue size:" +
                                             String.valueOf(taskQueue.size()));
                                     Method.sendMessage(sc, msgByte);
                                 }
+                                if (taskToSend.getAddrs().size() == WiFiTCP.links.size()) {
+                                    //the single piece has sent to all of the clients
+                                    localTask.poll();
+                                }else {
+                                    taskToSend.getAddrs().add(mAddr);
+                                }
 
-                                //test code ------
-//                                try {
-//                                    TimeUnit.SECONDS.sleep(40);
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                }
-                                //-----
                             } catch (MyException e) {
                             }
-//                            catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-                            LocalTask mTask = new LocalTask(ff, mAddr);
-                            localTask.add(mTask);
                         }
-
-                        //taskQueue is empty.
-                        //some fragments may only be sent to one client,
-                        // then pick them and send to another client
-                        if (!localTask.isEmpty()) {
-                            LocalTask lt = localTask.peek();
-                            if (mAddr != lt.getIa()) {
-                                //send the frament to another client who does not have the fragment
-                                Message msg = new Message();
-                                msg.setFragment(lt.getFf());
-
-                                try {
-                                    Method.sendMessage(sc, msg.getBytes());
-                                    Log.d(TAG, "send local task");
-                                } catch (MyException e) {
-                                }
-                                localTask.poll();
-                            }
-                        }
-
                     }
                     ite.remove();
                 }
@@ -215,19 +175,16 @@ public class ServerThread extends Thread {
     class LocalTask {
         private FileFragment ff;
         private InetAddress ia;
-
-        public LocalTask(FileFragment ff, InetAddress ia) {
+        private Set<InetAddress> addrs;
+        public LocalTask(FileFragment ff) {
+            addrs = new HashSet<>();
             this.ff = ff;
-            this.ia = ia;
         }
-
         public FileFragment getFf() {
             return ff;
         }
-
-        public InetAddress getIa() {
-            return ia;
+        public Set<InetAddress> getAddrs() {
+            return addrs;
         }
-
     }
 }
