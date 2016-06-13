@@ -38,9 +38,8 @@ public class ServerThread extends Thread {
     private Stack<FileFragment> convertStack = new Stack<FileFragment>();
     private Queue<LocalTask> localTask = new ConcurrentLinkedQueue<LocalTask>();
     private int oldStart = 0;
-    private int count = 0;
     private int fragSize;
-
+    private int index = 0;
     public ServerThread(WiFiTCP wiFiTCP, String ip, Context context) {
         this.ip = ip;
         this.wiFiTCP = wiFiTCP;
@@ -126,7 +125,7 @@ public class ServerThread extends Thread {
                             LocalTask taskToSend= localTask.peek();
                             if (taskToSend.getAddrs().contains(mAddr)) return;
                             FileFragment ff = taskToSend.getFf();
-                            Method.record(ff,"send to address:"+mAddr.toString());
+                            Method.record(ff,"send",String.valueOf(++index));
                             msgObj.setFragment(ff);
                             byte[] msgByte = msgObj.getBytes();
                             if (count == 0) {

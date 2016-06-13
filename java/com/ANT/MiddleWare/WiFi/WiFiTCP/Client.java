@@ -25,6 +25,7 @@ public class Client implements Runnable {
     private int remotePort;
     private static final String TAG = Client.class.getSimpleName();
     private Context context = null;
+    private int index = 0;
     public Client(InetAddress remoteAddress, int remotePort,Context context) {
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
@@ -89,7 +90,7 @@ public class Client implements Runnable {
                         } else {
                             System.out.println(msg.getType().getDescribe());
                             FileFragment ff = msg.getFragment();
-                            Method.record(ff,"receive");
+                            Method.record(ff,"receive",String.valueOf(++index));
                             Log.d("insert fragment",String.valueOf(ff.getSegmentID())+" "+ String.valueOf(ff.getStartIndex()));
 //                            Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
                             IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);

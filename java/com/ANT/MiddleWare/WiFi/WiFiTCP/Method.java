@@ -27,14 +27,17 @@ import java.util.Date;
 public class Method {
     private static final String TAG = Method.class.getSimpleName();
 
-    public static void record(FileFragment f,String type) {
+    public static void record(FileFragment f, String type) {
+        record(f,type,"");
+    }
+    public static void record(FileFragment f,String type,String des) {
         String startOffset=String.valueOf(f.getStartIndex());
         String stopOffset=String.valueOf(f.getStopIndex());
         String segId=String.valueOf(f.getSegmentID());
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss:SSS");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
         String str = format.format(curDate);
-        String text="sId:"+segId+"\t start:"+startOffset+"\t stop:"
+        String text="count:"+des+" sId:"+segId+"\t start:"+startOffset+"\t stop:"
                 +stopOffset+"\t time:"+System.currentTimeMillis()+"\t "+str+"\n";
         String dir= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ltcptest/";
         File filedir=new File(dir);
