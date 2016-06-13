@@ -88,7 +88,7 @@ public class ServerThread extends Thread {
                         //deal with threads
                         Set<String> links = WiFiTCP.links;
                         if (links!=null) {
-                            Queue<String> toLink = new LinkedList<>();
+                            Queue<String> toLink = new LinkedList<String>();
                             for (String link : links) {
                                 toLink.add(link);
                             }
@@ -176,7 +176,7 @@ public class ServerThread extends Thread {
         private InetAddress ia;
         private Set<InetAddress> addrs;
         public LocalTask(FileFragment ff) {
-            addrs = new HashSet<>();
+            addrs = new HashSet<InetAddress>();
             this.ff = ff;
         }
         public FileFragment getFf() {

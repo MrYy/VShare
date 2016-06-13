@@ -30,7 +30,7 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	private PipedInputStream pi = new PipedInputStream();
 	private PipedOutputStream po = new PipedOutputStream();
 
-	public static Set<String> links = new HashSet<>();
+	public static Set<String> links = new HashSet<String>();
 	public WiFiTCP(final Context contect) {
 		super(contect);
 		this.context = contect;
@@ -38,6 +38,7 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 		links.add("192.168.1.71");
 		links.add("192.168.1.89");
 		links.add("192.168.1.40");
+		links.add("192.168.1.51");
 		tm = (TelephonyManager) contect
 				.getSystemService(Activity.TELEPHONY_SERVICE);
 		try{pi.connect(po);
