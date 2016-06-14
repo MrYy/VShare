@@ -40,6 +40,7 @@ public class ServerThread extends Thread {
     private int oldStart = 0;
     private int fragSize;
     private int index = 0;
+
     public ServerThread(WiFiTCP wiFiTCP, String ip, Context context) {
         this.ip = ip;
         this.wiFiTCP = wiFiTCP;
@@ -108,7 +109,6 @@ public class ServerThread extends Thread {
 
                         Stack<FileFragment> taskList = wiFiTCP.getTaskList();
                         while (!taskList.empty()) {
-//                            Log.d(TAG, "before enqueue,taskList size: " + String.valueOf(taskList.size()));
                             FileFragment ff = taskList.pop();
                             convertStack.add(ff);
                         }
@@ -118,12 +118,17 @@ public class ServerThread extends Thread {
                             FileFragment ff = convertStack.pop();
                             LocalTask lt = new LocalTask(ff);
                             localTask.add(lt);
+                            Log.d(TAG,"size of localTask:" + String.valueOf(localTask.size()));
                         }
                         if (!localTask.isEmpty()) {
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
                             LocalTask taskToSend= localTask.peek();
-                            if (taskToSend.getAddrs().contains(mAddr)) return;
+                            if (taskToSend.getAddrs().contains(mAddr)){
+                                Log.d(TAG, "the client has already been sent");
+                                ite.remove();
+                                return;
+                            }
                             FileFragment ff = taskToSend.getFf();
                             Method.record(ff,"send",String.valueOf(++index));
                             msgObj.setFragment(ff);
@@ -145,10 +150,10 @@ public class ServerThread extends Thread {
                                     Method.sendMessage(sc, byteMerger(msgByte, addMsg));
                                 } else {
                                     Log.d(TAG, "send fragment to:"+mAddr.toString()+" ,start: " + String.valueOf(ff.getStartIndex()) + "message size:" + msgByte.length + " after send ,queue size:" +
-                                            String.valueOf(taskQueue.size()));
+                                            String.valueOf(localTask.size()));
                                     Method.sendMessage(sc, msgByte);
                                 }
-                                if (taskToSend.getAddrs().size() == WiFiTCP.links.size()) {
+                                if (taskToSend.getAddrs().size() == WiFiTCP.linkSize) {
                                     //the single piece has sent to all of the clients
                                     localTask.poll();
                                 }else {

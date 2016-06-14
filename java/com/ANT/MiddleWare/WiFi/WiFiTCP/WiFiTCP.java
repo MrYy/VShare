@@ -22,6 +22,7 @@ import java.util.Stack;
 public class WiFiTCP extends  WiFiPulic {
 
 private static final String TAG=WiFiTCP.class.getSimpleName();
+	public static  int linkSize;
 	private Context context=null;
 	private TelephonyManager tm;
 	private Process proc;
@@ -37,8 +38,9 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 		makeToast("I am TCP");
 		links.add("192.168.1.71");
 		links.add("192.168.1.89");
-		links.add("192.168.1.40");
+//		links.add("192.168.1.40");
 		links.add("192.168.1.51");
+		linkSize = links.size();
 		tm = (TelephonyManager) contect
 				.getSystemService(Activity.TELEPHONY_SERVICE);
 		try{pi.connect(po);
