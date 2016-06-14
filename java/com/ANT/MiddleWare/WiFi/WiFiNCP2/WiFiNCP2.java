@@ -6,10 +6,15 @@ import com.ANT.MiddleWare.WiFi.WiFiPulic;
 
 public class WiFiNCP2 extends WiFiPulic {
 	private static final String TAG = WiFiNCP2.class.getSimpleName();
+	private final DumpUnil dumpUnil;
 
 	public WiFiNCP2(Context contect) {
 		super(contect);
+		dumpUnil = new DumpUnil(contect);
+		
 	}
+	
+	
 
 	@Override
 	public void destroy() {
