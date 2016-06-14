@@ -1,9 +1,14 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
+import android.content.Context;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
@@ -13,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -151,4 +157,24 @@ public class Method {
         return null;
     }
 
+    public static void changeApState(Context context, WifiManager wifiManager,Boolean open) {
+        WifiConfiguration apConfig = new WifiConfiguration();
+        apConfig.SSID = context.getString(R.string.ap_ssid);
+        apConfig.preSharedKey = context.getString(R.string.ap_password);
+        try {
+            java.lang.reflect.Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
+            try {
+                method.invoke(wifiManager,apConfig,open);
+                if (open) {
+                    Toast.makeText(context, "ap is on", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -8,11 +8,14 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.MainFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
 import com.ANT.MiddleWare.WiFi.WiFiPulic;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -31,9 +34,10 @@ public class WiFiNCP2 extends WiFiPulic {
         super(contect);
         dumpUnil = new DumpUnil(contect);
         manager = (WifiManager) contect.getSystemService(Context.WIFI_SERVICE);
-        wifiReceiver = new WiFiReceiver();
-        manager.startScan();
+        com.ANT.MiddleWare.WiFi.WiFiTCP.Method.changeApState(contect,manager,false);
         manager.setWifiEnabled(true);
+        manager.startScan();
+        wifiReceiver = new WiFiReceiver();
         contect.registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
     private final class WiFiReceiver extends BroadcastReceiver {

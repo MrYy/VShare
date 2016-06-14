@@ -277,25 +277,9 @@ public class MainFragment extends Fragment {
 					//open ap
 					WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
 					wifiManager.setWifiEnabled(false);
-					WifiConfiguration apConfig = new WifiConfiguration();
-					apConfig.SSID = getString(R.string.ap_ssid);
-					apConfig.preSharedKey = getString(R.string.ap_password);
-					try {
-						Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
-						try {
-							if((Boolean)method.invoke(wifiManager,apConfig,true)){
-								Log.d(TAG, "WiFi ap is on");
-								Toast.makeText(getActivity(), "wifi ap is on", Toast.LENGTH_SHORT).show();
-								apObservable.setAp(true);
-							}
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						} catch (InvocationTargetException e) {
-							e.printStackTrace();
-						}
-					} catch (NoSuchMethodException e) {
-						e.printStackTrace();
-					}
+					com.ANT.MiddleWare.WiFi.WiFiTCP.Method.changeApState(getActivity(),wifiManager,true);
+					apObservable.setAp(true);
+
 				}
 			}});
 
