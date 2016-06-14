@@ -278,8 +278,8 @@ public class MainFragment extends Fragment {
 					WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
 					wifiManager.setWifiEnabled(false);
 					WifiConfiguration apConfig = new WifiConfiguration();
-					apConfig.SSID = "YUYUYU";
-					apConfig.preSharedKey = "12345678";
+					apConfig.SSID = getString(R.string.ap_ssid);
+					apConfig.preSharedKey = getString(R.string.ap_password);
 					try {
 						Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
 						try {

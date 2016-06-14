@@ -22,5 +22,7 @@
     <string name="bt_port">12345</string>
     <string name="clear">RESTART
     </string>
+    <string name="ap_ssid">YUYUYU</string>
+    <string name="ap_password">12345678</string>
 
 </resources>
