@@ -1,7 +1,9 @@
 package com.ANT.MiddleWare.WiFi.WiFiNCP2;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.ANT.MiddleWare.PartyPlayerActivity.MainFragment;
 import com.ANT.MiddleWare.WiFi.WiFiPulic;
 
 public class WiFiNCP2 extends WiFiPulic {
@@ -11,7 +13,12 @@ public class WiFiNCP2 extends WiFiPulic {
 	public WiFiNCP2(Context contect) {
 		super(contect);
 		dumpUnil = new DumpUnil(contect);
-		
+		if (MainFragment.ncp2Ap) {
+			Log.d(TAG, "I am ap");
+		}else {
+			Log.d(TAG, "I am client");
+
+		}
 	}
 	
 	

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,7 +31,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.ANT.MiddleWare.Celluar.CellularDown;
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
@@ -41,6 +41,8 @@ import com.ANT.MiddleWare.WiFi.WiFiTCP.WiFiTCP;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -78,7 +80,7 @@ public class MainFragment extends Fragment {
 	private Handler myHandler;
 	private boolean adhocSelect = false;
 	private boolean tcpSelect=false;
-
+	public static boolean ncp2Ap = false;
 	private List<String> list = new ArrayList<String>();
 	private ArrayAdapter<String> adapter;
 	private Spinner mySpinner;
@@ -99,8 +101,8 @@ public class MainFragment extends Fragment {
 
 	@SuppressLint("NewApi")
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup parent,
-			Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, ViewGroup parent,
+							 Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_main, parent, false);
 
 		btStart = (Button) v.findViewById(R.id.btStart);
@@ -148,6 +150,15 @@ public class MainFragment extends Fragment {
 				case 3: // ncp2
 					adhocSelect = false;
 					tcpSelect = false;
+					ncp2Ap = true;
+					btCaptain.setText("I am AP");
+					try {
+						WiFiFactory.changeInstance(getActivity(),WiFiType.NCP2);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					break;
 				case 4: // tcp
 					tcpSelect =true;
@@ -240,39 +251,32 @@ public class MainFragment extends Fragment {
 						e.printStackTrace();
 					}
 
+				} else if (ncp2Ap) {
+					Log.d(TAG, "i am ap");
+					//open ap
+					WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+					wifiManager.setWifiEnabled(false);
+					WifiConfiguration apConfig = new WifiConfiguration();
+					apConfig.SSID = "YUYUYU";
+					apConfig.preSharedKey = "12345678";
+					try {
+						Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
+						try {
+							if((Boolean)method.invoke(wifiManager,apConfig,true)){
+								Log.d(TAG, "WiFi ap is on");
+								Toast.makeText(getActivity(), "wifi ap is on", Toast.LENGTH_SHORT).show();
+							}
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						} catch (InvocationTargetException e) {
+							e.printStackTrace();
+						}
+					} catch (NoSuchMethodException e) {
+						e.printStackTrace();
+					}
 				}
 			}});
 
-		// btLow = (Button) v.findViewById(R.id.rate_low);
-		// btMid = (Button) v.findViewById(R.id.rate_mid);
-		// btHigh = (Button) v.findViewById(R.id.rate_high);
-		//
-		// btLow.setOnClickListener(new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		// rateTag = "100";
-		// }
-		// });
-		//
-		// btMid.setOnClickListener(new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		// rateTag = "300";
-		// }
-		// });
-		//
-		// btHigh.setOnClickListener(new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		// rateTag = "500";
-		// }
-		// });
 
 		btStart.setOnClickListener(new View.OnClickListener() {
 
@@ -313,47 +317,7 @@ public class MainFragment extends Fragment {
 
 		configureData.setUrl("http://127.0.0.1:9999/4/s-1.mp4");
 
-		// etUrl.addTextChangedListener(new TextWatcher() {
-		//
-		// @Override
-		// public void onTextChanged(CharSequence s, int start, int before,
-		// int count) {
-		// // TODO Auto-generated method stub
-		// configureData.setUrl(s.toString());
-		// }
-		//
-		// @Override
-		// public void beforeTextChanged(CharSequence s, int start, int count,
-		// int after) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		//
-		// @Override
-		// public void afterTextChanged(Editable s) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// });
 
-		// btConfirm.setOnClickListener(new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		//
-		// if (configureData.getUrl() != null
-		// && isLegel(configureData.getUrl())) {
-		// Toast.makeText(getActivity(),
-		// "URL is\n" + configureData.getUrl(),
-		// Toast.LENGTH_SHORT).show();
-		// } else {
-		// Toast.makeText(getActivity(), "URL illegal",
-		// Toast.LENGTH_SHORT).show();
-		// }
-		//
-		// }
-		// });
 
 		btPlayer.setOnClickListener(new View.OnClickListener() {
 
