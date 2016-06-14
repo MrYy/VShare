@@ -36,6 +36,7 @@ import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.WiFi.WiFiFactory;
 import com.ANT.MiddleWare.WiFi.WiFiFactory.WiFiType;
+import com.ANT.MiddleWare.WiFi.WiFiNCP2.WiFiNCP2;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Client;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.WiFiTCP;
 
@@ -52,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Observable;
+import java.util.Observer;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @SuppressLint("NewApi")
@@ -80,11 +83,25 @@ public class MainFragment extends Fragment {
 	private Handler myHandler;
 	private boolean adhocSelect = false;
 	private boolean tcpSelect=false;
-	public static boolean ncp2Ap = false;
+	private boolean ncp2Ap = false;
 	private List<String> list = new ArrayList<String>();
 	private ArrayAdapter<String> adapter;
 	private Spinner mySpinner;
-	
+	private ApObservable apObservable;
+
+	public class ApObservable extends Observable {
+		private boolean isAp;
+
+		public boolean isAp() {
+			return isAp;
+		}
+
+		public void setAp(boolean ap) {
+			isAp = ap;
+			setChanged();
+			notifyObservers();
+		}
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -154,11 +171,15 @@ public class MainFragment extends Fragment {
 					btCaptain.setText("I am AP");
 					try {
 						WiFiFactory.changeInstance(getActivity(),WiFiType.NCP2);
+
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					apObservable = new ApObservable();
+					apObservable.setAp(false);
+					apObservable.addObserver(new WiFiNCP2.ApObserver());
 					break;
 				case 4: // tcp
 					tcpSelect =true;
@@ -265,6 +286,7 @@ public class MainFragment extends Fragment {
 							if((Boolean)method.invoke(wifiManager,apConfig,true)){
 								Log.d(TAG, "WiFi ap is on");
 								Toast.makeText(getActivity(), "wifi ap is on", Toast.LENGTH_SHORT).show();
+								apObservable.setAp(true);
 							}
 						} catch (IllegalAccessException e) {
 							e.printStackTrace();
