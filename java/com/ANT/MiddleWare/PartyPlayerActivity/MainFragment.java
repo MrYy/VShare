@@ -209,6 +209,7 @@ public class MainFragment extends Fragment {
 					final int number = Integer.parseInt(s.substring(len - 2));
 					String ip = "192.168.1." + number;
 					Log.v(TAG, "ip " + ip);
+					WiFiTCP.init();
 					try {
 						Client client = null;
 						String linkIp = "";
@@ -225,6 +226,11 @@ public class MainFragment extends Fragment {
 								break;
 							case 89:
 								linkIp = "192.168.1.40";
+								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
+								new Thread(client).start();
+								break;
+							case 51:
+								linkIp = "192.168.1.89";
 								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
 								new Thread(client).start();
 								break;

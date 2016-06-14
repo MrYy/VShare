@@ -124,13 +124,9 @@ public class ServerThread extends Thread {
                             //taskQueue has value.
                             //send fragment in taskList to any one of the clients
                             LocalTask taskToSend= localTask.peek();
-                            if (taskToSend.getAddrs().contains(mAddr)){
-                                Log.d(TAG, "the client has already been sent");
-                                ite.remove();
-                                return;
-                            }
+                            if (!taskToSend.getAddrs().contains(mAddr)){
                             FileFragment ff = taskToSend.getFf();
-                            Method.record(ff,"send",String.valueOf(++index));
+                            Method.record(ff,"send",String.valueOf(++index)+" from:"+mAddr.toString());
                             msgObj.setFragment(ff);
                             byte[] msgByte = msgObj.getBytes();
                             if (count == 0) {
@@ -153,7 +149,7 @@ public class ServerThread extends Thread {
                                             String.valueOf(localTask.size()));
                                     Method.sendMessage(sc, msgByte);
                                 }
-                                if (taskToSend.getAddrs().size() == WiFiTCP.linkSize) {
+                                if (taskToSend.getAddrs().size() == WiFiTCP.linkSize - 2) {
                                     //the single piece has sent to all of the clients
                                     localTask.poll();
                                 }else {
@@ -161,7 +157,10 @@ public class ServerThread extends Thread {
                                 }
 
                             } catch (MyException e) {
+                              }
+
                             }
+
                         }
                     }
                     ite.remove();
