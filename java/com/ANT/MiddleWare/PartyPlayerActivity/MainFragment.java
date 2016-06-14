@@ -216,30 +216,26 @@ public class MainFragment extends Fragment {
 						switch (number) {
 							case 71:
 								linkIp = "192.168.1.89";
-								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
-								new Thread(client).start();
 								break;
 							case 40:
 								linkIp = "192.168.1.89";
-								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
-								new Thread(client).start();
 								break;
 							case 89:
 								linkIp = "192.168.1.40";
-								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
-								new Thread(client).start();
 								break;
 							case 51:
 								linkIp = "192.168.1.89";
-								client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
-								new Thread(client).start();
 								break;
 							default:
 								Toast.makeText(getActivity(), "无法获得本机ip", Toast.LENGTH_SHORT).show();
 								break;
 
 						}
-						WiFiTCP.getLinks().remove(linkIp);
+						if (!linkIp.equals("")) {
+							client = new Client(InetAddress.getByName(linkIp), 12345,getActivity());
+							new Thread(client).start();
+							WiFiTCP.getLinks().remove(linkIp);
+						}
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					}
