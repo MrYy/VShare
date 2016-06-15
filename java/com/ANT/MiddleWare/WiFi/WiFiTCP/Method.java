@@ -161,6 +161,7 @@ public class Method {
         WifiConfiguration apConfig = new WifiConfiguration();
         apConfig.SSID = context.getString(R.string.ap_ssid);
         apConfig.preSharedKey = context.getString(R.string.ap_password);
+        apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
         try {
             java.lang.reflect.Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
             try {
