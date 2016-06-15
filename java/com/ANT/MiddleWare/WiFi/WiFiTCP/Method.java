@@ -20,12 +20,14 @@ import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by David on 16/4/21.
@@ -99,12 +101,15 @@ public class Method {
         }
     }
 
-    public static Message readMessage(SocketChannel sc) throws MyException {
+    public static Message readMessage(SocketChannel socketChannel) throws MyException {
+        return readMessage(socketChannel, 164345);
+    }
+    public static Message readMessage(SocketChannel sc,int wantSize) throws MyException {
         try {
             //33787
             //328699
             //message 696
-            int wantSize = 164345;
+
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             //read in while
             int byteRead = 0 ;
@@ -188,5 +193,15 @@ public class Method {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+    }
+    public static String getRandomString(int length) { //length表示生成字符串的长度
+        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
     }
 }

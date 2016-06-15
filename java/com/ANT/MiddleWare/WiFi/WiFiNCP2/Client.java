@@ -1,5 +1,11 @@
 package com.ANT.MiddleWare.WiFi.WiFiNCP2;
 
+import android.util.Log;
+
+import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
+import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
+import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -42,12 +48,16 @@ public class Client implements Runnable {
                 while (ite.hasNext()) {
                     mKey = (SelectionKey) ite.next();
                     if (mKey.isReadable()) {
-
+                        Message msg = null;
+                        msg = Method.readMessage((SocketChannel) mKey.channel(),636);
+                        Log.d(TAG, "message:" + msg.getMessage() + "  count:" + msg.getCount());
                     }
                     ite.remove();
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (MyException e) {
             e.printStackTrace();
         }
     }
