@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.DhcpInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -16,6 +17,8 @@ import com.ANT.MiddleWare.WiFi.WiFiPulic;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -29,14 +32,16 @@ public class WiFiNCP2 extends WiFiPulic {
     private List<ScanResult> wifiList;
     private ArrayList<String> passableHotsPot;
     private boolean isConnected = false;
-
+    private static Context context = null;
     public WiFiNCP2(Context contect) {
         super(contect);
+        context = contect;
         dumpUnil = new DumpUnil(contect);
         manager = (WifiManager) contect.getSystemService(Context.WIFI_SERVICE);
         com.ANT.MiddleWare.WiFi.WiFiTCP.Method.changeApState(contect,manager,false);
         manager.setWifiEnabled(true);
         manager.startScan();
+
         wifiReceiver = new WiFiReceiver();
         contect.registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
@@ -55,7 +60,13 @@ public class WiFiNCP2 extends WiFiPulic {
         @Override
         public void update(Observable observable, Object data) {
             //this one is ap
-
+            DhcpInfo info = manager.getDhcpInfo();
+            int serverAddress = info.ipAddress;
+            InetAddress serverAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+            Log.d(TAG, "server is listening:" + serverAddr.toString());
+            if (context != null) {
+                new ServerThread(serverAddr, context).start();
+            }
         }
     }
 
@@ -78,9 +89,15 @@ public class WiFiNCP2 extends WiFiPulic {
         int wcgID = manager.addNetwork(wifiConfig);
         boolean flag = manager.enableNetwork(wcgID, true);
         isConnected = flag;
-
         contect.unregisterReceiver(wifiReceiver);
         System.out.println("connect success? " + flag);
+        DhcpInfo info = manager.getDhcpInfo();
+
+        int serverAddress = info.serverAddress;
+        Toast.makeText(contect,"connect to ap",Toast.LENGTH_SHORT).show();
+        InetAddress serverAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+        Log.d(TAG, "server's ip address:"+serverAddr);
+        new Thread(new Client(serverAddr, 12345)).start();
     }
 
     public WifiConfiguration setWifiParams(String ssid) {
@@ -117,4 +134,5 @@ public class WiFiNCP2 extends WiFiPulic {
         // TODO Auto-generated method stub
 
     }
+
 }

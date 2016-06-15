@@ -32,7 +32,18 @@ import java.util.Date;
  */
 public class Method {
     private static final String TAG = Method.class.getSimpleName();
+    public static   InetAddress intToInetAddress(int hostAddress) {
+        byte[] addressBytes = { (byte)(0xff & hostAddress),
+                (byte)(0xff & (hostAddress >> 8)),
+                (byte)(0xff & (hostAddress >> 16)),
+                (byte)(0xff & (hostAddress >> 24)) };
 
+        try {
+            return InetAddress.getByAddress(addressBytes);
+        } catch (UnknownHostException e) {
+            throw new AssertionError();
+        }
+    }
     public static void record(FileFragment f, String type) {
         record(f,type,"");
     }

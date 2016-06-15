@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.DhcpInfo;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -38,6 +39,7 @@ import com.ANT.MiddleWare.WiFi.WiFiFactory;
 import com.ANT.MiddleWare.WiFi.WiFiFactory.WiFiType;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.WiFiNCP2;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Client;
+import com.ANT.MiddleWare.WiFi.WiFiTCP.ServerThread;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.WiFiTCP;
 
 import java.io.IOException;
@@ -279,6 +281,7 @@ public class MainFragment extends Fragment {
 					wifiManager.setWifiEnabled(false);
 					com.ANT.MiddleWare.WiFi.WiFiTCP.Method.changeApState(getActivity(),wifiManager,true);
 					apObservable.setAp(true);
+
 
 				}
 			}});
