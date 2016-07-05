@@ -27,5 +27,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user_name">user_name</string>
+    <string name="publish_video">成为ap，发布视频</string>
 
 </resources>
