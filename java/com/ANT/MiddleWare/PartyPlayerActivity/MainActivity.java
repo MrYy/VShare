@@ -22,7 +22,7 @@ public class MainActivity extends FragmentActivity {
 		Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
 
 		if (fragment == null) {
-			fragment = new MainFragment();
+			fragment = new LoginFragment();
 			fm.beginTransaction().add(R.id.fragmentContainer, fragment)
 					.commit();
 		}

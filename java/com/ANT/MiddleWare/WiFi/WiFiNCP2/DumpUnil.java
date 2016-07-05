@@ -21,8 +21,7 @@ public class DumpUnil {
     public static final String fileTcpdump = fileDir + "tcpdump";
     public static final String fileOutPath = Environment.getExternalStorageDirectory().getPath() + "/";
     public static final String fileName = "capture.pcap";
-    public static final String cmdTcpdump = fileTcpdump + " -p -vv -U -s 0 -w "
-            + fileOutPath + fileName + "\n";
+    public static final String cmdTcpdump = fileTcpdump + ""+"\n";
     public static final String TAG = DumpUnil.class.getSimpleName();
     private Context context;
     private Process dumpProcess;
@@ -32,8 +31,8 @@ public class DumpUnil {
     }
 
     public void startCapture() {
-        Log.d(TAG, "start cature");
         initTcpDump();
+        Log.d(TAG, "start cature");
         try {
             dumpProcess = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(dumpProcess.getOutputStream());

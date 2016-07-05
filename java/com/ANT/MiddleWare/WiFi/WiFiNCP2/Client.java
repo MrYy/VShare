@@ -50,7 +50,9 @@ public class Client implements Runnable {
                     if (mKey.isReadable()) {
                         Message msg = null;
                         msg = Method.readMessage((SocketChannel) mKey.channel(),636);
-                        Log.d(TAG, "message:" + msg.getMessage() + "  count:" + msg.getCount());
+                        if (msg != null) {
+                            Log.d(TAG, "message:" + msg.getMessage() + "  count:" + msg.getCount());
+                        }
                     }
                     ite.remove();
                 }

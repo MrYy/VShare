@@ -34,8 +34,8 @@ private static final String TAG=WiFiTCP.class.getSimpleName();
 	public static void init() {
 		links.add("192.168.1.71");
 		links.add("192.168.1.89");
-//		links.add("192.168.1.40");
-		links.add("192.168.1.51");
+		links.add("192.168.1.40");
+//		links.add("192.168.1.51");
 	}
 	public static Set<String> links = new HashSet<String>();
 	public WiFiTCP(final Context contect) {

@@ -25,4 +25,7 @@
     <string name="ap_ssid">YUYUYU</string>
     <string name="ap_password">12345678</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
