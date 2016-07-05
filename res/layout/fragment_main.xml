@@ -5,21 +5,21 @@
     android:orientation="vertical"
     android:layout_marginTop="7dp" 
     >
-   	
-    	<TextView 
+
+    	<TextView
     	    android:layout_width="match_parent"
     	    android:layout_height="wrap_content"
     	    android:text="@string/inter_service"
     	    style="?android:listSeparatorTextViewStyle"
     	    android:padding="0dp"
     	    android:layout_marginLeft="6dp"/>
-    	
-    	<LinearLayout 
+
+    	<LinearLayout
     	    android:layout_width="match_parent"
     	    android:layout_height="wrap_content"
     	    android:orientation="horizontal">
-    	    
-    	    <Button 
+
+    	    <Button
     	        android:id="@+id/btStart"
     	    	android:layout_width="wrap_content"
     	    	android:layout_height="wrap_content"
@@ -27,8 +27,8 @@
     	    	android:layout_marginLeft="16dp"
     	    	android:layout_weight="1"
     	    	android:padding="0dp"/>
-    	    
-    	    <Button 
+
+    	    <Button
     	        android:id="@+id/btStop"
     	    	android:layout_width="wrap_content"
     	    	android:layout_height="wrap_content"
@@ -36,9 +36,9 @@
     	    	android:layout_marginRight="16dp"
     	    	android:layout_weight="1"
     	    	android:padding="0dp"/>
-    	    
+
     	</LinearLayout>
-    	
+
     	<TextView
         	android:layout_width="match_parent"
         	android:layout_marginTop="7dp"
@@ -46,17 +46,17 @@
         	android:text="Wi-fi mode"
         	style="?android:listSeparatorTextViewStyle"
         	android:padding="0dp"
-        	android:layout_marginLeft="6dp"/> 
-        	
-    	<Spinner     
-        	android:id = "@+id/Spinner_wifi_"     
-        	android:layout_width = "match_parent"     
+        	android:layout_marginLeft="6dp"/>
+
+    	<Spinner
+        	android:id = "@+id/Spinner_wifi_"
+        	android:layout_width = "match_parent"
         	android:layout_height ="wrap_content"
         	android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            >     
+            >
     	</Spinner>
-    	
+
     	<TextView
         	android:layout_width="match_parent"
         	android:layout_marginTop="7dp"
@@ -65,8 +65,8 @@
         	style="?android:listSeparatorTextViewStyle"
         	android:padding="0dp"
         	android:layout_marginLeft="6dp"/>
-    	
-    	<Button 
+
+    	<Button
     	    android:id="@+id/btCaptain"
     	    android:layout_width="match_parent"
     	    android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
     	    android:layout_marginLeft="16dp"
     	    android:clickable="false"
     	    android:padding="0dp"/>
-    	
+
     	<!-- <TextView
         	android:layout_width="match_parent"
         	android:layout_marginTop="7dp"
@@ -84,8 +84,8 @@
         	style="?android:listSeparatorTextViewStyle"
         	android:padding="0dp"
         	android:layout_marginLeft="6dp"/>
-            
-    	<EditText 
+
+    	<EditText
         	android:id="@+id/url_edit_text"
         	android:layout_width="match_parent"
         	android:layout_height="60dp"
@@ -93,8 +93,8 @@
         	android:layout_marginRight="16dp"
         	android:hint="@string/hint"
         	android:padding="0dp"/>
-    	  	
-    	<Button 
+
+    	<Button
     	    android:id="@+id/btConfirm"
     	    android:layout_width="match_parent"
     	    android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
     	    android:layout_marginRight="16dp"
     	    android:layout_marginLeft="16dp"
     	    android:padding="0dp"/>   -->
-    	
+
         <TextView
         	android:layout_width="match_parent"
         	android:layout_marginTop="7dp"
@@ -111,8 +111,8 @@
         	style="?android:listSeparatorTextViewStyle"
         	android:padding="0dp"
         	android:layout_marginLeft="6dp"/>
-        
-        <Button 
+
+        <Button
             android:id="@+id/btChoose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -130,16 +130,16 @@
 		android:layout_marginRight="16dp"
 		android:text="@string/clear"
 		android:padding="0dp"/>
-               
-      
-       
-        
-       <!--   <LinearLayout 
-            
+
+
+
+
+       <!--   <LinearLayout
+
             android:layout_width="match_parent"
     	    android:layout_height="wrap_content"
     	    android:orientation="horizontal">
-    	    
+
     	    <Button
     	        android:id="@+id/rate_low"
     	        android:layout_width="wrap_content"
@@ -147,18 +147,18 @@
     	        android:layout_marginLeft="16dp"
     	        android:layout_weight="1"
     	        android:text="low">
-    	        
+
     	    </Button>
-    	    
+
     	    <Button
     	        android:id="@+id/rate_mid"
     	        android:layout_width="wrap_content"
     	        android:layout_height="wrap_content"
     	        android:layout_weight="1"
     	        android:text="mid">
-    	        
+
     	    </Button>
-    	    
+
     	    <Button
     	        android:id="@+id/rate_high"
     	        android:layout_width="wrap_content"
@@ -166,10 +166,10 @@
     	        android:layout_marginRight="16dp"
     	        android:layout_weight="1"
     	        android:text="high">
-    	        
+
     	    </Button>
-    	    
+
             </LinearLayout>   -->
-    
+
 
 </LinearLayout>
