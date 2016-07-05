@@ -37,10 +37,10 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_login, container, false);
         context = getActivity();
-        checkBoxRem = (CheckBox)context.findViewById(R.id.checkbox_remember_account);
-        checkBoxPublis = (CheckBox) context.findViewById(R.id.checkbox_publish_video);
-        editText = (EditText) context.findViewById(R.id.edittext_name);
-        ((Button)context.findViewById(R.id.button_login)).setOnClickListener(new View.OnClickListener() {
+        checkBoxRem = (CheckBox)view.findViewById(R.id.checkbox_remember_account);
+        checkBoxPublis = (CheckBox) view.findViewById(R.id.checkbox_publish_video);
+        editText = (EditText) view.findViewById(R.id.edittext_name);
+        ((Button)view.findViewById(R.id.button_login)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name = editText.getText().toString().trim();
