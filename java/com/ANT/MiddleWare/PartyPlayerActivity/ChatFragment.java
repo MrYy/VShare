@@ -11,10 +11,12 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatFagment extends Fragment {
+public class ChatFragment extends Fragment {
 
 
-    public ChatFagment() {
+    private View view;
+
+    public ChatFragment() {
         // Required empty public constructor
     }
 
@@ -23,7 +25,8 @@ public class ChatFagment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat_fagment, container, false);
+        view = inflater.inflate(R.layout.fragment_chat, container, false);
+        return view;
     }
 
 }

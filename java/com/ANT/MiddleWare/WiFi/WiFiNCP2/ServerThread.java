@@ -33,7 +33,7 @@ public class ServerThread extends Thread {
     private Set<InetAddress> clients;
     private int count = 0;
     public ServerThread(InetAddress ip, Context context) {
-        clients = new HashSet<>();
+        clients = new HashSet<InetAddress>();
         this.ip = ip;
         this.context = context;
     }
