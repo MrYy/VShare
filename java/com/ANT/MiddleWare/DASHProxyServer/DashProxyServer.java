@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 
 import android.os.Environment;
 import android.util.Log;
@@ -16,10 +15,8 @@ import android.util.Log;
 import com.ANT.MiddleWare.Celluar.CellularDown;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
-import com.ANT.MiddleWare.PartyPlayerActivity.MainFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.test.CellularDownTest;
-import com.ANT.MiddleWare.WiFi.WiFiFactory;
 
 import fi.iki.elonen.NanoHTTPD;
 

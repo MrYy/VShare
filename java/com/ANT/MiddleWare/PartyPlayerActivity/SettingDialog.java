@@ -46,7 +46,7 @@ public class SettingDialog extends DialogFragment {
 		radioGroup = (RadioGroup) v.findViewById(R.id.radioGroup);
 		btConfirm = (Button) v.findViewById(R.id.btalertconfirm);
 
-		WorkMode mode = MainFragment.configureData.getWorkingMode();
+		WorkMode mode = ViewVideoActivity.configureData.getWorkingMode();
 		switch (mode) {
 		case LOCAL_MODE:
 			rbButton = (RadioButton) v.findViewById(R.id.local_mode);
@@ -73,15 +73,15 @@ public class SettingDialog extends DialogFragment {
 
 				switch (selectedId) {
 				case R.id.local_mode:
-					MainFragment.configureData
+					ViewVideoActivity.configureData
 							.setWorkingMode(ConfigureData.WorkMode.LOCAL_MODE);
 					break;
 				case R.id.G_mode:
-					MainFragment.configureData
+					ViewVideoActivity.configureData
 							.setWorkingMode(ConfigureData.WorkMode.G_MDOE);
 					break;
 				case R.id.cooperative_mode:
-					MainFragment.configureData
+					ViewVideoActivity.configureData
 							.setWorkingMode(ConfigureData.WorkMode.COOPERATIVE_MODE);
 					break;
 				}

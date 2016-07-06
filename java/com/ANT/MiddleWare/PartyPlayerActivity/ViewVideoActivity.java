@@ -15,9 +15,6 @@ public class ViewVideoActivity extends Activity {
     private EditText editTextLocation;
     private DashProxyServer server = new DashProxyServer();
     public static ConfigureData configureData = new ConfigureData(null);
-    private static final boolean SERVER_START_TAG = true;
-    private static final boolean SERVER_STOP_TAG = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

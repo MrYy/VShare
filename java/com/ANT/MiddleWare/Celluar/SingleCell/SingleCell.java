@@ -14,7 +14,7 @@ import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ConfigureData;
-import com.ANT.MiddleWare.PartyPlayerActivity.MainFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 
 public class SingleCell extends Thread {
 	private static final String TAG = SingleCell.class.getSimpleName();
@@ -34,12 +34,12 @@ public class SingleCell extends Thread {
 		IntegrityCheck IC = IntegrityCheck.getInstance();
 		try {
 			URL uurl;
-			if (MainFragment.configureData.getWorkingMode() == ConfigureData.WorkMode.JUNIT_TEST_MODE) {
+			if (ViewVideoActivity.configureData.getWorkingMode() == ConfigureData.WorkMode.JUNIT_TEST_MODE) {
 				uurl = new URL(IntegrityCheck.JUNIT_TAG);
 			} else {
 				uurl = new URL(IntegrityCheck.URL_TAG + "?filename=" + url
 						+ ".mp4&sessionid=lykfr9oyqipf2q3tvy" + time + "&rate="
-						+ MainFragment.rateTag);
+						+ "");
 			}
 			Log.d(TAG, "" + uurl);
 			while (true) {

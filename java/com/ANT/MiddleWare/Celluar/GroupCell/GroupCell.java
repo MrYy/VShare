@@ -13,7 +13,7 @@ import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ConfigureData;
-import com.ANT.MiddleWare.PartyPlayerActivity.MainFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 
 public class GroupCell extends Thread {
 	private static final String TAG = GroupCell.class.getSimpleName();
@@ -31,12 +31,12 @@ public class GroupCell extends Thread {
 		IntegrityCheck IC = IntegrityCheck.getInstance();
 		try {
 			URL uurl;
-			if (MainFragment.configureData.getWorkingMode() == ConfigureData.WorkMode.JUNIT_TEST_MODE) {
+			if (ViewVideoActivity.configureData.getWorkingMode() == ConfigureData.WorkMode.JUNIT_TEST_MODE) {
 				uurl = new URL(IntegrityCheck.JUNIT_TAG);
 			} else {
 				uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=" + url
 						+ ".mp4&sessionid=lykfr9oyqipq2q3tvy14616291918cw"+
-						 "&rate=" + MainFragment.rateTag);
+						 "&rate=" + "");
 			}
 			Log.d(TAG, "" + uurl);
 			while (true) {

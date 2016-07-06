@@ -16,7 +16,7 @@ import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ConfigureData;
-import com.ANT.MiddleWare.PartyPlayerActivity.MainFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 
 /**
  * @author zxyqwe
@@ -64,7 +64,7 @@ public class CellularDownTest extends AndroidTestCase {
 	 * {@link com.example.Celluar.CellularDown#queryFragment(java.lang.String)}.
 	 */
 	public final void testQueryFragment() {
-		MainFragment.configureData
+		ViewVideoActivity.configureData
 				.setWorkingMode(ConfigureData.WorkMode.JUNIT_TEST_MODE);
 		final IntegrityCheck iTC = IntegrityCheck.getInstance();
 		byte[] tmp = iTC.getSegments(1);

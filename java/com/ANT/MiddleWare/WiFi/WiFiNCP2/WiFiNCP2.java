@@ -11,14 +11,10 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.ANT.MiddleWare.PartyPlayerActivity.MainFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
 import com.ANT.MiddleWare.WiFi.WiFiPulic;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
