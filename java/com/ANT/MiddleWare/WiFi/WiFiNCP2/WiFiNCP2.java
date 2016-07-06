@@ -34,6 +34,7 @@ public class WiFiNCP2 extends WiFiPulic {
         context = contect;
         dumpUnil = new DumpUnil(contect);
         manager = (WifiManager) contect.getSystemService(Context.WIFI_SERVICE);
+
         com.ANT.MiddleWare.WiFi.WiFiTCP.Method.changeApState(contect,manager,false);
         manager.setWifiEnabled(true);
         manager.startScan();

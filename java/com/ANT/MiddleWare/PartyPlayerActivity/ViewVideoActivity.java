@@ -1,5 +1,6 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
+import android.Manifest;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +41,7 @@ public class ViewVideoActivity extends FragmentActivity implements View.OnClickL
         switchButton.setOnClickListener(this);
         switchButton.setChecked(false);
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         Fragment video = new VideoFragment();
@@ -57,6 +60,7 @@ public class ViewVideoActivity extends FragmentActivity implements View.OnClickL
         switch (v.getId()) {
             case R.id.switch_publish_video:
                 if (switchButton.isChecked()) {
+                    wifiManager.setWifiEnabled(false);
                     Method.changeApState(this,wifiManager,true);
                 }else {
                     Method.changeApState(this,wifiManager,false);

@@ -182,13 +182,11 @@ public class Method {
             java.lang.reflect.Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
             try {
                 method.invoke(wifiManager,apConfig,open);
-                if (open) {
-                    Toast.makeText(context, "ap is on", Toast.LENGTH_SHORT).show();
-                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                e.getTargetException().printStackTrace();
             }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
