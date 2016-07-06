@@ -5,5 +5,8 @@
     tools:context="com.ANT.MiddleWare.PartyPlayerActivity.VideoFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
+<TextView
+    android:layout_width="match_parent"
+    android:text="video"
+    android:layout_height="match_parent" />
 </FrameLayout>
