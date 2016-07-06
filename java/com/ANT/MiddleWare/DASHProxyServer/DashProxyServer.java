@@ -17,6 +17,7 @@ import com.ANT.MiddleWare.Celluar.CellularDown;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.MainFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.test.CellularDownTest;
 import com.ANT.MiddleWare.WiFi.WiFiFactory;
 
@@ -49,14 +50,14 @@ public class DashProxyServer extends NanoHTTPD {
 				Log.v("TAG", "DashProxy uri:" + session.getUri());
 				String playist = getFileName(session, ".mp4");
 				Log.v("TAG", "playist" + playist);
-				switch (MainFragment.configureData.getWorkingMode()) {
+				switch (ViewVideoActivity.configureData.getWorkingMode()) {
 				case LOCAL_MODE:
 					String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/video/4/";
 					int i=Integer.parseInt(session.getUri().substring(1, 2).toString());
 					Log.d("pianming",Integer.toString(i));
-					if (i > 1) {
-						while (!IntegrityCheck.getInstance().getSeg(i - 1).checkIntegrity()) {}
-					}
+//					if (i > 1) {
+//						while (!IntegrityCheck.getInstance().getSeg(i - 1).checkIntegrity()) {}
+//					}
 						File file=new File(dir, i+".mp4");
 						int len=(int) file.length();
 						try {

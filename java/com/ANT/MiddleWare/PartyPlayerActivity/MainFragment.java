@@ -286,77 +286,8 @@ public class MainFragment extends Fragment {
 				}
 			}});
 
-
-		btStart.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-				try {
-					if (!configureData.isServiceAlive())
-						server.start();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				sendNotification(SEVER_START_TAG);
-				configureData.setServiceAlive(true);
-				getActivity().getActionBar().setSubtitle("Service is running");
-
-			}
-		});
-
-		btStop.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (server != null) {
-					if (configureData.isServiceAlive())
-						server.stop();
-				}
-
-				sendNotification(SEVER_STOP_TAG);
-				getActivity().getActionBar().setSubtitle(
-						"Service is not running");
-				configureData.setServiceAlive(false);
-			}
-		});
-
 		configureData.setUrl("http://127.0.0.1:9999/4/s-1.mp4");
 
-
-
-		btPlayer.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (null == configureData.getUrl()) {
-					Toast.makeText(getActivity(), "Please set URL!",
-							Toast.LENGTH_SHORT).show();
-					// }else if(!isNetworkAvailable()){
-					// Toast.makeText(getActivity(),
-					// "Please connect to the network!",
-					// Toast.LENGTH_SHORT).show();
-				} else if (!configureData.isServiceAlive()) {
-					Toast.makeText(getActivity(), "Please start Service!",
-							Toast.LENGTH_SHORT).show();
-				} else if (!isLegel(configureData.getUrl())) {
-					Toast.makeText(getActivity(), "Please give correct URL!",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					Intent j = new Intent();
-					j.setDataAndType(Uri.parse(configureData.getUrl()),
-							"video/*");
-					// j = Intent.createChooser(j,
-					// "Please select media player");
-					startActivity(j);
-				}
-
-			}
-		});
 
 
 		clearBuff.setOnClickListener(new View.OnClickListener() {
@@ -425,60 +356,5 @@ public class MainFragment extends Fragment {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void sendNotification(boolean status) {
-
-		Notification notification;
-
-		if (status) {
-			notification = new NotificationCompat.Builder(getActivity())
-					.setTicker("InterComponent Service Started!")
-					.setSmallIcon(android.R.drawable.ic_menu_report_image)
-					.setContentTitle("InterComponent Status")
-					.setContentText(
-							"InterComponent Service has Started, and is caputuring NC packets")
-					.setAutoCancel(true).build();
-		} else {
-			notification = new NotificationCompat.Builder(getActivity())
-					.setTicker("InterComponent Service Stopped!")
-					.setSmallIcon(android.R.drawable.ic_menu_report_image)
-					.setContentTitle("InterComponent Status")
-					.setContentText(
-							"InterComponent Service has Stopped, and is not caputuring NC packets")
-					.setAutoCancel(true).build();
-		}
-		NotificationManager notificationManager = (NotificationManager) getActivity()
-				.getSystemService(Activity.NOTIFICATION_SERVICE);
-		notificationManager.notify(0, notification);
-
-	}
-
-	@SuppressWarnings("deprecation")
-	public boolean isNetworkAvailable() {
-		boolean available = false;
-		ConnectivityManager cm = (ConnectivityManager) getActivity()
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		WifiManager wm = (WifiManager) getActivity().getSystemService(
-				Context.WIFI_SERVICE);
-		available = cm.getBackgroundDataSetting()
-				&& cm.getActiveNetworkInfo() != null;
-		available = available && wm.isWifiEnabled();
-
-		return available;
-	}
-
-	public boolean isLegel(String url) {
-		boolean legel = false;
-
-		String[] s = url.split("://");
-
-		Log.v(TAG, "s0 " + s[0]);
-
-		if (s[0].toLowerCase(Locale.CHINA).equals("http")) {
-			legel = true;
-
-		}
-
-		return legel;
-	}
 
 }
