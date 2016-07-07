@@ -79,24 +79,31 @@ public class ServerThread extends Thread {
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         sc.socket().setTcpNoDelay(true);
-
-                        //发送报文
-                        FileFragment ff = ViewVideoActivity.taskQueue.poll();
-                        Message msgObj = new Message();
-                        msgObj.setFragment(ff);
-                        byte[] bytes = msgObj.getBytes();
-                        //在这里准备添加报头
-                        Message msgHeader = new Message();
-                        msgHeader.setLength(bytes.length);
-                        Log.d(TAG, "send:" + String.valueOf(count));
                         try {
-                            Method.sendMessage(sc,msgHeader.getBytes());
-                            Method.sendMessage(sc,bytes);
+                            while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
+                                Message msg = ViewVideoActivity.sendMessageQueue.poll();
+                                byte[] msgBytes = msg.getBytes();
+                                Message msgHeader = new Message();
+                                msgHeader.setLength(msgBytes.length);
+                                Method.sendMessage(sc,msgHeader.getBytes());
+                                Method.sendMessage(sc,msgBytes);
+                            }
+                            while (!ViewVideoActivity.getTaskQueue().isEmpty()) {
+                                //发送报文
+                                FileFragment ff = ViewVideoActivity.taskQueue.poll();
+                                Message msgObj = new Message();
+                                msgObj.setFragment(ff);
+                                byte[] bytes = msgObj.getBytes();
+                                //在这里准备添加报头
+                                Message msgHeader = new Message();
+                                msgHeader.setLength(bytes.length);
+                                Log.d(TAG, "send:" + String.valueOf(count));
+                                Method.sendMessage(sc,msgHeader.getBytes());
+                                Method.sendMessage(sc,bytes);
+                            }
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
-
-
                     }
 
                     ite.remove();

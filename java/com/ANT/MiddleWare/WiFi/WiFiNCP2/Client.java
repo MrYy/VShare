@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
@@ -25,6 +26,7 @@ public class Client implements Runnable {
     private int remotePort;
     private static final String TAG = Client.class.getSimpleName();
     private int index;
+
     public Client(InetAddress remoteAddress, int remotePort) {
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
@@ -44,8 +46,8 @@ public class Client implements Runnable {
             sc.register(selector, SelectionKey.OP_READ);
             while (true) {
                 int selected = selector.select();
-                if(selected==0) continue;
-                Set<SelectionKey> mKeys =selector.selectedKeys();
+                if (selected == 0) continue;
+                Set<SelectionKey> mKeys = selector.selectedKeys();
                 Iterator ite = mKeys.iterator();
                 while (ite.hasNext()) {
                     mKey = (SelectionKey) ite.next();
@@ -54,18 +56,20 @@ public class Client implements Runnable {
                         SocketChannel mSc = (SocketChannel) mKey.channel();
                         Message msgHeader = Method.readMessage(mSc, 250);
                         Log.d(TAG, "message length:" + msgHeader.getMsgLength());
-                        Message msg = Method.readMessage(mSc,msgHeader.getMsgLength());
-                        switch (msg.getType()) {
-                            case Message:
-                                Log.d(TAG, msg.getMessage());
-                                break;
-                            case Fragment:
-                                FileFragment ff = msg.getFragment();
-                                Method.record(ff,"receive",String.valueOf(++index));
-                                Log.d("insert fragment",String.valueOf(ff.getSegmentID())+" "+ String.valueOf(ff.getStartIndex()));
-//                            Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
-                                IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);
-                                break;
+                        Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
+                        if (msg != null) {
+                            switch (msg.getType()) {
+                                case Message:
+                                    Log.d(TAG, msg.getMessage());
+                                    ViewVideoActivity.receiveMessageQueue.add(msg);
+                                    break;
+                                case Fragment:
+                                    FileFragment ff = msg.getFragment();
+                                    Log.d("insert fragment", String.valueOf(ff.getSegmentID()) + " " + String.valueOf(ff.getStartIndex()));
+                                    Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
+                                    IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);
+                                    break;
+                            }
 
                         }
                     }

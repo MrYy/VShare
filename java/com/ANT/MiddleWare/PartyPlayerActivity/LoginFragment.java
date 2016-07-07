@@ -45,7 +45,7 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 String name = editText.getText().toString().trim();
                 if (editText.equals("")) {
-                    name = "小蚂蚁";
+                    name = "ant";
                 }
                 Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
                 intent.putExtra(context.getString(R.string.user_name), name);
