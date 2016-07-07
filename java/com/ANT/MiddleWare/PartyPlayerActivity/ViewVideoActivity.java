@@ -22,6 +22,7 @@ import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
+import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 
 import java.io.DataOutputStream;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ViewVideoActivity extends FragmentActivity  {
     private static final String TAG = ViewVideoActivity.class.getSimpleName();
@@ -52,8 +54,15 @@ public class ViewVideoActivity extends FragmentActivity  {
     private WiFiReceiver wifiReceiver;
     private InetAddress serverAddr;
     private InetAddress mAddr;
-    public static final BlockingQueue<FileFragment> taskQueue = new LinkedBlockingDeque<FileFragment>();
-
+    public static final BlockingQueue<FileFragment> taskQueue = new LinkedBlockingQueue<FileFragment>();
+    public static final BlockingQueue<Message> sendMessageQueue = new LinkedBlockingQueue<Message>();
+    public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
+    public static String userName;
+    public static BlockingQueue<FileFragment> getTaskQueue() {
+        synchronized (taskQueue) {
+            return taskQueue;
+        }
+    }
     public static void insert(FileFragment ff) {
         synchronized (taskQueue) {
             Log.d(TAG, "taskQueue's length:" + String.valueOf(taskQueue.size()));
@@ -85,6 +94,7 @@ public class ViewVideoActivity extends FragmentActivity  {
         setContentView(R.layout.fragment_view_video);
         init();
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
+        userName = getIntent().getStringExtra(getString(R.string.user_name));
         if (publishFlag) {
             wifiManager.setWifiEnabled(false);
             Method.changeApState(this, wifiManager, true);
