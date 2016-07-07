@@ -1,6 +1,8 @@
 package com.ANT.MiddleWare.WiFi.WiFiTCP;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
@@ -9,6 +11,11 @@ import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.UILImageLoader;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
@@ -29,10 +36,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import cn.finalteam.galleryfinal.CoreConfig;
+import cn.finalteam.galleryfinal.FunctionConfig;
+import cn.finalteam.galleryfinal.GalleryFinal;
+import cn.finalteam.galleryfinal.ThemeConfig;
+
 /**
  * Created by David on 16/4/21.
  */
 public class Method {
+    public static final int UPLOAD_PICTURE = 72;
+    public static final int USE_LOCAL_PICTURE = 71;
+    public static final int USER_CAMERA = 73;
+    public static final int REQUEST_CODE_CAMERA = 1000;
+    public static final int REQUEST_CODE_GALLERY = 1001;
+    public static final int SHOW_DIALOG = 74;
+    public static final int CLOSE_DIALOG = 75;
+    public static final int SELECT_LOCAL_PICTURES = 74;
+
     private static final String TAG = Method.class.getSimpleName();
     public static   InetAddress intToInetAddress(int hostAddress) {
         byte[] addressBytes = { (byte)(0xff & hostAddress),
@@ -200,5 +221,47 @@ public class Method {
             sb.append(base.charAt(number));
         }
         return sb.toString();
+    }
+    public static void selectPicture(Context context, GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback, int method) {
+        // Initialize ImageLoader with configuration.
+        ImageLoaderConfiguration.Builder imageLoaderConfig = new ImageLoaderConfiguration.Builder(context);
+        imageLoaderConfig.threadPriority(Thread.NORM_PRIORITY - 2);
+        imageLoaderConfig.denyCacheImageMultipleSizesInMemory();
+        imageLoaderConfig.diskCacheFileNameGenerator(new Md5FileNameGenerator());
+        imageLoaderConfig.diskCacheSize(50 * 1024 * 1024); // 50 MiB
+        imageLoaderConfig.tasksProcessingOrder(QueueProcessingType.LIFO);
+        imageLoaderConfig.writeDebugLogs(); // Remove for release app
+        ImageLoader.getInstance().init(imageLoaderConfig.build());
+
+        //finalgallery配置
+        Drawable drawable = context.getResources().getDrawable(R.drawable.menu_bg);
+        ThemeConfig thme = new ThemeConfig.Builder().setTitleBarBgColor(Color.RED).setEditPhotoBgTexture(drawable).setPreviewBg(drawable)
+                .build();
+        final FunctionConfig functionConfig = new FunctionConfig.Builder()
+                .setEnableCamera(true)
+                .setEnableEdit(true)
+                .setEnableCrop(true)
+                .setEnableRotate(true)
+                .setCropSquare(false)
+                .setForceCropEdit(true)
+                .setForceCrop(true)
+                .setMutiSelectMaxSize(5)
+                .setEnablePreview(true).build();
+        cn.finalteam.galleryfinal.ImageLoader imageLoader = new UILImageLoader();
+        CoreConfig config = new CoreConfig.Builder(context, imageLoader, thme)
+                .setFunctionConfig(functionConfig).build();
+        GalleryFinal.init(config);
+        switch (method) {
+            case USER_CAMERA:
+                GalleryFinal.openCamera(REQUEST_CODE_CAMERA, functionConfig, mOnHanlderResultCallback);
+                break;
+            case USE_LOCAL_PICTURE:
+                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, functionConfig, mOnHanlderResultCallback);
+                break;
+            case SELECT_LOCAL_PICTURES:
+                GalleryFinal.openGalleryMuti(REQUEST_CODE_GALLERY, functionConfig, mOnHanlderResultCallback);
+            default:
+                break;
+        }
     }
 }
