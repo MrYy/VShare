@@ -147,7 +147,7 @@ public class ViewVideoActivity extends FragmentActivity  {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        new Client(serverAddr, 12345);
+        new Thread(new Client(serverAddr, 12345)).start();
     }
     private WifiConfiguration setWifiParams(String ssid) {
         WifiConfiguration apConfig = new WifiConfiguration();

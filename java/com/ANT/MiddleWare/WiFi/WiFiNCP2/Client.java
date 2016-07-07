@@ -32,7 +32,7 @@ public class Client implements Runnable {
     public void run() {
         SocketChannel sc = null;
         SelectionKey mKey = null;
-
+        Log.d(TAG, "try to connect");
         try {
             sc = SocketChannel.open();
             sc.connect(new InetSocketAddress(remoteAddress.getHostAddress(), remotePort));
