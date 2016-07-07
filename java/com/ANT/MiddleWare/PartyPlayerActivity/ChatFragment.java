@@ -3,17 +3,20 @@ package com.ANT.MiddleWare.PartyPlayerActivity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.Toast;
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -27,11 +30,12 @@ public class ChatFragment extends Fragment {
     private EditText editText;
     private Button chat_btn;
     private SlideSwitch slideSwitch;
+    private Switch aSwitch;
     private List<Msg> msgList=new ArrayList<Msg>();
     private List<String> usersList=new ArrayList<String>();
     private MsgAdapter msgAdapter;
     private UsersAdapter usersAdapter;
-    private String hoster;
+    private String hoster = "aaa";
 
     public ChatFragment() {
         // Required empty public constructor
@@ -47,26 +51,39 @@ public class ChatFragment extends Fragment {
         editText=(EditText)view.findViewById(R.id.edit_main);
         chat_btn=(Button)view.findViewById(R.id.button_main);
         slideSwitch=(SlideSwitch)view.findViewById(R.id.sl_switch);
+        //aSwitch=(Switch)view.findViewById(R.id.switch_chat);
+//        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    Log.d("talk","talk");
+//                    onTalkState();
+//                } else {
+//                    Log.d("user","user");
+//                    onUsersState();
+//                }
+//            }
+//
+//        });
+        onUsersState();
+        slideSwitch.setOnStateChangedListener(new SlideSwitch.OnStateChangedListener() {
+            @Override
+            public void onStateChanged(boolean state) {
+                if (true == state) {
+                    Log.d("talk","talk");
+                    onTalkState();
+                } else {
+                    Log.d("user","user");
+                    onUsersState();
+                }
+            }
+        });
+
         return view;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        slideSwitch.setOnStateChangedListener(new SlideSwitch.OnStateChangedListener() {
 
-            @Override
-            public void onStateChanged(boolean state) {
-                // TODO Auto-generated method stub
-                if (true == state)
-                    onTalkState();
-                else onUsersState();
-            }
-
-        });
-    }
     public void onTalkState(){
-        msgAdapter = new MsgAdapter(getActivity(),R.layout.chat_item_message,msgList);
         chat_btn.setText("send");
         editText.setHint("聊天列表");
         chat_btn.setOnClickListener(new View.OnClickListener() {
@@ -80,13 +97,13 @@ public class ChatFragment extends Fragment {
                     listView.setSelection(msgList.size());
                     editText.setText("");
                     //开启发送线程
-                    startSendThread(msg);
+                    //startSendThread(msg);
 
                 }
             }
         });
+        //MsgInit();
         startReceiveThread();
-        listView.setAdapter(msgAdapter);
     }
     public void onUsersState(){
         UsersInit();
@@ -94,15 +111,26 @@ public class ChatFragment extends Fragment {
         editText.setHint("附近的人");
         usersAdapter = new UsersAdapter(getActivity(),R.layout.chat_item_users,usersList);
         listView.setAdapter(usersAdapter);
+        listView.setSelection(usersList.size());
     }
     public void startReceiveThread(){
-        new Thread(){
 
-        }.start();
+        Msg receivedmsg = new Msg("hello",Msg.TYP_RECIEVED,"bbb",System.currentTimeMillis());
+        msgList.add(receivedmsg);
+        msgAdapter = new MsgAdapter(getActivity(),R.layout.chat_item_message,msgList);
+        listView.setAdapter(msgAdapter);
+        listView.setSelection(msgList.size());
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
     public void startSendThread(Msg msg){
-        new Thread(){
-         }.start();
+    }
+    public void MsgInit(){
+     msgList = null;
     }
     private void UsersInit(){
         usersList.add("fanfan");

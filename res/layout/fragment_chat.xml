@@ -13,6 +13,15 @@
             android:layout_height="wrap_content"
            >
         </ListView>
+        <!--<Switch-->
+            <!--android:id="@+id/switch_chat"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginBottom="10dp"/>-->
         <com.ANT.MiddleWare.PartyPlayerActivity.SlideSwitch
             android:id="@+id/sl_switch"
             android:layout_width="50dp"
@@ -21,31 +30,38 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#fffff0">
         <EditText
             android:id="@+id/edit_main"
             android:layout_width="0dp"
-            android:layout_weight="3"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
+            android:layout_weight="4"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="5dp"
-            android:layout_height="wrap_content" />
+            android:layout_marginBottom="10dp"
+            android:layout_height="match_parent"
+            android:background="#fff"/>
 
             <Button
                 android:id="@+id/button_main"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
+                android:layout_marginRight="6dp"
                 android:layout_marginTop="3dp"
-                android:layout_marginBottom="1dp"/>
+                android:layout_marginBottom="1dp"
+                android:background="@drawable/shape"
+                android:textColor="#ffffff"
+                />
 
 
     </LinearLayout>
