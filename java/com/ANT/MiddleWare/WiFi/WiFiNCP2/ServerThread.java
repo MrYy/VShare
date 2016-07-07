@@ -6,6 +6,8 @@ import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
@@ -77,23 +79,23 @@ public class ServerThread extends Thread {
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         sc.socket().setTcpNoDelay(true);
-                        InetAddress mAddr = sc.socket().getInetAddress();
+
+                        //发送报文
+                        FileFragment ff = ViewVideoActivity.taskQueue.poll();
                         Message msgObj = new Message();
-                        msgObj.setMessage(Method.getRandomString(300));
-                        msgObj.setCount(count++);
+                        msgObj.setFragment(ff);
                         byte[] bytes = msgObj.getBytes();
+                        //在这里准备添加报头
+                        Message msgHeader = new Message();
+                        msgHeader.setLength(bytes.length);
                         Log.d(TAG, "send:" + String.valueOf(count));
                         try {
-                            Log.d(TAG, "发送的长度:" + bytes.length);
+                            Method.sendMessage(sc,msgHeader.getBytes());
                             Method.sendMessage(sc,bytes);
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
-//                        try {
-//                            TimeUnit.SECONDS.sleep(50);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+
 
                     }
 
