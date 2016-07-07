@@ -4,9 +4,12 @@ package com.ANT.MiddleWare.PartyPlayerActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,9 @@ import android.widget.EditText;
 
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 import com.baoyz.actionsheet.ActionSheet;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.List;
 
@@ -28,16 +34,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * A simple {@link Fragment} subclass.
  */
 public class LoginFragment extends Fragment {
-
+    private static final String TAG = LoginFragment.class.getSimpleName();
     private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
         @Override
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
+
             String url;
             PhotoInfo photoInfo;
             if (resultList != null) {
                 photoInfo = resultList.get(0);
                 url = photoInfo.getPhotoPath();
-
+                Log.d(TAG, "photo url:" + url);
+                Bitmap b = BitmapFactory.decodeFile(url);
+                photo.setImageBitmap(b);
             }
         }
 
@@ -51,6 +60,7 @@ public class LoginFragment extends Fragment {
     private CheckBox checkBoxRem;
     private CheckBox checkBoxPublis;
     private EditText editText;
+    private CircleImageView photo;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -80,7 +90,8 @@ public class LoginFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        ((CircleImageView) view.findViewById(R.id.profile_image)).setOnClickListener(new View.OnClickListener() {
+        photo = (CircleImageView) view.findViewById(R.id.profile_image);
+        photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActionSheet.createBuilder(getActivity(), getActivity().getSupportFragmentManager())
