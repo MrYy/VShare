@@ -2,6 +2,8 @@ package com.ANT.MiddleWare.WiFi.WiFiNCP2;
 
 import android.util.Log;
 
+import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
@@ -22,7 +24,7 @@ public class Client implements Runnable {
     private InetAddress remoteAddress;
     private int remotePort;
     private static final String TAG = Client.class.getSimpleName();
-
+    private int index;
     public Client(InetAddress remoteAddress, int remotePort) {
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
@@ -48,11 +50,23 @@ public class Client implements Runnable {
                 while (ite.hasNext()) {
                     mKey = (SelectionKey) ite.next();
                     if (mKey.isReadable()) {
-                        Message msg = null;
                         //在这里准备添加报头
-                        msg = Method.readMessage((SocketChannel) mKey.channel(),636);
-                        if (msg != null) {
-                            Log.d(TAG, "message:" + msg.getMessage() + "  count:" + msg.getCount());
+                        SocketChannel mSc = (SocketChannel) mKey.channel();
+                        Message msgHeader = Method.readMessage(mSc, 250);
+                        Log.d(TAG, "message length:" + msgHeader.getMsgLength());
+                        Message msg = Method.readMessage(mSc,msgHeader.getMsgLength());
+                        switch (msg.getType()) {
+                            case Message:
+                                Log.d(TAG, msg.getMessage());
+                                break;
+                            case Fragment:
+                                FileFragment ff = msg.getFragment();
+                                Method.record(ff,"receive",String.valueOf(++index));
+                                Log.d("insert fragment",String.valueOf(ff.getSegmentID())+" "+ String.valueOf(ff.getStartIndex()));
+//                            Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
+                                IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);
+                                break;
+
                         }
                     }
                     ite.remove();

@@ -35,6 +35,9 @@ public class Message implements Serializable {
         this.length = length;
     }
 
+    public int getMsgLength() {
+        return length;
+    }
     private int length;
     private int count;
     private String message = "";

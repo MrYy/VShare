@@ -56,6 +56,7 @@ public class ViewVideoActivity extends FragmentActivity  {
 
     public static void insert(FileFragment ff) {
         synchronized (taskQueue) {
+            Log.d(TAG, "taskQueue's length:" + String.valueOf(taskQueue.size()));
             taskQueue.add(ff);
         }
     }

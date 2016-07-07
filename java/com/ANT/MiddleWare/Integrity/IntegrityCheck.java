@@ -83,6 +83,16 @@ public class IntegrityCheck {
 		ViewVideoActivity.insert(fm);
 //		WiFiFactory.insertF(fm);
 	}
+	public void insert(int id, FileFragment fm, com.ANT.MiddleWare.WiFi.WiFiNCP2.Client client) {
+		synchronized (this) {
+			if (urlMap.indexOfKey(id) < 0) {
+				urlMap.put(id, new Segment(id, -1));
+			}
+		}
+		Segment s = urlMap.get(id);
+		s.insert(fm);
+		s.checkIntegrity();
+	}
 	public void insert(int id, FileFragment fm,Client client) {
 		synchronized (this) {
 			if (urlMap.indexOfKey(id) < 0) {
