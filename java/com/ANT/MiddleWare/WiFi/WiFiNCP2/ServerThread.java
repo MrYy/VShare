@@ -79,9 +79,9 @@ public class ServerThread extends Thread {
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         sc.socket().setTcpNoDelay(true);
-                        Message testMsg = new Message();
-                        testMsg.setMessage(Method.getRandomString(300));
-                        ViewVideoActivity.sendMsg(testMsg);
+//                        Message testMsg = new Message();
+//                        testMsg.setMessage(Method.getRandomString(300));
+//                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Message msg = ViewVideoActivity.sendMessageQueue.poll();
