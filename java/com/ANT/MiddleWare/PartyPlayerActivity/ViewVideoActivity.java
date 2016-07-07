@@ -19,8 +19,11 @@ import android.widget.EditText;
 import android.widget.Switch;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
+import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
+import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,16 +44,15 @@ public class ViewVideoActivity extends FragmentActivity  {
     private Process proc;
     private ArrayList<String> passableHotsPot;
     private Timer mTimer;
-    private static Runtime runtime;
     private static final String CMD_GET_WPA = "cat data/misc/wifi/wpa_supplicant.conf\n";
     private final String file_path = "data/misc/wifi/wpa_supplicant.conf";
     private List<ScanResult> wifiList;
     private boolean isConnected = false;
     private WiFiReceiver wifiReceiver;
-    private TimerTask mTimerTask;
+    private InetAddress serverAddr;
+    private InetAddress mAddr;
 
     private final class WiFiReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             wifiList = wifiManager.getScanResults();
@@ -78,6 +80,11 @@ public class ViewVideoActivity extends FragmentActivity  {
         if (publishFlag) {
             wifiManager.setWifiEnabled(false);
             Method.changeApState(this, wifiManager, true);
+            DhcpInfo info = wifiManager.getDhcpInfo();
+            int serverAddress = info.ipAddress;
+            mAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+            Log.d(TAG, mAddr.toString());
+            new ServerThread(mAddr, this).start();
         }else {
             connectHotPot();
         }
@@ -92,17 +99,6 @@ public class ViewVideoActivity extends FragmentActivity  {
     }
 
     private void init() {
-        mTimer = new Timer();
-        mTimerTask = new TimerTask(){
-            @Override
-            public void run() {
-                if (isConnected) {
-                    mTimer.cancel();
-                    return;
-                }
-                connectHotPot();
-            }
-        };
         buttonView = (Button) findViewById(R.id.button_view_video);
         editTextLocation = (EditText) findViewById(R.id.edittext_video_location);
         switchButton = (Switch) findViewById(R.id.switch_publish_video);
@@ -123,42 +119,6 @@ public class ViewVideoActivity extends FragmentActivity  {
         configureData.setWorkingMode(ConfigureData.WorkMode.LOCAL_MODE);
     }
 
-    public static synchronized String run(String[] cmd, String workdirectory)
-            throws IOException {
-        StringBuffer result = new StringBuffer();
-        try {
-            // 创建操作系统进程（也可以由Runtime.exec()启动）
-            // Runtime runtime = Runtime.getRuntime();
-            // Process proc = runtime.exec(cmd);
-            // InputStream inputstream = proc.getInputStream();
-            ProcessBuilder builder = new ProcessBuilder(cmd);
-
-            InputStream in = null;
-            // 设置一个路径（绝对路径了就不一定需要）
-            if (workdirectory != null) {
-                // 设置工作目录（同上）
-                builder.directory(new File(workdirectory));
-                // 合并标准错误和标准输出
-                builder.redirectErrorStream(true);
-                // 启动一个新进程
-                Process process = builder.start();
-
-                // 读取进程标准输出流
-                in = process.getInputStream();
-                byte[] re = new byte[1024];
-                while (in.read(re) != -1) {
-                    result = result.append(new String(re));
-                }
-            }
-            // 关闭输入流
-            if (in != null) {
-                in.close();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return result.toString();
-    }
     private void connectToHotpot() {
         if (passableHotsPot == null || passableHotsPot.size() == 0)
             return;
@@ -170,9 +130,24 @@ public class ViewVideoActivity extends FragmentActivity  {
         unregisterReceiver(wifiReceiver);
         DhcpInfo info = wifiManager.getDhcpInfo();
         int serverAddress = info.serverAddress;
-        InetAddress serverAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+        serverAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
         Log.d(TAG, "server's ip address:"+serverAddr);
         wifiManager.setWifiEnabled(false);
+        try {
+            proc = Runtime.getRuntime().exec("su");
+            DataOutputStream os = new DataOutputStream(proc.getOutputStream());
+            os.writeBytes("netcfg wlan0 up\n");
+            os.writeBytes("wpa_supplicant -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf -B\n");
+            os.writeBytes("netcfg wlan0 dhcp\n");
+            os.writeBytes("exit\n");
+            os.flush();
+            proc.waitFor();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new Client(serverAddr, 12345);
     }
     private WifiConfiguration setWifiParams(String ssid) {
         WifiConfiguration apConfig = new WifiConfiguration();

@@ -3,6 +3,8 @@ package com.ANT.MiddleWare.PartyPlayerActivity;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -20,7 +22,8 @@ public class MainActivity extends FragmentActivity {
 
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
-
+		WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		manager.setWifiEnabled(false);
 		if (fragment == null) {
 			fragment = new LoginFragment();
 			fm.beginTransaction().add(R.id.fragmentContainer, fragment)
