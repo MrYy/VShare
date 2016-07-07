@@ -54,7 +54,7 @@ public class Client implements Runnable {
                     if (mKey.isReadable()) {
                         //在这里准备添加报头
                         SocketChannel mSc = (SocketChannel) mKey.channel();
-                        Message msgHeader = Method.readMessage(mSc, 250);
+                        Message msgHeader = Method.readMessage(mSc, 263);
                         Log.d(TAG, "message length:" + msgHeader.getMsgLength());
                         Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
                         if (msg != null) {

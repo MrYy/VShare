@@ -155,7 +155,6 @@ public class Method {
             //reconnect
             try {
                 sc.socket().close();
-                new Thread(new Client(InetAddress.getByName("192.168.1.51"), 12345)).start();
                 throw new MyException();
             } catch (UnknownHostException e1) {
                 e1.printStackTrace();

@@ -79,13 +79,18 @@ public class ServerThread extends Thread {
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         sc.socket().setTcpNoDelay(true);
+                        Message testMsg = new Message();
+                        testMsg.setMessage(Method.getRandomString(300));
+                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Message msg = ViewVideoActivity.sendMessageQueue.poll();
+                                msg.setName(ViewVideoActivity.userName);
                                 byte[] msgBytes = msg.getBytes();
                                 Message msgHeader = new Message();
                                 msgHeader.setLength(msgBytes.length);
-                                Method.sendMessage(sc,msgHeader.getBytes());
+                                byte[] headerBytes = msgHeader.getBytes();
+                                Method.sendMessage(sc,headerBytes);
                                 Method.sendMessage(sc,msgBytes);
                             }
                             while (!ViewVideoActivity.getTaskQueue().isEmpty()) {

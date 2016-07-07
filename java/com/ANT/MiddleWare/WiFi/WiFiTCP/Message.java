@@ -43,6 +43,15 @@ public class Message implements Serializable {
     private String message = "";
     private FileFragment fragment = null;
     private byte[] bytesObj = null;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public FileFragment getFragment() {
         return fragment;

@@ -58,6 +58,14 @@ public class ViewVideoActivity extends FragmentActivity  {
     public static final BlockingQueue<Message> sendMessageQueue = new LinkedBlockingQueue<Message>();
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
     public static String userName;
+
+    public static void sendMsg(Message msg) {
+        sendMessageQueue.add(msg);
+    }
+
+    public static Message getMsg() {
+        return receiveMessageQueue.poll();
+    }
     public static BlockingQueue<FileFragment> getTaskQueue() {
         synchronized (taskQueue) {
             return taskQueue;
