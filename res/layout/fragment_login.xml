@@ -1,14 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/background"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="10dp"
     tools:context="com.ANT.MiddleWare.PartyPlayerActivity.LoginFragment">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_marginTop="150dp"
+        android:layout_gravity="center"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/photo"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"/>
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 <TextView
