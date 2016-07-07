@@ -19,19 +19,20 @@ import android.widget.EditText;
 import android.widget.Switch;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
+import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class ViewVideoActivity extends FragmentActivity  {
     private static final String TAG = ViewVideoActivity.class.getSimpleName();
@@ -51,7 +52,13 @@ public class ViewVideoActivity extends FragmentActivity  {
     private WiFiReceiver wifiReceiver;
     private InetAddress serverAddr;
     private InetAddress mAddr;
+    public static final BlockingQueue<FileFragment> taskQueue = new LinkedBlockingDeque<FileFragment>();
 
+    public static void insert(FileFragment ff) {
+        synchronized (taskQueue) {
+            taskQueue.add(ff);
+        }
+    }
     private final class WiFiReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -147,7 +154,13 @@ public class ViewVideoActivity extends FragmentActivity  {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        new Thread(new Client(serverAddr, 12345)).start();
+        try {
+            //获取服务端ap地址存在问题
+            new Thread(new Client(InetAddress.getByName("192.168.43.1"), 12345)).start();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
     }
     private WifiConfiguration setWifiParams(String ssid) {
         WifiConfiguration apConfig = new WifiConfiguration();

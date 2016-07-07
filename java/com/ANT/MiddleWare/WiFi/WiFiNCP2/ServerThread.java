@@ -77,7 +77,6 @@ public class ServerThread extends Thread {
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         sc.socket().setTcpNoDelay(true);
-                        InetAddress mAddr = sc.socket().getInetAddress();
                         Message msgObj = new Message();
                         msgObj.setMessage(Method.getRandomString(300));
                         msgObj.setCount(count++);
@@ -89,11 +88,7 @@ public class ServerThread extends Thread {
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
-//                        try {
-//                            TimeUnit.SECONDS.sleep(50);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+
 
                     }
 
