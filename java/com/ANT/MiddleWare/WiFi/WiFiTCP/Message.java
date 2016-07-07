@@ -12,14 +12,15 @@ import java.io.Serializable;
 /**
  * Created by David on 16/4/18.
  */
-public  class Message implements Serializable {
+public class Message implements Serializable {
     /**
      *
      */
-    public static enum  Type{
-        Message("message"),Fragment("fragment");
+    public static enum Type {
+        Message("message"), Fragment("fragment");
         private String describe;
-        Type(String describe){
+
+        Type(String describe) {
             this.describe = describe;
         }
 
@@ -27,11 +28,19 @@ public  class Message implements Serializable {
             return describe;
         }
     }
+
     private Type type;
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    private int length;
     private int count;
     private String message = "";
     private FileFragment fragment = null;
     private byte[] bytesObj = null;
+
     public FileFragment getFragment() {
         return fragment;
     }
@@ -45,9 +54,10 @@ public  class Message implements Serializable {
     }
 
     public int getLength() {
-        if(bytesObj!=null) return bytesObj.length;
+        if (bytesObj != null) return bytesObj.length;
         return -1;
     }
+
     public void setFragment(FileFragment fragment) {
         this.fragment = fragment;
         this.type = Type.Fragment;
@@ -80,11 +90,11 @@ public  class Message implements Serializable {
 
         } finally {
 
-                try {
-                    byteArrayOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                byteArrayOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             if (objectOutputStream != null) {
                 try {

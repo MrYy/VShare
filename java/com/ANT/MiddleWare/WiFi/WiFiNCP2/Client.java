@@ -49,6 +49,7 @@ public class Client implements Runnable {
                     mKey = (SelectionKey) ite.next();
                     if (mKey.isReadable()) {
                         Message msg = null;
+                        //在这里准备添加报头
                         msg = Method.readMessage((SocketChannel) mKey.channel(),636);
                         if (msg != null) {
                             Log.d(TAG, "message:" + msg.getMessage() + "  count:" + msg.getCount());

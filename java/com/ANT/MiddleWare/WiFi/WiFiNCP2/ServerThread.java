@@ -81,6 +81,7 @@ public class ServerThread extends Thread {
                         msgObj.setMessage(Method.getRandomString(300));
                         msgObj.setCount(count++);
                         byte[] bytes = msgObj.getBytes();
+                        //在这里准备添加报头
                         Log.d(TAG, "send:" + String.valueOf(count));
                         try {
                             Log.d(TAG, "发送的长度:" + bytes.length);
