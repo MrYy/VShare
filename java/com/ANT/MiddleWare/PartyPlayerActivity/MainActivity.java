@@ -34,7 +34,7 @@ public class MainActivity extends FragmentActivity {
 			fm.beginTransaction().add(R.id.fragmentContainer, fragment)
 					.commit();
 		}
-		//统计下载量，下载速度
+		//统计下载量，下载速度测试代码，暂无用
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -50,11 +50,9 @@ public class MainActivity extends FragmentActivity {
 						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).add(200);
 //						TimeUnit.SECONDS.sleep(1);
 						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).add(300);
-
-
 				}
 			}
-		}).start();
+		});
 
 	}
 
