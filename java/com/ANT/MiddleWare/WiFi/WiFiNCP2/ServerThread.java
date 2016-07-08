@@ -34,6 +34,7 @@ public class ServerThread extends Thread {
     private Context context;
     private Set<InetAddress> clients;
     private int count = 0;
+
     public ServerThread(InetAddress ip, Context context) {
         clients = new HashSet<InetAddress>();
         this.ip = ip;
@@ -71,50 +72,47 @@ public class ServerThread extends Thread {
                                 Toast.makeText(context, "has a client in", Toast.LENGTH_SHORT).show();
                             }
                         });
-                        if (clients.size() < 2) {
-                            sc.configureBlocking(false);
-                            sc.register(mKey.selector(), SelectionKey.OP_WRITE);
-                        }
-
+//                        if (clients.size() < 2) {
+                        sc.configureBlocking(false);
+                        sc.register(mKey.selector(), SelectionKey.OP_WRITE | SelectionKey.OP_READ);
+//                        }
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         sc.socket().setTcpNoDelay(true);
-//                        Message testMsg = new Message();
-//                        testMsg.setMessage(Method.getRandomString(300));
-//                        ViewVideoActivity.sendMsg(testMsg);
+                        Log.d(TAG, "server is writing");
+                        Message testMsg = new Message();
+                        testMsg.setMessage(Method.getRandomString(300));
+                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Message msg = ViewVideoActivity.sendMessageQueue.poll();
                                 msg.setName(ViewVideoActivity.userName);
-                                byte[] msgBytes = msg.getBytes();
-                                Message msgHeader = new Message();
-                                msgHeader.setLength(msgBytes.length);
-                                byte[] headerBytes = msgHeader.getBytes();
-                                Method.sendMessage(sc,headerBytes);
-                                Method.sendMessage(sc,msgBytes);
+                                Method.send(msg, sc);
                             }
                             while (!ViewVideoActivity.getTaskQueue().isEmpty()) {
                                 //发送报文
                                 FileFragment ff = ViewVideoActivity.taskQueue.poll();
                                 Message msgObj = new Message();
                                 msgObj.setFragment(ff);
-                                byte[] bytes = msgObj.getBytes();
-                                //在这里准备添加报头
-                                Message msgHeader = new Message();
-                                msgHeader.setLength(bytes.length);
-                                Log.d(TAG, "send:" + String.valueOf(count));
-                                Method.sendMessage(sc,msgHeader.getBytes());
-                                Method.sendMessage(sc,bytes);
+                                Method.send(msgObj, sc);
                             }
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
+                        mKey.interestOps(SelectionKey.OP_READ);
+                    } else if (mKey.isReadable()) {
+                        Log.d(TAG, "server thread is readable");
+                        SocketChannel mSc = (SocketChannel) mKey.channel();
+                        Method.read(mSc);
+                        mKey.interestOps(SelectionKey.OP_WRITE);
                     }
 
                     ite.remove();
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (MyException e) {
             e.printStackTrace();
         }
 

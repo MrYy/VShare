@@ -10,7 +10,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.UILImageLoader;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -262,6 +264,37 @@ public class Method {
                 GalleryFinal.openGalleryMuti(REQUEST_CODE_GALLERY, functionConfig, mOnHanlderResultCallback);
             default:
                 break;
+        }
+    }
+    //send message ,with header and content
+    public static void send(Message msg,SocketChannel sc) throws MyException {
+        byte[] msgBytes = msg.getBytes();
+        Message msgHeader = new Message();
+        msgHeader.setLength(msgBytes.length);
+        byte[] headerBytes = msgHeader.getBytes();
+        Method.sendMessage(sc,headerBytes);
+        Method.sendMessage(sc,msgBytes);
+    }
+
+    public static void read(SocketChannel mSc) throws MyException {
+        Message msgHeader = Method.readMessage(mSc, 263);
+        if(msgHeader==null) return;
+        Log.d(TAG, "message length:" + msgHeader.getMsgLength());
+        Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
+        if (msg != null) {
+            switch (msg.getType()) {
+                case Message:
+                    Log.d(TAG, msg.getMessage());
+                    ViewVideoActivity.receiveMessageQueue.add(msg);
+                    break;
+                case Fragment:
+                    FileFragment ff = msg.getFragment();
+                    Log.d("insert fragment", String.valueOf(ff.getSegmentID()) + " " + String.valueOf(ff.getStartIndex()));
+                    Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
+                    IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, 0);
+                    break;
+            }
+
         }
     }
 }

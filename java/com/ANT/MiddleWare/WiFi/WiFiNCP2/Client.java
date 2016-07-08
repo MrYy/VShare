@@ -43,7 +43,7 @@ public class Client implements Runnable {
             sc.configureBlocking(false);
             sc.socket().getTcpNoDelay();
             Selector selector = Selector.open();
-            sc.register(selector, SelectionKey.OP_READ);
+            sc.register(selector, SelectionKey.OP_READ|SelectionKey.OP_WRITE);
             while (true) {
                 int selected = selector.select();
                 if (selected == 0) continue;
@@ -51,27 +51,34 @@ public class Client implements Runnable {
                 Iterator ite = mKeys.iterator();
                 while (ite.hasNext()) {
                     mKey = (SelectionKey) ite.next();
-                    if (mKey.isReadable()) {
+                        if (mKey.isReadable()) {
                         //在这里准备添加报头
-                        SocketChannel mSc = (SocketChannel) mKey.channel();
-                        Message msgHeader = Method.readMessage(mSc, 263);
-                        Log.d(TAG, "message length:" + msgHeader.getMsgLength());
-                        Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
-                        if (msg != null) {
-                            switch (msg.getType()) {
-                                case Message:
-                                    Log.d(TAG, msg.getMessage());
-                                    ViewVideoActivity.receiveMessageQueue.add(msg);
-                                    break;
-                                case Fragment:
-                                    FileFragment ff = msg.getFragment();
-                                    Log.d("insert fragment", String.valueOf(ff.getSegmentID()) + " " + String.valueOf(ff.getStartIndex()));
-                                    Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
-                                    IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, this);
-                                    break;
+                            Log.d(TAG, "client is reading");
+                            SocketChannel mSc = (SocketChannel) mKey.channel();
+                        Method.read(mSc);
+                    } else if (mKey.isWritable()) {
+                            Log.d(TAG, "client is writing");
+                        SocketChannel mSc = (SocketChannel)mKey.channel();
+                        Message testMsg = new Message();
+                        testMsg.setMessage(Method.getRandomString(300));
+                        ViewVideoActivity.sendMsg(testMsg);
+                        try {
+                            while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
+                                Message msg = ViewVideoActivity.sendMessageQueue.poll();
+                                msg.setName(ViewVideoActivity.userName);
+                                Method.send(msg,mSc);
                             }
-
+                            while (!ViewVideoActivity.getTaskQueue().isEmpty()) {
+                                //发送报文
+                                FileFragment ff = ViewVideoActivity.taskQueue.poll();
+                                Message msgObj = new Message();
+                                msgObj.setFragment(ff);
+                                Method.send(msgObj, mSc);
+                            }
+                        } catch (MyException e) {
+                            Log.d(TAG, "catch");
                         }
+                            Log.d(TAG, "finish write");
                     }
                     ite.remove();
                 }
