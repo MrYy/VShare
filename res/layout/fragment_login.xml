@@ -15,7 +15,7 @@
         android:layout_height="96dp"
         android:src="@drawable/photo"
         app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"/>
+        app:civ_border_color="#e8ffffff"/>
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_marginTop="10dp"
@@ -24,8 +24,10 @@
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="50dp"
     android:text="昵称:"
     android:textSize="20sp"
+    android:textColor="#fff"
     />
 <EditText
     android:id="@+id/edittext_name"
@@ -42,6 +44,7 @@
         <CheckBox
             android:layout_marginLeft="200dp"
             android:id="@+id/checkbox_remember_account"
+            android:
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
@@ -49,7 +52,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="@android:color/white"
-            android:text="记住账户？"
+            android:text="记住账户"
             />
     </LinearLayout>
     <LinearLayout
@@ -67,7 +70,7 @@
             android:textColor="@android:color/white"
 
             android:textSize="16sp"
-            android:text="分享视频？"
+            android:text="分享视频"
             />
     </LinearLayout>
     <Button

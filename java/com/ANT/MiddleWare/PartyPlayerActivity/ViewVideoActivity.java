@@ -13,7 +13,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -36,13 +38,14 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import cn.finalteam.toolsfinal.adapter.FragmentAdapter;
+
 public class ViewVideoActivity extends FragmentActivity  {
     private static final String TAG = ViewVideoActivity.class.getSimpleName();
     private Button buttonView;
     private EditText editTextLocation;
     private DashProxyServer server = new DashProxyServer();
     public static ConfigureData configureData = new ConfigureData(null);
-    private Switch switchButton;
     private WifiManager wifiManager;
     private Process proc;
     private ArrayList<String> passableHotsPot;
@@ -58,6 +61,8 @@ public class ViewVideoActivity extends FragmentActivity  {
     public static final BlockingQueue<Message> sendMessageQueue = new LinkedBlockingQueue<Message>();
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
     public static String userName;
+    private ViewPager vp;
+
 
     public static void sendMsg(Message msg) {
         sendMessageQueue.add(msg);
@@ -96,6 +101,7 @@ public class ViewVideoActivity extends FragmentActivity  {
             }
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,17 +133,19 @@ public class ViewVideoActivity extends FragmentActivity  {
     private void init() {
         buttonView = (Button) findViewById(R.id.button_view_video);
         editTextLocation = (EditText) findViewById(R.id.edittext_video_location);
-        switchButton = (Switch) findViewById(R.id.switch_publish_video);
-        switchButton.setChecked(false);
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
+        vp=(ViewPager)findViewById(R.id.viewpager);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         Fragment video = new VideoFragment();
-        Fragment chatroom = new ChatFragment();
-//        ft.add(R.id.fragment_chat_room,chatroom);
         ft.add(R.id.fragment_video_player, video);
         ft.commit();
+        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(new UsersFragment());
+        fragments.add(new ChatFragment());
+        FragAdapter adapter = new FragAdapter(getSupportFragmentManager(),fragments);
+        vp.setAdapter(adapter);
         initDashProxy();
     }
 
@@ -157,7 +165,7 @@ public class ViewVideoActivity extends FragmentActivity  {
         DhcpInfo info = wifiManager.getDhcpInfo();
         int serverAddress = info.serverAddress;
         serverAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
-        Log.d(TAG, "server's ip address:"+serverAddr);
+        Log.d(TAG, "server's ip address:" + serverAddr);
         wifiManager.setWifiEnabled(false);
         try {
             proc = Runtime.getRuntime().exec("su");
@@ -194,4 +202,6 @@ public class ViewVideoActivity extends FragmentActivity  {
         apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
         return apConfig;
     }
+
+
 }

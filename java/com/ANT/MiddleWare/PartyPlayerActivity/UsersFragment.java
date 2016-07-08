@@ -1,9 +1,9 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.LayoutInflater;
@@ -15,8 +15,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-
-
+import com.ANT.MiddleWare.PartyPlayerActivity.Msg;
+import com.ANT.MiddleWare.PartyPlayerActivity.MsgAdapter;
+import com.ANT.MiddleWare.PartyPlayerActivity.R;
+import com.ANT.MiddleWare.PartyPlayerActivity.UsersAdapter;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
 
 import java.util.ArrayList;
@@ -29,8 +32,10 @@ import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.sendMsg;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatFragment extends Fragment {
+public class UsersFragment extends Fragment {
 
+    final int RIGHT = 0;
+    final int LEFT = 1;
     private View view;
     private ListView listView;
     private EditText editText;
@@ -41,7 +46,8 @@ public class ChatFragment extends Fragment {
     private UsersAdapter usersAdapter;
     private String hoster = "aaa";
 
-    public ChatFragment() {
+
+    public UsersFragment() {
         // Required empty public constructor
     }
 
@@ -54,7 +60,7 @@ public class ChatFragment extends Fragment {
         listView=(ListView)view.findViewById(R.id.list_main);
         editText=(EditText)view.findViewById(R.id.edit_main);
         chat_btn=(ImageButton)view.findViewById(R.id.button_main);
-        onTalkState();
+        onUsersState();
         return view;
     }
 
