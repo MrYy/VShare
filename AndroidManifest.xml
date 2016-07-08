@@ -30,7 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ViewVideoActivity"></activity>
+        <activity android:name=".ViewVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation">
+        </activity>
         <activity android:name=".util.StatisticsActivity"></activity>
     </application>
 

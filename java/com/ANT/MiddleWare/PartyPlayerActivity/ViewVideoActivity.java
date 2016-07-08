@@ -4,22 +4,31 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.graphics.Rect;
 import android.net.DhcpInfo;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
@@ -43,11 +52,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import cn.finalteam.toolsfinal.adapter.FragmentAdapter;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.vov.vitamio.MediaPlayer;
+import io.vov.vitamio.widget.MediaController;
+import io.vov.vitamio.widget.VideoView;
 
-public class ViewVideoActivity extends FragmentActivity  {
+public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnInfoListener {
     private static final String TAG = ViewVideoActivity.class.getSimpleName();
-    private Button buttonView;
-    private EditText editTextLocation;
+    private Button play;
+    private EditText editVideoPath;
     private DashProxyServer server = new DashProxyServer();
     public static ConfigureData configureData = new ConfigureData(null);
     private WifiManager wifiManager;
@@ -66,6 +78,14 @@ public class ViewVideoActivity extends FragmentActivity  {
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
     public static String userName;
     private ViewPager vp;
+    //private String path="http://127.0.0.1:9999/4/index.m3u8";
+    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
+//    private String path="";
+    private VideoView mVideoView;
+    private FrameLayout frameLayout;
+    private LinearLayout playSetLayout;
+    boolean isPortrait=true;
+    private long mPosition=0;
 
 
     public static void sendMsg(Message msg) {
@@ -109,6 +129,7 @@ public class ViewVideoActivity extends FragmentActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fragment_view_video);
         init();
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
@@ -134,6 +155,105 @@ public class ViewVideoActivity extends FragmentActivity  {
         }
     }
 
+    private void initPlayVideo() {
+
+        //path=editVideoPath.getText().toString().trim();
+        mVideoView= (VideoView) findViewById(R.id.buffer);
+        frameLayout= (FrameLayout) findViewById(R.id.fragment_video_player);
+        if (path == "") {
+            // Tell the user to provide a media file URL/path.
+            Toast.makeText(this,"Please edit url",Toast.LENGTH_LONG).show();
+            return;
+        } else {
+            //streamVideo
+            mVideoView.setVideoURI(Uri.parse(path));
+
+            MediaController mc = new MediaController(this, true, frameLayout);
+            mc.setOnControllerClick(new MediaController.OnControllerClick() {
+                @Override
+                public void OnClick(int type) {
+                    //type 0 全屏
+                    if (type == 0) {
+                        if (isPortrait) {
+                            LinearLayout.LayoutParams fl_lp = new LinearLayout.LayoutParams(
+                                    getHeightPixel(ViewVideoActivity.this),
+                                    getWidthPixel(ViewVideoActivity.this)-getStatusBarHeight(ViewVideoActivity.this)
+                            );
+                            vp.setVisibility(View.GONE);
+                            frameLayout.setLayoutParams(fl_lp);
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                            mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);//缩放参数，画面全屏
+                            isPortrait = false;
+                        } else {
+                            frameLayout.getHeight();
+                            LinearLayout.LayoutParams fl_lp = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    frameLayout.getHeight()
+                                    //DensityUtil.dip2px(260,ViewVideoActivity.this)
+                            );
+                            frameLayout.setLayoutParams(fl_lp);
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                            vp.setVisibility(View.VISIBLE);
+                            isPortrait = true;
+                        }
+                    }
+                }
+            });
+            mVideoView.setMediaController(mc);
+            mc.setVisibility(View.GONE);
+            //  mVideoView.setMediaController(new MediaController(this));
+            mVideoView.requestFocus();
+//            mVideoView.setOnInfoListener(ViewVideoActivity.this);
+            mVideoView.setOnCompletionListener(ViewVideoActivity.this);
+            //mVideoView.setOnBufferingUpdateListener(ViewVideoActivity.this);
+            mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    // optional need Vitamio 4.0
+                    mediaPlayer.setPlaybackSpeed(1.0f);
+                }
+            });
+        }
+    }
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        switch(what){
+            case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                if(mVideoView.isPlaying()){
+                    mVideoView.pause();
+                }
+                break;
+            case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                mVideoView.start();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        playSetLayout.setVisibility(View.VISIBLE);
+    }
+
+    private int getHeightPixel(FragmentActivity activity) {
+        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        return localDisplayMetrics.heightPixels;
+    }
+    public int getWidthPixel(FragmentActivity activity)
+    {
+        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        return localDisplayMetrics.widthPixels;
+    }
+    public  int getStatusBarHeight(FragmentActivity activity){
+        Rect frame = new Rect();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        int statusBarHeight = frame.top;
+        return statusBarHeight;
+    }
+
     private void beHotPot() {
         wifiManager.setWifiEnabled(false);
         Method.changeApState(ViewVideoActivity.this, wifiManager, true);
@@ -143,6 +263,7 @@ public class ViewVideoActivity extends FragmentActivity  {
         Log.d(TAG, mAddr.toString());
         new ServerThread(mAddr, ViewVideoActivity.this).start();
     }
+
     private void connectHotPot() {
         Method.changeApState(ViewVideoActivity.this, wifiManager, false);
         wifiManager.setWifiEnabled(true);
@@ -152,28 +273,31 @@ public class ViewVideoActivity extends FragmentActivity  {
     }
 
     private void init() {
-        buttonView = (Button) findViewById(R.id.button_view_video);
-        editTextLocation = (EditText) findViewById(R.id.edittext_video_location);
+        play = (Button) findViewById(R.id.button_view_video);
+        editVideoPath = (EditText) findViewById(R.id.edittext_video_location);
+        playSetLayout= (LinearLayout) findViewById(R.id.playSet);
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
         vp=(ViewPager)findViewById(R.id.viewpager);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        Fragment video = new VideoFragment();
-        ft.add(R.id.fragment_video_player, video);
-        ft.commit();
+//        Fragment video = new VideoFragment();
+//        ft.add(R.id.fragment_video_player, video);
+//        ft.commit();
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(new UsersFragment());
         fragments.add(new ChatFragment());
         FragAdapter adapter = new FragAdapter(getSupportFragmentManager(),fragments);
         vp.setAdapter(adapter);
         initDashProxy();
-        buttonView.setOnClickListener(new View.OnClickListener() {
+        play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ViewVideoActivity.this, StatisticsActivity.class));
+                initPlayVideo();
+                playSetLayout.setVisibility(View.GONE);
             }
         });
+
     }
 
     private void initDashProxy() {

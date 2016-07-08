@@ -99,28 +99,29 @@ public class ChatFragment extends Fragment {
 //        Message message = new Message();
 //        message = getMsg();
 //        Msg receivedmsg = new Msg(message.getMessage(),Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
-                            msgList.add(receivedmsg);
-                            msgAdapter.notifyDataSetChanged();
-                            listView.setSelection(msgList.size());
-                        }
-                    });
-                    try {
-                        TimeUnit.SECONDS.sleep(5);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-            }
-        }
-        }).start();}
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(true) {
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
+//                            msgList.add(receivedmsg);
+//                            msgAdapter.notifyDataSetChanged();
+//                            listView.setSelection(msgList.size());
+//                        }
+//                    });
+//                    try {
+//                        TimeUnit.SECONDS.sleep(5);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//            }
+//        }
+//        }).start();
+}
     public void MsgInit(){
     }
     private void UsersInit(){
