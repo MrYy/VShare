@@ -340,6 +340,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
 
     }
+    
     private WifiConfiguration setWifiParams(String ssid) {
         WifiConfiguration apConfig = new WifiConfiguration();
         apConfig.SSID = "\"" + ssid + "\"";
