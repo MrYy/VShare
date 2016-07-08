@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.getMsg;
 import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.sendMsg;
 
 
@@ -40,6 +41,7 @@ public class ChatFragment extends Fragment {
     private MsgAdapter msgAdapter;
     private UsersAdapter usersAdapter;
     private String hoster = "aaa";
+    private static Boolean FLAG = false;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -73,14 +75,14 @@ public class ChatFragment extends Fragment {
                     editText.setText("");
                     Message message= new Message();
                     message.setMessage(content);
+                    message.setName(hoster);
                     sendMsg(message);
                     //开启发送线程
-                    //startSendThread(msg);
-
                 }
             }
         });
         //MsgInit();
+        FLAG = true ;
         startReceiveThread();
     }
     public void onUsersState(){
@@ -92,25 +94,37 @@ public class ChatFragment extends Fragment {
         listView.setSelection(usersList.size());
     }
     public void startReceiveThread(){
-
-        Msg receivedmsg = new Msg("hello",Msg.TYP_RECIEVED,"bbb",System.currentTimeMillis());
-        msgList.add(receivedmsg);
-        msgAdapter = new MsgAdapter(getActivity(),R.layout.chat_item_message,msgList);
+        msgAdapter = new MsgAdapter(getActivity(), R.layout.chat_item_message, msgList);
         listView.setAdapter(msgAdapter);
-        listView.setSelection(msgList.size());
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        Message message = new Message();
+//        message = getMsg();
+//        Msg receivedmsg = new Msg(message.getMessage(),Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
+                            msgList.add(receivedmsg);
+                            msgAdapter.notifyDataSetChanged();
+                            listView.setSelection(msgList.size());
+                        }
+                    });
+                    try {
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-    }
-    public void startSendThread(Msg msg){
-    }
+            }
+        }
+        }).start();}
     public void MsgInit(){
-     msgList = null;
     }
     private void UsersInit(){
+        usersList.clear();
         usersList.add("fanfan");
         usersList.add("yangyang");
 
