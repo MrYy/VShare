@@ -2,6 +2,7 @@ package com.ANT.MiddleWare.PartyPlayerActivity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.Window;
 
@@ -36,9 +38,21 @@ public class MainActivity extends FragmentActivity {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).add(1000);
-				StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).add(3000);
-				StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).add(2000);
+				while (true) {
+					try {
+						TimeUnit.MILLISECONDS.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).add(100);
+//						TimeUnit.SECONDS.sleep(1);
+						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).add(200);
+//						TimeUnit.SECONDS.sleep(1);
+						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).add(300);
+
+
+				}
 			}
 		}).start();
 

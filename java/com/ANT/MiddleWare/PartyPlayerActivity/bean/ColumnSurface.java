@@ -92,7 +92,7 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
                         h = StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).getSpeed();
                         break;
                 }
-                Log.d(TAG, "speed: " + String.valueOf(h));
+//                Log.d("TAG", "spped" + String.valueOf(h));
                 canvas.drawRect(marginW + i * columnW, (1 - h / maxSpeed) * screenH - marginW, marginW + (i + 1) * columnW, screenH - marginW, mPaint);
             }
             sfh.unlockCanvasAndPost(canvas);

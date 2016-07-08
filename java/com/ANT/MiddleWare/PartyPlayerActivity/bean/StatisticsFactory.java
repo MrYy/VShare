@@ -1,5 +1,7 @@
 package com.ANT.MiddleWare.PartyPlayerActivity.bean;
 
+import android.util.Log;
+
 /**
  * Created by zxc on 2016/7/8.
  */
@@ -15,15 +17,15 @@ public class StatisticsFactory {
         Statistics instance = null;
         switch (type) {
             case gReceive:
-                if(instanceGR ==null) instanceGR = Statistics.getInstance();
+                if(instanceGR ==null) instanceGR = new Statistics();
                 instance = instanceGR;
                 break;
             case wifiSend:
-                if(instanceWS == null) instanceWS = Statistics.getInstance();
+                if(instanceWS == null) instanceWS = new Statistics();
                 instance = instanceWS;
                 break;
             case wifiReceive:
-                if(instanceWR == null) instanceWR = Statistics.getInstance();
+                if(instanceWR == null) instanceWR = new Statistics();
                 instance = instanceWR;
                 break;
         }
