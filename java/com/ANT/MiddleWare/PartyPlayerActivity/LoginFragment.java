@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 import com.baoyz.actionsheet.ActionSheet;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -83,7 +84,8 @@ public class LoginFragment extends Fragment {
                 if (editText.equals("")) {
                     name = "ant";
                 }
-                Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
+                //test code
+                Intent intent = new Intent(getActivity(), StatisticsActivity.class);
                 intent.putExtra(context.getString(R.string.user_name), name);
                 intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
                 intent.putExtra("保存用户昵称", checkBoxRem.isChecked());

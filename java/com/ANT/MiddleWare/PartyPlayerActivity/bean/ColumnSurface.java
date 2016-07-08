@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.Random;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -75,24 +77,29 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
             canvas.drawLine(0, screenH - marginW + 10, 2 * marginW + 4 * columnW, screenH - marginW + 10, mPaint);
             float h = 0;
             for (int i = 0; i < 3; i++) {
+                Message msg = new Message();
                 switch (i) {
                     case 0:
                         //3G下载
                         mPaint.setColor(Color.BLUE);
                         h = StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).getSpeed();
+                        msg.what = StatisticsActivity.gR;
                         break;
                     case 1:
                         //wifi 下载
                         mPaint.setColor(Color.GREEN);
                         h = StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).getSpeed();
+                        msg.what = StatisticsActivity.wR;
                         break;
                     case 2:
                         //wifi 上传
                         mPaint.setColor(Color.YELLOW);
                         h = StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).getSpeed();
+                        msg.what = StatisticsActivity.wS;
                         break;
                 }
-//                Log.d("TAG", "spped" + String.valueOf(h));
+                msg.arg1 = (int) h;
+                StatisticsActivity.mHandler.sendMessage(msg);
                 canvas.drawRect(marginW + i * columnW, (1 - h / maxSpeed) * screenH - marginW, marginW + (i + 1) * columnW, screenH - marginW, mPaint);
             }
             sfh.unlockCanvasAndPost(canvas);
