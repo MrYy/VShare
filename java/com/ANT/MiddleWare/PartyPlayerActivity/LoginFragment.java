@@ -85,7 +85,7 @@ public class LoginFragment extends Fragment {
                     name = "ant";
                 }
                 //test code
-                Intent intent = new Intent(getActivity(), StatisticsActivity.class);
+                Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
                 intent.putExtra(context.getString(R.string.user_name), name);
                 intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
                 intent.putExtra("保存用户昵称", checkBoxRem.isChecked());

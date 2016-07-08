@@ -52,7 +52,7 @@ public class MainActivity extends FragmentActivity {
 						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).add(300);
 				}
 			}
-		}).start();
+		});
 
 	}
 
