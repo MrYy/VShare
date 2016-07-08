@@ -16,12 +16,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Statistics;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
@@ -39,6 +42,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import cn.finalteam.toolsfinal.adapter.FragmentAdapter;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ViewVideoActivity extends FragmentActivity  {
     private static final String TAG = ViewVideoActivity.class.getSimpleName();
@@ -110,18 +114,35 @@ public class ViewVideoActivity extends FragmentActivity  {
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
         userName = getIntent().getStringExtra(getString(R.string.user_name));
         if (publishFlag) {
-            wifiManager.setWifiEnabled(false);
-            Method.changeApState(this, wifiManager, true);
-            DhcpInfo info = wifiManager.getDhcpInfo();
-            int serverAddress = info.ipAddress;
-            mAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
-            Log.d(TAG, mAddr.toString());
-            new ServerThread(mAddr, this).start();
-        }else {
-            connectHotPot();
+            new SweetAlertDialog(this,SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("选择身份")
+                    .setConfirmText("播主").setCancelText("看客")
+                    .showCancelButton(true)
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            beHotPot();
+                            sweetAlertDialog.cancel();
+                        }
+                    }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    connectHotPot();
+                    sweetAlertDialog.cancel();
+                }
+            }).show();
         }
     }
 
+    private void beHotPot() {
+        wifiManager.setWifiEnabled(false);
+        Method.changeApState(ViewVideoActivity.this, wifiManager, true);
+        DhcpInfo info = wifiManager.getDhcpInfo();
+        int serverAddress = info.ipAddress;
+        mAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+        Log.d(TAG, mAddr.toString());
+        new ServerThread(mAddr, ViewVideoActivity.this).start();
+    }
     private void connectHotPot() {
         Method.changeApState(ViewVideoActivity.this, wifiManager, false);
         wifiManager.setWifiEnabled(true);
@@ -147,6 +168,12 @@ public class ViewVideoActivity extends FragmentActivity  {
         FragAdapter adapter = new FragAdapter(getSupportFragmentManager(),fragments);
         vp.setAdapter(adapter);
         initDashProxy();
+        buttonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ViewVideoActivity.this, StatisticsActivity.class));
+            }
+        });
     }
 
     private void initDashProxy() {

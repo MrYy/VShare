@@ -12,6 +12,9 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.Window;
 
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Statistics;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
+
 public class MainActivity extends FragmentActivity {
 	private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -29,6 +32,15 @@ public class MainActivity extends FragmentActivity {
 			fm.beginTransaction().add(R.id.fragmentContainer, fragment)
 					.commit();
 		}
+		//统计下载量，下载速度
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).add(1000);
+				StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).add(3000);
+				StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).add(2000);
+			}
+		}).start();
 
 	}
 

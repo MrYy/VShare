@@ -42,6 +42,7 @@ import cn.finalteam.galleryfinal.CoreConfig;
 import cn.finalteam.galleryfinal.FunctionConfig;
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.ThemeConfig;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by David on 16/4/21.
@@ -297,4 +298,5 @@ public class Method {
 
         }
     }
+
 }
