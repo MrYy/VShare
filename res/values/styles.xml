@@ -31,5 +31,8 @@
         <item name="cancelButtonMarginTop">10dp</item>
         <item name="actionSheetTextSize">12sp</item>
     </style>
+    <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/checkbox</item>
+    </style>
 
 </resources>
