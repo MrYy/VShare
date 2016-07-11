@@ -153,6 +153,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
         userName = getIntent().getStringExtra(getString(R.string.user_name));
         if (publishFlag) {
+            onLineUsers.add(userName);
             new SweetAlertDialog(this,SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("选择身份")
                     .setConfirmText("播主").setCancelText("看客")
