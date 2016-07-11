@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 
 import java.io.IOException;
 import java.net.InetAddress;

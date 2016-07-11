@@ -2,11 +2,9 @@ package com.ANT.MiddleWare.PartyPlayerActivity;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,12 +16,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.util.LoginDialog;
-import com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity;
-import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.baoyz.actionsheet.ActionSheet;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.List;
 

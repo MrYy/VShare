@@ -7,13 +7,21 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
-import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -35,6 +43,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Random;
 
 import cn.finalteam.galleryfinal.CoreConfig;
@@ -300,5 +309,39 @@ public class Method {
 
         }
     }
+    public static void postRequest(final Context context, final String url, final Map<String, String> request, final Response.Listener<String> listener) {
 
+
+        RequestQueue mQueue = Volley.newRequestQueue(context);
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Method.display(context,"网络连接有问题");
+            }
+        };
+        StringRequest stringRequest;
+        if (request == null) {
+            stringRequest = new StringRequest(Request.Method.POST, url, listener, errorListener);
+        } else {
+            stringRequest = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    // TODO Auto-generated method stub
+                    if (request.isEmpty())
+                        return super.getParams();
+                    else {
+                        return request;
+                    }
+                }
+
+            };
+        }
+        mQueue.add(stringRequest);
+
+
+    }
+    public static void display(Context context, CharSequence charSequence) {
+        Toast.makeText(context, charSequence, Toast.LENGTH_SHORT).show();
+    }
 }

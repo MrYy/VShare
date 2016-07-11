@@ -20,24 +20,20 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
-import com.ANT.MiddleWare.PartyPlayerActivity.bean.Statistics;
-import com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
-import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
-import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -49,11 +45,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import cn.finalteam.toolsfinal.adapter.FragmentAdapter;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.widget.MediaController;
@@ -263,7 +256,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         Method.changeApState(ViewVideoActivity.this, wifiManager, true);
         DhcpInfo info = wifiManager.getDhcpInfo();
         int serverAddress = info.ipAddress;
-        mAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+        mAddr = Method.intToInetAddress(serverAddress);
         Log.d(TAG, mAddr.toString());
         new ServerThread(mAddr, ViewVideoActivity.this).start();
     }
@@ -319,7 +312,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         unregisterReceiver(wifiReceiver);
         DhcpInfo info = wifiManager.getDhcpInfo();
         int serverAddress = info.serverAddress;
-        serverAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+        serverAddr = Method.intToInetAddress(serverAddress);
         Log.d(TAG, "server's ip address:" + serverAddr);
         wifiManager.setWifiEnabled(false);
         try {

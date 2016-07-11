@@ -3,10 +3,9 @@ package com.ANT.MiddleWare.WiFi.WiFiNCP2;
 import android.util.Log;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
-import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
-import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
-import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
 
 import java.io.IOException;

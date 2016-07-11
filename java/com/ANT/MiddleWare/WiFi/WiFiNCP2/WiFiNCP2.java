@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.ANT.MiddleWare.WiFi.WiFiPulic;
 
 import java.net.InetAddress;
@@ -35,7 +36,7 @@ public class WiFiNCP2 extends WiFiPulic {
         dumpUnil = new DumpUnil(contect);
         manager = (WifiManager) contect.getSystemService(Context.WIFI_SERVICE);
 
-        com.ANT.MiddleWare.WiFi.WiFiTCP.Method.changeApState(contect,manager,false);
+        Method.changeApState(contect,manager,false);
         manager.setWifiEnabled(true);
         manager.startScan();
 
@@ -59,7 +60,7 @@ public class WiFiNCP2 extends WiFiPulic {
             //this one is ap
             DhcpInfo info = manager.getDhcpInfo();
             int serverAddress = info.ipAddress;
-            InetAddress serverAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+            InetAddress serverAddr = Method.intToInetAddress(serverAddress);
             Log.d(TAG, "server is listening:" + serverAddr.toString());
             if (context != null) {
                 new ServerThread(serverAddr, context).start();
@@ -92,7 +93,7 @@ public class WiFiNCP2 extends WiFiPulic {
 
         int serverAddress = info.serverAddress;
         Toast.makeText(contect,"connect to ap",Toast.LENGTH_SHORT).show();
-        InetAddress serverAddr = com.ANT.MiddleWare.WiFi.WiFiTCP.Method.intToInetAddress(serverAddress);
+        InetAddress serverAddr = Method.intToInetAddress(serverAddress);
         Log.d(TAG, "server's ip address:"+serverAddr);
         new Thread(new Client(serverAddr, 12345)).start();
     }
