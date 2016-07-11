@@ -22,6 +22,7 @@ import java.nio.channels.SocketChannel;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by zxc on 2016/6/15.
@@ -73,14 +74,20 @@ public class ServerThread extends Thread {
                         });
                         sc.configureBlocking(false);
                         sc.register(mKey.selector(), SelectionKey.OP_WRITE | SelectionKey.OP_READ);
-                    } else if (mKey.isWritable()) {
+                    } else if (mKey.isReadable()) {
+//                        Log.d(TAG, "server thread is readable");
+                        SocketChannel mSc = (SocketChannel) mKey.channel();
+                        Method.read(mSc);
+                    }
+                    else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mRemoteAddr = sc.socket().getInetAddress();
                         sc.socket().setTcpNoDelay(true);
                         Log.d(TAG, "server is writing");
-//                        Message testMsg = new Message();
-//                        testMsg.setMessage(Method.getRandomString(300));
-//                        ViewVideoActivity.sendMsg(testMsg);
+                        TimeUnit.SECONDS.sleep(2);
+                        Message testMsg = new Message();
+                        testMsg.setMessage(Method.getRandomString(300));
+                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Log.d(TAG, "message queue size:" + String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
@@ -120,21 +127,16 @@ public class ServerThread extends Thread {
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
-                        mKey.interestOps(SelectionKey.OP_READ);
 //                        Log.d(TAG, "finish writing");
-                    } else if (mKey.isReadable()) {
-//                        Log.d(TAG, "server thread is readable");
-                        SocketChannel mSc = (SocketChannel) mKey.channel();
-                        Method.read(mSc);
-                        mKey.interestOps(SelectionKey.OP_WRITE);
                     }
-
                     ite.remove();
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
