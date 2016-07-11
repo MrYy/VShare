@@ -64,10 +64,10 @@ public class Client implements Runnable {
                     } else if (mKey.isWritable()) {
 //                            Log.d(TAG, "client is writing");
                         SocketChannel mSc = (SocketChannel)mKey.channel();
-                            TimeUnit.SECONDS.sleep(3);
-                        Message testMsg = new Message();
-                            testMsg.setMessage(Method.getRandomString(300));
-                            ViewVideoActivity.sendMsg(testMsg);
+//                            TimeUnit.SECONDS.sleep(3);
+//                        Message testMsg = new Message();
+//                            testMsg.setMessage(Method.getRandomString(300));
+//                            ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 SendTask sendTask = ViewVideoActivity.sendMessageQueue.poll();
@@ -93,8 +93,6 @@ public class Client implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

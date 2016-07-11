@@ -304,8 +304,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 //        ft.add(R.id.fragment_video_player, video);
 //        ft.commit();
         List<Fragment> fragments = new ArrayList<Fragment>();
-//        fragments.add(new UsersFragment());
-//        fragments.add(new ChatFragment());
+        fragments.add(new UsersFragment());
+        fragments.add(new ChatFragment());
         FragAdapter adapter = new FragAdapter(getSupportFragmentManager(),fragments);
         vp.setAdapter(adapter);
         initDashProxy();
