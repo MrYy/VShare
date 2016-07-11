@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="50sp"
         android:id="@+id/nameLayout"
-        android:background="#FFFFF0"
+        android:background="#ffffff"
         android:orientation="horizontal"
         >
         <ImageView

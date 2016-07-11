@@ -2,15 +2,11 @@ package com.ANT.MiddleWare.PartyPlayerActivity;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -20,10 +16,11 @@ import android.widget.ListView;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.getMsg;
+import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.onLineUsers;
 import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.sendMsg;
 
 
@@ -83,6 +80,8 @@ public class ChatFragment extends Fragment {
         });
         //MsgInit();
         FLAG = true ;
+        msgAdapter = new MsgAdapter(getActivity(), R.layout.chat_item_message, msgList);
+        listView.setAdapter(msgAdapter);
         startReceiveThread();
     }
     public void onUsersState(){
@@ -94,40 +93,43 @@ public class ChatFragment extends Fragment {
         listView.setSelection(usersList.size());
     }
     public void startReceiveThread(){
-        msgAdapter = new MsgAdapter(getActivity(), R.layout.chat_item_message, msgList);
-        listView.setAdapter(msgAdapter);
 //        Message message = new Message();
 //        message = getMsg();
 //        Msg receivedmsg = new Msg(message.getMessage(),Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(true) {
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
-//                            msgList.add(receivedmsg);
-//                            msgAdapter.notifyDataSetChanged();
-//                            listView.setSelection(msgList.size());
-//                        }
-//                    });
-//                    try {
-//                        TimeUnit.SECONDS.sleep(5);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//            }
-//        }
-//        }).start();
-}
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
+                            msgList.add(receivedmsg);
+                             android.os.Message passmsg=new android.os.Message();
+                             passmsg.what=1;
+                             handler.sendMessage(passmsg);
+                    try {
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+            }
+        }
+        }).start();}
+
+    Handler handler = new Handler() {
+    public void handleMessage(android.os.Message msg){
+          super.handleMessage(msg);
+            if(msg.what==1){
+                msgAdapter.notifyDataSetChanged();
+                listView.setSelection(msgList.size());
+            }
+        }
+    };
+
     public void MsgInit(){
     }
     private void UsersInit(){
         usersList.clear();
-        usersList.add("fanfan");
-        usersList.add("yangyang");
-
+        for(Iterator iterator=onLineUsers.iterator();iterator.hasNext();)
+        usersList.add((String)iterator.next());
     }
 }

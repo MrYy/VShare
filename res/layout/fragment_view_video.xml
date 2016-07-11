@@ -7,7 +7,7 @@
         android:id="@+id/playSet"
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:layout_height="60dp"
+        android:layout_height="30dp"
         android:layout_weight="1">
         <EditText
             android:layout_width="0dp"
@@ -21,6 +21,7 @@
             android:id="@+id/button_view_video"
             android:layout_height="match_parent"
             android:text="查看视频"
+            android:textSize="15sp"
             />
     </LinearLayout>
     <FrameLayout

@@ -23,9 +23,11 @@ import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.onLineUsers;
 import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.sendMsg;
 
 
@@ -96,6 +98,14 @@ public class UsersFragment extends Fragment {
         usersAdapter = new UsersAdapter(getActivity(),R.layout.chat_item_users,usersList);
         listView.setAdapter(usersAdapter);
         listView.setSelection(usersList.size());
+        chat_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsersInit();
+                usersAdapter.notifyDataSetChanged();
+                listView.setSelection(usersList.size());
+            }
+        });
     }
     public void startReceiveThread(){
 
@@ -117,8 +127,9 @@ public class UsersFragment extends Fragment {
      msgList = null;
     }
     private void UsersInit(){
-        usersList.add("fanfan");
-        usersList.add("yangyang");
+        usersList.clear();
+        for(Iterator iterator = onLineUsers.iterator(); iterator.hasNext();)
+            usersList.add((String)iterator.next());
 
     }
 }
