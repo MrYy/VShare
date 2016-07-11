@@ -87,7 +87,6 @@ public class Client implements Runnable {
                         if (msg == null) break;
                         if (msg.getType() == Message.Type.Message) {
                             //intent to send sessionid
-                            Log.d(TAG, msg.getMessage() + ":" + msg.getCount());
                             Log.d(TAG, "运行线程数:" + String.valueOf(Thread.activeCount()));
                         } else {
                             System.out.println(msg.getType().getDescribe());

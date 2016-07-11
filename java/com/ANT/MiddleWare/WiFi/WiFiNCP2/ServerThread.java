@@ -71,13 +71,8 @@ public class ServerThread extends Thread {
                                 Toast.makeText(context, "has a client in", Toast.LENGTH_SHORT).show();
                             }
                         });
-//                        if (clients.size() < 2) {
                         sc.configureBlocking(false);
                         sc.register(mKey.selector(), SelectionKey.OP_WRITE | SelectionKey.OP_READ);
-                        Message name = new Message();
-                        name.setName(ViewVideoActivity.userName);
-                        ViewVideoActivity.sendMsg(name);
-//                        }
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mRemoteAddr = sc.socket().getInetAddress();
@@ -86,14 +81,13 @@ public class ServerThread extends Thread {
                         Message testMsg = new Message();
                         testMsg.setMessage(Method.getRandomString(300));
                         ViewVideoActivity.sendMsg(testMsg);
-                        /**
-                         * ap向外发送msg时，注意要设置clients！
-                         */
-                        TimeUnit.SECONDS.sleep(5);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Log.d(TAG, "message queue size:" + String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
                                 Message msg = ViewVideoActivity.sendMessageQueue.peek();
+                                Log.d(TAG, "msg type:"+String.valueOf(msg.getType())+"remote addr:" + String.valueOf(mRemoteAddr) + " setAddr:" + msg.getClients().get(0)+
+                                " set size:"+String.valueOf(msg.getClients().size())
+                                +" msg:"+msg.getMessage());
                                 if (msg.getClients().contains(mRemoteAddr)) {
                                     msg.setName(ViewVideoActivity.userName);
                                     Method.send(msg, sc);
@@ -103,6 +97,8 @@ public class ServerThread extends Thread {
                                     ViewVideoActivity.sendMessageQueue.poll();
                                 }
                             }
+                            Log.d(TAG, "after message"+" queue size "+String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
+
                             while (!ViewVideoActivity.taskMessageQueue.isEmpty()) {
                                 //发送报文
                                 Message msg = ViewVideoActivity.taskMessageQueue.peek();
@@ -117,10 +113,13 @@ public class ServerThread extends Thread {
                                     ViewVideoActivity.taskMessageQueue.poll();
                                 }
                             }
+                            Log.d(TAG, "after task");
+
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
                         mKey.interestOps(SelectionKey.OP_READ);
+                        Log.d(TAG, "finish writing");
                     } else if (mKey.isReadable()) {
                         Log.d(TAG, "server thread is readable");
                         SocketChannel mSc = (SocketChannel) mKey.channel();
@@ -134,8 +133,6 @@ public class ServerThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 

@@ -287,7 +287,7 @@ public class Method {
     }
 
     public static void read(SocketChannel mSc) throws MyException {
-        Message msgHeader = Method.readMessage(mSc, 370);
+        Message msgHeader = Method.readMessage(mSc, 358);
         if(msgHeader==null) return;
         Log.d(TAG, "message length:" + msgHeader.getMsgLength());
         Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
@@ -296,17 +296,12 @@ public class Method {
             ViewVideoActivity.getClients().remove(mClient);
             switch (msg.getType()) {
                 case Message:
+                    Log.d(TAG, "receive message");
                     Log.d(TAG, msg.getMessage());
                     ViewVideoActivity.receiveMessageQueue.add(msg);
                     if (ViewVideoActivity.isAp) {
                         msg.setClients(ViewVideoActivity.getClients());
                         ViewVideoActivity.sendMessageQueue.add(msg);
-                    }
-                    break;
-                case SYSTEM:
-                    String userName;
-                    if (!(userName = msg.getName()).equals("")) {
-                        ViewVideoActivity.onLineUsers.add(userName);
                     }
                     break;
                 case Fragment:

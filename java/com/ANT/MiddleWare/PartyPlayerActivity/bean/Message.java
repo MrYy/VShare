@@ -23,7 +23,7 @@ public class Message implements Serializable {
      *
      */
     public static enum Type {
-        Message("message"), Fragment("fragment"),SYSTEM("system message");
+        Message("message"), Fragment("fragment");
         private String describe;
 
         Type(String describe) {
@@ -45,7 +45,6 @@ public class Message implements Serializable {
         return length;
     }
     private int length;
-    private int count;
     private String message = "";
     private FileFragment fragment = null;
     private byte[] bytesObj = null;
@@ -56,21 +55,15 @@ public class Message implements Serializable {
     }
 
     public void setName(String name) {
-        this.type = Type.SYSTEM;
+        type = Type.Message;
         this.name = name;
+        this.message = name;
     }
 
     public FileFragment getFragment() {
         return fragment;
     }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public int getCount() {
-        return count;
-    }
 
     public int getLength() {
         if (bytesObj != null) return bytesObj.length;
