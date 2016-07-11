@@ -286,6 +286,10 @@ public class Method {
             switch (msg.getType()) {
                 case Message:
                     Log.d(TAG, msg.getMessage());
+                    String userName;
+                    if (!(userName = msg.getName()).equals("")) {
+                        ViewVideoActivity.onLineUsers.add(userName);
+                    }
                     ViewVideoActivity.receiveMessageQueue.add(msg);
                     break;
                 case Fragment:

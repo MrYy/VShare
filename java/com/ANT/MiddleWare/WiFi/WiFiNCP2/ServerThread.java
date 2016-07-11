@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
@@ -75,6 +76,9 @@ public class ServerThread extends Thread {
 //                        if (clients.size() < 2) {
                         sc.configureBlocking(false);
                         sc.register(mKey.selector(), SelectionKey.OP_WRITE | SelectionKey.OP_READ);
+                        Message name = new Message();
+                        name.setName(ViewVideoActivity.userName);
+                        ViewVideoActivity.sendMsg(name);
 //                        }
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();

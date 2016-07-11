@@ -45,8 +45,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -76,6 +79,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static final BlockingQueue<FileFragment> taskQueue = new LinkedBlockingQueue<FileFragment>();
     public static final BlockingQueue<Message> sendMessageQueue = new LinkedBlockingQueue<Message>();
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
+    public static final Set<String> onLineUsers = new ConcurrentSkipListSet<>();
     public static String userName;
     private ViewPager vp;
     //private String path="http://127.0.0.1:9999/4/index.m3u8";
