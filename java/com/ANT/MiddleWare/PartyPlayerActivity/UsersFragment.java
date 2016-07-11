@@ -20,7 +20,7 @@ import com.ANT.MiddleWare.PartyPlayerActivity.MsgAdapter;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
 import com.ANT.MiddleWare.PartyPlayerActivity.UsersAdapter;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
-import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 
 import java.util.ArrayList;
 import java.util.Iterator;

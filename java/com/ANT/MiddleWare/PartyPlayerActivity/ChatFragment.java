@@ -12,8 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 
-
-import com.ANT.MiddleWare.WiFi.WiFiTCP.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -93,13 +92,13 @@ public class ChatFragment extends Fragment {
         listView.setSelection(usersList.size());
     }
     public void startReceiveThread(){
-//        Message message = new Message();
-//        message = getMsg();
-//        Msg receivedmsg = new Msg(message.getMessage(),Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true) {
+                    //        Message message = new Message();
+                   //        message = getMsg();
+                  //        Msg receivedmsg = new Msg(message.getMessage(),Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
                             Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
                             msgList.add(receivedmsg);
                              android.os.Message passmsg=new android.os.Message();

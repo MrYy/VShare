@@ -2,38 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    >
     <LinearLayout
         android:id="@+id/playSet"
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:layout_height="30dp"
-        android:layout_weight="1">
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="#0099cc">
         <EditText
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:id="@+id/edittext_video_location"
-            android:layout_weight="3"
+            android:layout_weight="6"
+            android:background="#fff"
             />
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
             android:id="@+id/button_view_video"
-            android:layout_height="match_parent"
-            android:text="查看视频"
-            android:textSize="15sp"
+            android:layout_height="40dp"
+            android:background="@drawable/play"
+
             />
     </LinearLayout>
     <FrameLayout
         android:id="@+id/fragment_video_player"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:layout_weight="6">
+        android:layout_weight="6"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
 
         <io.vov.vitamio.widget.CenterLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <io.vov.vitamio.widget.VideoView
                 android:id="@+id/buffer"
