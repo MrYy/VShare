@@ -293,6 +293,9 @@ public class Method {
         Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
         if (msg != null) {
             InetAddress mClient = mSc.socket().getInetAddress();
+            /**
+             * test code
+             */
             ViewVideoActivity.getClients().remove(mClient);
             switch (msg.getType()) {
                 case Message:
@@ -300,10 +303,12 @@ public class Method {
                     Log.d(TAG, msg.getMessage());
                     ViewVideoActivity.receiveMessageQueue.add(msg);
                     if (ViewVideoActivity.isAp) {
-                        SendTask sendTask = new SendTask();
-                        sendTask.setClients(ViewVideoActivity.getClients());
-                        sendTask.setMsg(msg);
-                        ViewVideoActivity.sendMessageQueue.add(sendTask);
+                        if (ViewVideoActivity.getClients().size() > 0) {
+                            SendTask sendTask = new SendTask();
+                            sendTask.setClients(ViewVideoActivity.getClients());
+                            sendTask.setMsg(msg);
+                            ViewVideoActivity.sendMessageQueue.add(sendTask);
+                        }
                     }
                     break;
                 case Fragment:
@@ -312,12 +317,14 @@ public class Method {
                     Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
                     IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, 0);
                     if (ViewVideoActivity.isAp) {
-                        Message mMsg = new Message();
-                        mMsg.setFragment(ff);
-                        SendTask sendTask = new SendTask();
-                        sendTask.setMsg(mMsg);
-                        sendTask.setClients(ViewVideoActivity.getClients());
-                        ViewVideoActivity.taskMessageQueue.add(sendTask);
+                        if (ViewVideoActivity.getClients().size() > 0) {
+                            Message mMsg = new Message();
+                            mMsg.setFragment(ff);
+                            SendTask sendTask = new SendTask();
+                            sendTask.setMsg(mMsg);
+                            sendTask.setClients(ViewVideoActivity.getClients());
+                            ViewVideoActivity.taskMessageQueue.add(sendTask);
+                        }
                     }
                     break;
             }

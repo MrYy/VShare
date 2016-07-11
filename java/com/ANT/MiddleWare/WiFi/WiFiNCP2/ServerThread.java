@@ -78,9 +78,9 @@ public class ServerThread extends Thread {
                         InetAddress mRemoteAddr = sc.socket().getInetAddress();
                         sc.socket().setTcpNoDelay(true);
                         Log.d(TAG, "server is writing");
-                        Message testMsg = new Message();
-                        testMsg.setMessage(Method.getRandomString(300));
-                        ViewVideoActivity.sendMsg(testMsg);
+//                        Message testMsg = new Message();
+//                        testMsg.setMessage(Method.getRandomString(300));
+//                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Log.d(TAG, "message queue size:" + String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
@@ -115,18 +115,18 @@ public class ServerThread extends Thread {
                                     ViewVideoActivity.taskMessageQueue.poll();
                                 }
                             }
-                            Log.d(TAG, "after task");
+//                            Log.d(TAG, "after task");
 
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
-//                        mKey.interestOps(SelectionKey.OP_READ);
-                        Log.d(TAG, "finish writing");
+                        mKey.interestOps(SelectionKey.OP_READ);
+//                        Log.d(TAG, "finish writing");
                     } else if (mKey.isReadable()) {
-                        Log.d(TAG, "server thread is readable");
+//                        Log.d(TAG, "server thread is readable");
                         SocketChannel mSc = (SocketChannel) mKey.channel();
                         Method.read(mSc);
-//                        mKey.interestOps(SelectionKey.OP_WRITE);
+                        mKey.interestOps(SelectionKey.OP_WRITE);
                     }
 
                     ite.remove();

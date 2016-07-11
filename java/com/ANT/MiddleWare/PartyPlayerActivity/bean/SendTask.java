@@ -26,7 +26,7 @@ public class SendTask {
     public List<InetAddress> getmClients() {
         return mClients;
     }
-
+    //deep copy
     public void setClients(Set<InetAddress> clients) {
         Iterator<InetAddress> iterator = clients.iterator();
         while (iterator.hasNext()) {
