@@ -63,6 +63,7 @@ public class ServerThread extends Thread {
                         InetAddress clientAddr = sc.socket().getInetAddress();
                         Log.d(TAG, "client address:" + clientAddr.toString());
                         clients.add(clientAddr);
+                        ViewVideoActivity.setClients(clients);
                         ((Activity) context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -78,23 +79,41 @@ public class ServerThread extends Thread {
 //                        }
                     } else if (mKey.isWritable()) {
                         SocketChannel sc = (SocketChannel) mKey.channel();
+                        InetAddress mRemoteAddr = sc.socket().getInetAddress();
                         sc.socket().setTcpNoDelay(true);
                         Log.d(TAG, "server is writing");
                         Message testMsg = new Message();
                         testMsg.setMessage(Method.getRandomString(300));
+                        testMsg.setClients(ViewVideoActivity.getClients());
                         ViewVideoActivity.sendMsg(testMsg);
+                        /**
+                         * ap向外发送msg时，注意要设置clients！
+                         */
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
-                                Message msg = ViewVideoActivity.sendMessageQueue.poll();
-                                msg.setName(ViewVideoActivity.userName);
-                                Method.send(msg, sc);
+                                Message msg = ViewVideoActivity.sendMessageQueue.peek();
+                                if (msg.getClients().contains(mRemoteAddr)) {
+                                    msg.setName(ViewVideoActivity.userName);
+                                    Method.send(msg, sc);
+                                    msg.getClients().remove(mRemoteAddr);
+                                }
+                                if (msg.getClients().size() == 0) {
+                                    ViewVideoActivity.sendMessageQueue.poll();
+                                }
                             }
-                            while (!ViewVideoActivity.getTaskQueue().isEmpty()) {
+                            while (!ViewVideoActivity.taskMessageQueue.isEmpty()) {
                                 //发送报文
-                                FileFragment ff = ViewVideoActivity.taskQueue.poll();
-                                Message msgObj = new Message();
-                                msgObj.setFragment(ff);
-                                Method.send(msgObj, sc);
+                                Message msg = ViewVideoActivity.taskMessageQueue.peek();
+                                if (msg.getClients().contains(mRemoteAddr)) {
+                                    FileFragment ff = msg.getFragment();
+                                    Message msgObj = new Message();
+                                    msgObj.setFragment(ff);
+                                    Method.send(msgObj, sc);
+                                    msg.getClients().remove(mRemoteAddr);
+                                }
+                                if (msg.getClients().size() == 0) {
+                                    ViewVideoActivity.taskMessageQueue.poll();
+                                }
                             }
                         } catch (MyException e) {
                             Log.d(TAG, "catch");

@@ -8,6 +8,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by David on 16/4/18.
@@ -44,7 +50,7 @@ public class Message implements Serializable {
     private FileFragment fragment = null;
     private byte[] bytesObj = null;
     private String name;
-
+    private List<InetAddress> clients = new ArrayList<>(5);
     public String getName() {
         return name;
     }
@@ -68,6 +74,24 @@ public class Message implements Serializable {
     public int getLength() {
         if (bytesObj != null) return bytesObj.length;
         return -1;
+    }
+
+    public List<InetAddress> getClients() {
+        return clients;
+    }
+
+    public void removeAddr(InetAddress addr) {
+        clients.remove(addr);
+    }
+    public void setClients(Set<InetAddress> clients) {
+        Iterator<InetAddress> iterator = clients.iterator();
+        while (iterator.hasNext()) {
+            try {
+                this.clients.add(InetAddress.getByName(iterator.next().getHostName()));
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setFragment(FileFragment fragment) {

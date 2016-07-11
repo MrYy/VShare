@@ -45,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import cn.finalteam.galleryfinal.CoreConfig;
 import cn.finalteam.galleryfinal.FunctionConfig;
@@ -290,6 +291,8 @@ public class Method {
         Log.d(TAG, "message length:" + msgHeader.getMsgLength());
         Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
         if (msg != null) {
+            InetAddress mClient = mSc.socket().getInetAddress();
+            ViewVideoActivity.getClients().remove(mClient);
             switch (msg.getType()) {
                 case Message:
                     Log.d(TAG, msg.getMessage());
@@ -298,15 +301,25 @@ public class Method {
                         ViewVideoActivity.onLineUsers.add(userName);
                     }
                     ViewVideoActivity.receiveMessageQueue.add(msg);
+                    if (ViewVideoActivity.isAp) {
+                        msg.setClients(ViewVideoActivity.getClients());
+                        ViewVideoActivity.sendMessageQueue.add(msg);
+                    }
                     break;
                 case Fragment:
                     FileFragment ff = msg.getFragment();
                     Log.d("insert fragment", String.valueOf(ff.getSegmentID()) + " " + String.valueOf(ff.getStartIndex()));
                     Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
                     IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, 0);
+                    if (ViewVideoActivity.isAp) {
+                        Message mMsg = new Message();
+                        mMsg.setFragment(ff);
+                        mMsg.setClients(ViewVideoActivity.getClients());
+                        ViewVideoActivity.taskMessageQueue.add(msg);
+                    }
                     break;
             }
-
+            ViewVideoActivity.getClients().add(mClient);
         }
     }
     public static void postRequest(final Context context, final String url, final Map<String, String> request, final Response.Listener<String> listener) {

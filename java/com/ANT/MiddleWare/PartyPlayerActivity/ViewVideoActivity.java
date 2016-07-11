@@ -70,10 +70,12 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private InetAddress serverAddr;
     private InetAddress mAddr;
     public static final BlockingQueue<FileFragment> taskQueue = new LinkedBlockingQueue<FileFragment>();
+    public static final BlockingQueue<Message> taskMessageQueue = new LinkedBlockingQueue<Message>();
     public static final BlockingQueue<Message> sendMessageQueue = new LinkedBlockingQueue<Message>();
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
     public static final Set<String> onLineUsers = new ConcurrentSkipListSet<>();
     public static String userName;
+    public static boolean isAp;
     private ViewPager vp;
     //private String path="http://127.0.0.1:9999/4/index.m3u8";
     private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
@@ -83,10 +85,21 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private LinearLayout playSetLayout;
     boolean isPortrait=true;
     private long mPosition=0;
-
+    private static Set<InetAddress> mClients;
 
     public static void sendMsg(Message msg) {
+        if (isAp) {
+            msg.setClients(mClients);
+        }
         sendMessageQueue.add(msg);
+    }
+
+    public static synchronized Set<InetAddress> getClients() {
+        return mClients;
+    }
+
+    public static synchronized void setClients(Set<InetAddress> clients) {
+        mClients = clients;
     }
 
     public static Message getMsg() {
@@ -98,9 +111,11 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
     }
     public static void insert(FileFragment ff) {
-        synchronized (taskQueue) {
+        synchronized (taskMessageQueue) {
             Log.d(TAG, "taskQueue's length:" + String.valueOf(taskQueue.size()));
-            taskQueue.add(ff);
+            Message msg = new Message();
+            msg.setClients(mClients);
+            taskMessageQueue.add(msg);
         }
     }
     private final class WiFiReceiver extends BroadcastReceiver {
@@ -252,6 +267,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     }
 
     private void beHotPot() {
+        isAp = true;
         wifiManager.setWifiEnabled(false);
         Method.changeApState(ViewVideoActivity.this, wifiManager, true);
         DhcpInfo info = wifiManager.getDhcpInfo();
