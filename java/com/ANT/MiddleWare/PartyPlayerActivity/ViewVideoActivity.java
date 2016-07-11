@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
@@ -75,7 +76,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
     public static final Set<String> onLineUsers = new ConcurrentSkipListSet<>();
     public static String userName;
-    public static boolean isAp;
+    public static boolean isAp = false;
     private ViewPager vp;
     //private String path="http://127.0.0.1:9999/4/index.m3u8";
     private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
@@ -85,7 +86,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private LinearLayout playSetLayout;
     boolean isPortrait=true;
     private long mPosition=0;
-    private static Set<InetAddress> mClients;
+    private static Set<InetAddress> mClients = new HashSet<>();
 
     public static void sendMsg(Message msg) {
         if (isAp) {

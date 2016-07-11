@@ -21,6 +21,7 @@ import java.nio.channels.SocketChannel;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by zxc on 2016/6/15.
@@ -84,11 +85,11 @@ public class ServerThread extends Thread {
                         Log.d(TAG, "server is writing");
                         Message testMsg = new Message();
                         testMsg.setMessage(Method.getRandomString(300));
-                        testMsg.setClients(ViewVideoActivity.getClients());
                         ViewVideoActivity.sendMsg(testMsg);
                         /**
                          * ap向外发送msg时，注意要设置clients！
                          */
+                        TimeUnit.SECONDS.sleep(5);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Message msg = ViewVideoActivity.sendMessageQueue.peek();
@@ -132,6 +133,8 @@ public class ServerThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
