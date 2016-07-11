@@ -23,7 +23,7 @@ public class Message implements Serializable {
      *
      */
     public static enum Type {
-        Message("message"), Fragment("fragment");
+        Message("message"), Fragment("fragment"),SYSTEM("system message");
         private String describe;
 
         Type(String describe) {
@@ -56,6 +56,7 @@ public class Message implements Serializable {
     }
 
     public void setName(String name) {
+        this.type = Type.SYSTEM;
         this.name = name;
     }
 

@@ -116,7 +116,7 @@ public class Method {
         }
     }
     public static void sendMessage(SocketChannel bSc, byte[] bytesObj) throws MyException {
-        Log.d("send size:", String.valueOf(bytesObj.length));
+        Log.d("send size:", String.valueOf(bytesObj.length)+" ip address:"+String.valueOf(bSc.socket().getInetAddress()));
         ByteBuffer buf = ByteBuffer.allocate(bytesObj.length);
         buf.put(bytesObj);
         buf.flip();
@@ -281,12 +281,13 @@ public class Method {
         Message msgHeader = new Message();
         msgHeader.setLength(msgBytes.length);
         byte[] headerBytes = msgHeader.getBytes();
+        Log.d(TAG, "header size:" + String.valueOf(headerBytes.length));
         Method.sendMessage(sc,headerBytes);
         Method.sendMessage(sc,msgBytes);
     }
 
     public static void read(SocketChannel mSc) throws MyException {
-        Message msgHeader = Method.readMessage(mSc, 263);
+        Message msgHeader = Method.readMessage(mSc, 370);
         if(msgHeader==null) return;
         Log.d(TAG, "message length:" + msgHeader.getMsgLength());
         Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
@@ -296,14 +297,16 @@ public class Method {
             switch (msg.getType()) {
                 case Message:
                     Log.d(TAG, msg.getMessage());
-                    String userName;
-                    if (!(userName = msg.getName()).equals("")) {
-                        ViewVideoActivity.onLineUsers.add(userName);
-                    }
                     ViewVideoActivity.receiveMessageQueue.add(msg);
                     if (ViewVideoActivity.isAp) {
                         msg.setClients(ViewVideoActivity.getClients());
                         ViewVideoActivity.sendMessageQueue.add(msg);
+                    }
+                    break;
+                case SYSTEM:
+                    String userName;
+                    if (!(userName = msg.getName()).equals("")) {
+                        ViewVideoActivity.onLineUsers.add(userName);
                     }
                     break;
                 case Fragment:

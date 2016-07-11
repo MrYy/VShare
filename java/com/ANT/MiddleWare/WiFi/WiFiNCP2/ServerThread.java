@@ -92,6 +92,7 @@ public class ServerThread extends Thread {
                         TimeUnit.SECONDS.sleep(5);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
+                                Log.d(TAG, "message queue size:" + String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
                                 Message msg = ViewVideoActivity.sendMessageQueue.peek();
                                 if (msg.getClients().contains(mRemoteAddr)) {
                                     msg.setName(ViewVideoActivity.userName);

@@ -59,11 +59,11 @@ public class Client implements Runnable {
                             SocketChannel mSc = (SocketChannel) mKey.channel();
                         Method.read(mSc);
                     } else if (mKey.isWritable()) {
-                            Log.d(TAG, "client is writing");
+//                            Log.d(TAG, "client is writing");
                         SocketChannel mSc = (SocketChannel)mKey.channel();
-                        Message testMsg = new Message();
-                        testMsg.setMessage(Method.getRandomString(300));
-                        ViewVideoActivity.sendMsg(testMsg);
+//                        Message testMsg = new Message();
+//                        testMsg.setMessage(Method.getRandomString(300));
+//                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Message msg = ViewVideoActivity.sendMessageQueue.poll();
@@ -80,7 +80,7 @@ public class Client implements Runnable {
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
-                            Log.d(TAG, "finish write");
+//                            Log.d(TAG, "finish write");
                     }
                     ite.remove();
                 }
