@@ -4,10 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,7 +18,6 @@ public class LoginDialog extends Dialog implements View.OnClickListener{
     private Button registerButton;
     private EditText name;
     private EditText password;
-
     public LoginDialog(Context context) {
         this(context,R.style.alert_dialog);
     }
