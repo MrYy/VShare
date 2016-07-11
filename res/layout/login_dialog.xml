@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="290dp"
+    android:background="@drawable/dialog_background"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="账号："
+            android:textSize="@dimen/dialog_title_size"
+            android:layout_height="wrap_content"
+            android:textStyle="italic" />
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/edittext_account"
+        android:hint="输入账号"
+        android:layout_height="wrap_content" />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <TextView
+            android:textSize="@dimen/dialog_title_size"
+            android:layout_width="wrap_content"
+            android:text="密码："
+            android:layout_height="wrap_content"
+            android:textStyle="italic" />
+    <EditText
+        android:id="@+id/edittext_password"
+        android:layout_width="match_parent"
+        android:hint="输入密码"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+
+        <Button
+            android:layout_margin="15dp"
+            android:id="@+id/button_register"
+            style="@style/dialog_button"
+            android:layout_marginRight="10dp"
+            android:text="注册" />
+
+</LinearLayout>

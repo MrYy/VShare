@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.ANT.MiddleWare.PartyPlayerActivity.util.LoginDialog;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.Method;
 import com.baoyz.actionsheet.ActionSheet;
@@ -90,6 +91,13 @@ public class LoginFragment extends Fragment {
                 intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
                 intent.putExtra("保存用户昵称", checkBoxRem.isChecked());
                 startActivity(intent);
+            }
+        });
+        (view.findViewById(R.id.textview_register)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginDialog dialog = new LoginDialog(getActivity());
+                dialog.show();
             }
         });
         photo = (CircleImageView) view.findViewById(R.id.profile_image);

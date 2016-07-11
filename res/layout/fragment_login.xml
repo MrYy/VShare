@@ -76,6 +76,26 @@
             android:text="分享视频"
             />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp">
+        <CheckBox
+            android:layout_marginLeft="230dp"
+            android:layout_width="wrap_content"
+            android:visibility="invisible"
+            android:layout_height="wrap_content"
+            style="@style/CustomCheckboxTheme"/>
+        <TextView
+            android:id="@+id/textview_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textSize="16sp"
+            android:text="没有账号?"
+            />
+    </LinearLayout>
     <Button
         android:layout_marginRight="55dp"
         android:layout_marginTop="40dp"
