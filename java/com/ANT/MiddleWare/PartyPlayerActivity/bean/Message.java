@@ -45,48 +45,36 @@ public class Message implements Serializable {
         return length;
     }
     private int length;
+    private int count;
     private String message = "";
     private FileFragment fragment = null;
     private byte[] bytesObj = null;
     private String name;
-    private List<InetAddress> clients = new ArrayList<>(5);
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        type = Type.Message;
         this.name = name;
-        this.message = name;
     }
 
     public FileFragment getFragment() {
         return fragment;
     }
 
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
+    }
 
     public int getLength() {
         if (bytesObj != null) return bytesObj.length;
         return -1;
     }
 
-    public List<InetAddress> getClients() {
-        return clients;
-    }
-
-    public void removeAddr(InetAddress addr) {
-        clients.remove(addr);
-    }
-    public void setClients(Set<InetAddress> clients) {
-        Iterator<InetAddress> iterator = clients.iterator();
-        while (iterator.hasNext()) {
-            try {
-                this.clients.add(InetAddress.getByName(iterator.next().getHostName()));
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public void setFragment(FileFragment fragment) {
         this.fragment = fragment;

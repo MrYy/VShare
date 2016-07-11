@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
 
@@ -21,7 +22,6 @@ import java.nio.channels.SocketChannel;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by zxc on 2016/6/15.
@@ -84,16 +84,17 @@ public class ServerThread extends Thread {
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Log.d(TAG, "message queue size:" + String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
-                                Message msg = ViewVideoActivity.sendMessageQueue.peek();
-                                Log.d(TAG, "msg type:"+String.valueOf(msg.getType())+"remote addr:" + String.valueOf(mRemoteAddr) + " setAddr:" + msg.getClients().get(0)+
-                                " set size:"+String.valueOf(msg.getClients().size())
+                                SendTask sendTask = ViewVideoActivity.sendMessageQueue.peek();
+                                Message msg =sendTask .getMsg();
+                                Log.d(TAG, "msg type:"+String.valueOf(msg.getType())+"remote addr:" + String.valueOf(mRemoteAddr) + " setAddr:" + sendTask.getmClients().get(0)+
+                                " set size:"+String.valueOf(sendTask.getmClients().size())
                                 +" msg:"+msg.getMessage());
-                                if (msg.getClients().contains(mRemoteAddr)) {
+                                if (sendTask.getmClients().contains(mRemoteAddr)) {
                                     msg.setName(ViewVideoActivity.userName);
                                     Method.send(msg, sc);
-                                    msg.getClients().remove(mRemoteAddr);
+                                    sendTask.getmClients().remove(mRemoteAddr);
                                 }
-                                if (msg.getClients().size() == 0) {
+                                if (sendTask.getmClients().size() == 0) {
                                     ViewVideoActivity.sendMessageQueue.poll();
                                 }
                             }
@@ -101,15 +102,16 @@ public class ServerThread extends Thread {
 
                             while (!ViewVideoActivity.taskMessageQueue.isEmpty()) {
                                 //发送报文
-                                Message msg = ViewVideoActivity.taskMessageQueue.peek();
-                                if (msg.getClients().contains(mRemoteAddr)) {
+                                SendTask sendTask = ViewVideoActivity.taskMessageQueue.peek();
+                                Message msg = sendTask.getMsg();
+                                if (sendTask.getmClients().contains(mRemoteAddr)) {
                                     FileFragment ff = msg.getFragment();
                                     Message msgObj = new Message();
                                     msgObj.setFragment(ff);
                                     Method.send(msgObj, sc);
-                                    msg.getClients().remove(mRemoteAddr);
+                                    sendTask.getmClients().remove(mRemoteAddr);
                                 }
-                                if (msg.getClients().size() == 0) {
+                                if (sendTask.getmClients().size() == 0) {
                                     ViewVideoActivity.taskMessageQueue.poll();
                                 }
                             }
@@ -118,13 +120,13 @@ public class ServerThread extends Thread {
                         } catch (MyException e) {
                             Log.d(TAG, "catch");
                         }
-                        mKey.interestOps(SelectionKey.OP_READ);
+//                        mKey.interestOps(SelectionKey.OP_READ);
                         Log.d(TAG, "finish writing");
                     } else if (mKey.isReadable()) {
                         Log.d(TAG, "server thread is readable");
                         SocketChannel mSc = (SocketChannel) mKey.channel();
                         Method.read(mSc);
-                        mKey.interestOps(SelectionKey.OP_WRITE);
+//                        mKey.interestOps(SelectionKey.OP_WRITE);
                     }
 
                     ite.remove();

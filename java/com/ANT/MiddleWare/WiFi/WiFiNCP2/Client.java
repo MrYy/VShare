@@ -5,6 +5,7 @@ import android.util.Log;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
 
@@ -58,6 +59,7 @@ public class Client implements Runnable {
                             Log.d(TAG, "client is reading");
                             SocketChannel mSc = (SocketChannel) mKey.channel();
                         Method.read(mSc);
+                            Log.d(TAG, "finish reading");
                     } else if (mKey.isWritable()) {
 //                            Log.d(TAG, "client is writing");
                         SocketChannel mSc = (SocketChannel)mKey.channel();
@@ -66,7 +68,8 @@ public class Client implements Runnable {
 //                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
-                                Message msg = ViewVideoActivity.sendMessageQueue.poll();
+                                SendTask sendTask = ViewVideoActivity.sendMessageQueue.poll();
+                                Message msg = sendTask.getMsg();
                                 msg.setName(ViewVideoActivity.userName);
                                 Method.send(msg,mSc);
                             }

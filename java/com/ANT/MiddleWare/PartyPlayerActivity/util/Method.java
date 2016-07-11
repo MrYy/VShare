@@ -14,6 +14,7 @@ import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -45,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import cn.finalteam.galleryfinal.CoreConfig;
 import cn.finalteam.galleryfinal.FunctionConfig;
@@ -287,7 +287,7 @@ public class Method {
     }
 
     public static void read(SocketChannel mSc) throws MyException {
-        Message msgHeader = Method.readMessage(mSc, 358);
+        Message msgHeader = Method.readMessage(mSc, 287);
         if(msgHeader==null) return;
         Log.d(TAG, "message length:" + msgHeader.getMsgLength());
         Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
@@ -300,8 +300,10 @@ public class Method {
                     Log.d(TAG, msg.getMessage());
                     ViewVideoActivity.receiveMessageQueue.add(msg);
                     if (ViewVideoActivity.isAp) {
-                        msg.setClients(ViewVideoActivity.getClients());
-                        ViewVideoActivity.sendMessageQueue.add(msg);
+                        SendTask sendTask = new SendTask();
+                        sendTask.setClients(ViewVideoActivity.getClients());
+                        sendTask.setMsg(msg);
+                        ViewVideoActivity.sendMessageQueue.add(sendTask);
                     }
                     break;
                 case Fragment:
@@ -312,8 +314,10 @@ public class Method {
                     if (ViewVideoActivity.isAp) {
                         Message mMsg = new Message();
                         mMsg.setFragment(ff);
-                        mMsg.setClients(ViewVideoActivity.getClients());
-                        ViewVideoActivity.taskMessageQueue.add(msg);
+                        SendTask sendTask = new SendTask();
+                        sendTask.setMsg(mMsg);
+                        sendTask.setClients(ViewVideoActivity.getClients());
+                        ViewVideoActivity.taskMessageQueue.add(sendTask);
                     }
                     break;
             }

@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
@@ -71,8 +72,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private InetAddress serverAddr;
     private InetAddress mAddr;
     public static final BlockingQueue<FileFragment> taskQueue = new LinkedBlockingQueue<FileFragment>();
-    public static final BlockingQueue<Message> taskMessageQueue = new LinkedBlockingQueue<Message>();
-    public static final BlockingQueue<Message> sendMessageQueue = new LinkedBlockingQueue<Message>();
+    public static final BlockingQueue<SendTask> taskMessageQueue = new LinkedBlockingQueue<SendTask>();
+    public static final BlockingQueue<SendTask> sendMessageQueue = new LinkedBlockingQueue<SendTask>();
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
     public static final Set<String> onLineUsers = new ConcurrentSkipListSet<>();
     public static String userName;
@@ -89,10 +90,12 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private static Set<InetAddress> mClients = new HashSet<>();
 
     public static void sendMsg(Message msg) {
+        SendTask sendTask = new SendTask();
+        sendTask.setMsg(msg);
         if (isAp) {
-            msg.setClients(mClients);
+            sendTask.setClients(mClients);
         }
-        sendMessageQueue.add(msg);
+        sendMessageQueue.add(sendTask);
     }
 
     public static synchronized Set<InetAddress> getClients() {
@@ -115,8 +118,10 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         synchronized (taskMessageQueue) {
             Log.d(TAG, "taskQueue's length:" + String.valueOf(taskQueue.size()));
             Message msg = new Message();
-            msg.setClients(mClients);
-            taskMessageQueue.add(msg);
+            SendTask sendTask = new SendTask();
+            sendTask.setMsg(msg);
+            sendTask.setClients(mClients);
+            taskMessageQueue.add(sendTask);
         }
     }
     private final class WiFiReceiver extends BroadcastReceiver {
