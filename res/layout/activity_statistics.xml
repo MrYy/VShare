@@ -1,79 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/menu_bottom_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/background_color"
+    android:orientation="vertical"
     tools:context="com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity">
+
     <com.ANT.MiddleWare.PartyPlayerActivity.bean.ColumnSurface
+        android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:id="@+id/view" />
+        android:layout_height="300dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="3G下载速度"
-        android:id="@+id/textView"
-        android:layout_below="@+id/view"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="29dp" />
+    <LinearLayout
+        android:background="@color/background_color"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="WIFI下载速度"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="27dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="WIFI发送速度"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="23dp" />
+            android:layout_marginTop="20dp"
+            android:background="@color/button_text_color"
+            android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/textView4"
-        android:layout_alignTop="@+id/textView"
-        android:layout_centerHorizontal="true" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="3G   下载速度"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/textView5"
-        android:layout_alignTop="@+id/textView2"
-        android:layout_alignLeft="@+id/textView4" />
+            <TextView
+                android:id="@+id/textView4"
+                android:gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/textView6"
-        android:layout_alignTop="@+id/textView3"
-        android:layout_alignLeft="@+id/textView5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/button_text_color"
+            android:layout_margin="3dp"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="WIFI下载速度"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="20dp"
+                android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/button_text_color"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+
+                android:text="WIFI发送速度"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="20dp"
+                android:text="Small Text"
+
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout
-        android:layout_width="match_parent"
         android:id="@+id/bottom_menu"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/button_height"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"></com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout>
-</RelativeLayout>
+        android:gravity="bottom"></com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout>
+</LinearLayout>
