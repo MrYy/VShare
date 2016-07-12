@@ -301,7 +301,14 @@ public class Method {
                 case Message:
                     Log.d(TAG, "receive message");
                     Log.d(TAG, msg.getMessage());
-                    ViewVideoActivity.receiveMessageQueue.add(msg);
+                    String mName;
+                    if (!(mName=msg.getName()).equals("")) {
+                        if (msg.getMessage().equals(mName)) {
+                            ViewVideoActivity.onLineUsers.add(mName);
+                        }else {
+                            ViewVideoActivity.receiveMessageQueue.add(msg);
+                        }
+                    }
                     if (ViewVideoActivity.isAp) {
                         if (ViewVideoActivity.getClients().size() > 0) {
                             SendTask sendTask = new SendTask();
@@ -310,12 +317,7 @@ public class Method {
                             ViewVideoActivity.sendMessageQueue.add(sendTask);
                         }
                     }
-                    String mName;
-                    if (!(mName=msg.getName()).equals("")) {
-                        if (msg.getMessage().equals(mName)) {
-                            ViewVideoActivity.onLineUsers.add(mName);
-                        }
-                    }
+
                     break;
                 case Fragment:
                     FileFragment ff = msg.getFragment();

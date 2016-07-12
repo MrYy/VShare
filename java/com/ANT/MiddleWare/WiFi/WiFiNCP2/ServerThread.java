@@ -45,10 +45,7 @@ public class ServerThread extends Thread {
         super.run();
         Log.d(TAG, "server is running");
         InetSocketAddress addr = new InetSocketAddress(ip.getHostAddress(), 12345);
-        Message nameMsg = new Message();
-        nameMsg.setName(ViewVideoActivity.userName);
-        nameMsg.setMessage(ViewVideoActivity.userName);
-        ViewVideoActivity.sendMsg(nameMsg);
+
         try {
             Selector selector = Selector.open();
             ServerSocketChannel ssc = ServerSocketChannel.open();
@@ -78,6 +75,10 @@ public class ServerThread extends Thread {
                         });
                         sc.configureBlocking(false);
                         sc.register(mKey.selector(), SelectionKey.OP_WRITE | SelectionKey.OP_READ);
+                        Message nameMsg = new Message();
+                        nameMsg.setName(ViewVideoActivity.userName);
+                        nameMsg.setMessage(ViewVideoActivity.userName);
+                        ViewVideoActivity.sendMsg(nameMsg);
                     } else if (mKey.isReadable()) {
 //                        Log.d(TAG, "server thread is readable");
                         SocketChannel mSc = (SocketChannel) mKey.channel();
@@ -97,9 +98,9 @@ public class ServerThread extends Thread {
                                 Log.d(TAG, "message queue size:" + String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
                                 SendTask sendTask = ViewVideoActivity.sendMessageQueue.peek();
                                 Message msg =sendTask .getMsg();
-                                Log.d(TAG, "msg type:"+String.valueOf(msg.getType())+"remote addr:" + String.valueOf(mRemoteAddr) + " setAddr:" + sendTask.getmClients().get(0)+
-                                " set size:"+String.valueOf(sendTask.getmClients().size())
-                                +" msg:"+msg.getMessage());
+//                                Log.d(TAG, "msg type:"+String.valueOf(msg.getType())+"remote addr:" + String.valueOf(mRemoteAddr) + " setAddr:" + sendTask.getmClients().get(0)+
+//                                " set size:"+String.valueOf(sendTask.getmClients().size())
+//                                +" msg:"+msg.getMessage());
                                 if (sendTask.getmClients().contains(mRemoteAddr)) {
                                     msg.setName(ViewVideoActivity.userName);
                                     Method.send(msg, sc);
