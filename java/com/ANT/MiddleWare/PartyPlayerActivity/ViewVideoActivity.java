@@ -82,8 +82,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static String userName="";
     public static boolean isAp = false;
     private ViewPager vp;
-    private String path="http://127.0.0.1:9999/4/index.m3u8";
-//    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
+//    private String path="http://127.0.0.1:9999/4/index.m3u8";
+    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
 //    private String path="";
     private VideoView mVideoView;
     private FrameLayout frameLayout;
@@ -228,7 +228,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                             mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);//缩放参数，画面全屏
                             isPortrait = false;
                         } else {
-                            frameLayout.getHeight();
                             LinearLayout.LayoutParams fl_lp = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
                                     vheight
@@ -279,6 +278,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     @Override
     public void onCompletion(MediaPlayer mp) {
         playSetLayout.setVisibility(View.VISIBLE);
+        mVideoView.seekTo(0);
     }
 
     private int getHeightPixel(FragmentActivity activity) {
