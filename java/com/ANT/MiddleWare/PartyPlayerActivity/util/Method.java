@@ -44,6 +44,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -66,11 +67,12 @@ public class Method {
     public static final int SELECT_LOCAL_PICTURES = 74;
 
     private static final String TAG = Method.class.getSimpleName();
-    public static   InetAddress intToInetAddress(int hostAddress) {
-        byte[] addressBytes = { (byte)(0xff & hostAddress),
-                (byte)(0xff & (hostAddress >> 8)),
-                (byte)(0xff & (hostAddress >> 16)),
-                (byte)(0xff & (hostAddress >> 24)) };
+
+    public static InetAddress intToInetAddress(int hostAddress) {
+        byte[] addressBytes = {(byte) (0xff & hostAddress),
+                (byte) (0xff & (hostAddress >> 8)),
+                (byte) (0xff & (hostAddress >> 16)),
+                (byte) (0xff & (hostAddress >> 24))};
 
         try {
             return InetAddress.getByAddress(addressBytes);
@@ -78,23 +80,25 @@ public class Method {
             throw new AssertionError();
         }
     }
+
     public static void record(FileFragment f, String type) {
-        record(f,type,"");
+        record(f, type, "");
     }
-    public static void record(FileFragment f,String type,String des) {
-        String startOffset=String.valueOf(f.getStartIndex());
-        String stopOffset=String.valueOf(f.getStopIndex());
-        String segId=String.valueOf(f.getSegmentID());
-        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss:SSS");
+
+    public static void record(FileFragment f, String type, String des) {
+        String startOffset = String.valueOf(f.getStartIndex());
+        String stopOffset = String.valueOf(f.getStopIndex());
+        String segId = String.valueOf(f.getSegmentID());
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss:SSS");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
         String str = format.format(curDate);
-        String text="count:"+des+" sId:"+segId+"\t start:"+startOffset+"\t stop:"
-                +stopOffset+"\t time:"+System.currentTimeMillis()+"\t "+str+"\n";
-        String dir= Environment.getExternalStorageDirectory().getAbsolutePath()+"/ltcptest/";
-        File filedir=new File(dir);
+        String text = "count:" + des + " sId:" + segId + "\t start:" + startOffset + "\t stop:"
+                + stopOffset + "\t time:" + System.currentTimeMillis() + "\t " + str + "\n";
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ltcptest/";
+        File filedir = new File(dir);
         filedir.mkdir();
-        File file=new File(dir, "l"+type+"_ch1_sp0.txt");
-        if(!file.exists()){
+        File file = new File(dir, "l" + type + "_ch1_sp0.txt");
+        if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -115,8 +119,9 @@ public class Method {
             e.printStackTrace();
         }
     }
+
     public static void sendMessage(SocketChannel bSc, byte[] bytesObj) throws MyException {
-        Log.d("send size:", String.valueOf(bytesObj.length)+" ip address:"+String.valueOf(bSc.socket().getInetAddress()));
+        Log.d("send size:", String.valueOf(bytesObj.length) + " ip address:" + String.valueOf(bSc.socket().getInetAddress()));
         ByteBuffer buf = ByteBuffer.allocate(bytesObj.length);
         buf.put(bytesObj);
         buf.flip();
@@ -136,7 +141,8 @@ public class Method {
     public static Message readMessage(SocketChannel socketChannel) throws MyException {
         return readMessage(socketChannel, 164345);
     }
-    public static Message readMessage(SocketChannel sc,int wantSize) throws MyException {
+
+    public static Message readMessage(SocketChannel sc, int wantSize) throws MyException {
         try {
             //33787
             //328699
@@ -144,9 +150,9 @@ public class Method {
 
             ByteBuffer buf = ByteBuffer.allocate(wantSize);
             //read in while
-            int byteRead = 0 ;
+            int byteRead = 0;
             int i = 0;
-            while (byteRead<buf.limit()) {
+            while (byteRead < buf.limit()) {
                 int count = sc.read(buf);
                 if (count < 0) break;
                 byteRead += count;
@@ -160,7 +166,7 @@ public class Method {
 //                    }
 //                }
 
-                if(count!=0)  Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
+                if (count != 0) Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             }
             if (byteRead > 0) {
                 buf.flip();
@@ -193,7 +199,7 @@ public class Method {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -204,7 +210,7 @@ public class Method {
         return null;
     }
 
-    public static void changeApState(Context context, WifiManager wifiManager,Boolean open) {
+    public static void changeApState(Context context, WifiManager wifiManager, Boolean open) {
         WifiConfiguration apConfig = new WifiConfiguration();
         apConfig.SSID = context.getString(R.string.ap_ssid);
         apConfig.preSharedKey = context.getString(R.string.ap_password);
@@ -212,7 +218,7 @@ public class Method {
         try {
             java.lang.reflect.Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
             try {
-                method.invoke(wifiManager,apConfig,open);
+                method.invoke(wifiManager, apConfig, open);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
@@ -223,6 +229,7 @@ public class Method {
             e.printStackTrace();
         }
     }
+
     public static String getRandomString(int length) { //length表示生成字符串的长度
         String base = "abcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();
@@ -233,6 +240,7 @@ public class Method {
         }
         return sb.toString();
     }
+
     public static void selectPicture(Context context, GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback, int method) {
         // Initialize ImageLoader with configuration.
         ImageLoaderConfiguration.Builder imageLoaderConfig = new ImageLoaderConfiguration.Builder(context);
@@ -275,20 +283,21 @@ public class Method {
                 break;
         }
     }
+
     //send message ,with header and content
-    public static void send(Message msg,SocketChannel sc) throws MyException {
+    public static void send(Message msg, SocketChannel sc) throws MyException {
         byte[] msgBytes = msg.getBytes();
         Message msgHeader = new Message();
         msgHeader.setLength(msgBytes.length);
         byte[] headerBytes = msgHeader.getBytes();
         Log.d(TAG, "header size:" + String.valueOf(headerBytes.length));
-        Method.sendMessage(sc,headerBytes);
-        Method.sendMessage(sc,msgBytes);
+        Method.sendMessage(sc, headerBytes);
+        Method.sendMessage(sc, msgBytes);
     }
 
     public static void read(SocketChannel mSc) throws MyException {
         Message msgHeader = Method.readMessage(mSc, 287);
-        if(msgHeader==null) return;
+        if (msgHeader == null) return;
         Log.d(TAG, "message length:" + msgHeader.getMsgLength());
         Message msg = Method.readMessage(mSc, msgHeader.getMsgLength());
         if (msg != null) {
@@ -302,13 +311,16 @@ public class Method {
                     Log.d(TAG, "receive message");
                     Log.d(TAG, msg.getMessage());
                     String mName;
-                    if (!(mName=msg.getName()).equals("")) {
+                    if (!(mName = msg.getName()).equals("")) {
                         if (msg.getMessage().equals(mName)) {
                             ViewVideoActivity.onLineUsers.add(mName);
-                        }else {
-                            ViewVideoActivity.receiveMessageQueue.add(msg);
+                            Iterator<String> iterator = ViewVideoActivity.onLineUsers.iterator();
+                            while (iterator.hasNext()) {
+                                Log.d(TAG, iterator.next());
+                            }
                         }
                     }
+                    ViewVideoActivity.receiveMessageQueue.add(msg);
                     if (ViewVideoActivity.isAp) {
                         if (ViewVideoActivity.getClients().size() > 0) {
                             SendTask sendTask = new SendTask();
@@ -339,6 +351,7 @@ public class Method {
             ViewVideoActivity.getClients().add(mClient);
         }
     }
+
     public static void postRequest(final Context context, final String url, final Map<String, String> request, final Response.Listener<String> listener) {
 
 
@@ -346,7 +359,7 @@ public class Method {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Method.display(context,"网络连接有问题");
+                Method.display(context, "网络连接有问题");
             }
         };
         StringRequest stringRequest;
@@ -371,6 +384,7 @@ public class Method {
 
 
     }
+
     public static void display(Context context, CharSequence charSequence) {
         Toast.makeText(context, charSequence, Toast.LENGTH_SHORT).show();
     }

@@ -95,9 +95,9 @@ public class ServerThread extends Thread {
 //                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
-                                Log.d(TAG, "message queue size:" + String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
                                 SendTask sendTask = ViewVideoActivity.sendMessageQueue.peek();
                                 Message msg =sendTask .getMsg();
+                                Log.d(TAG,"send message: "+msg.getMessage());
 //                                Log.d(TAG, "msg type:"+String.valueOf(msg.getType())+"remote addr:" + String.valueOf(mRemoteAddr) + " setAddr:" + sendTask.getmClients().get(0)+
 //                                " set size:"+String.valueOf(sendTask.getmClients().size())
 //                                +" msg:"+msg.getMessage());
