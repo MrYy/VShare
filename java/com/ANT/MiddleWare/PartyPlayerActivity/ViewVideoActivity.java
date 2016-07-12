@@ -181,6 +181,13 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
+        menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
+    }
+
     private void initPlayVideo() {
 
         //path=editVideoPath.getText().toString().trim();

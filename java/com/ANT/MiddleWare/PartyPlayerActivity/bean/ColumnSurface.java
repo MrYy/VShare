@@ -70,6 +70,10 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
     public void run() {
         while (true) {
             canvas = sfh.lockCanvas();
+            if (canvas == null) {
+                Thread.yield();
+                break;
+            }
             canvas.drawColor(Color.WHITE);
             mPaint.setStrokeWidth(3);
             mPaint.setColor(Color.BLACK);
@@ -104,7 +108,7 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
             }
             sfh.unlockCanvasAndPost(canvas);
             try {
-                TimeUnit.MILLISECONDS.sleep(30);
+                TimeUnit.MILLISECONDS.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

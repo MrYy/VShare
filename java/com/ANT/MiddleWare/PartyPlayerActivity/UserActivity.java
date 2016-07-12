@@ -11,6 +11,12 @@ public class UserActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_information);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.RIGHT);
     }
