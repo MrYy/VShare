@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#0099cc">
+    android:background="@color/background_color">
 
         <ListView
             android:layout_marginTop="5dp"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        android:background="#0099cc">
+        android:background="@color/theme_color">
         <EditText
             android:id="@+id/edit_main"
             android:layout_width="0dp"
