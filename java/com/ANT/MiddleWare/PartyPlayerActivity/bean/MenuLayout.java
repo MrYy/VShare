@@ -1,6 +1,7 @@
 package com.ANT.MiddleWare.PartyPlayerActivity.bean;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,15 +15,41 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
+import com.ANT.MiddleWare.PartyPlayerActivity.UserActivity;
+import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity;
 
 /**
  * Created by zxc on 2016/7/12.
  */
-public class MenuLayout extends LinearLayout {
+public class MenuLayout extends LinearLayout implements View.OnClickListener {
     private Resources resouces;
     private ImageButton buttonMy;
     private ImageButton buttonView;
     private ImageButton buttonData;
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = null;
+        switch (v.getId()) {
+            case R.id.menu_button_left:
+                setFocuse(BUTTON.LEFT);
+                intent = new Intent(getContext(), ViewVideoActivity.class);
+                break;
+            case R.id.menu_button_center:
+                intent = new Intent(getContext(), StatisticsActivity.class);
+                setFocuse(BUTTON.CENTER);
+                break;
+            case R.id.menu_button_right:
+                intent = new Intent(getContext(), UserActivity.class);
+                setFocuse(BUTTON.RIGHT);
+                break;
+        }
+        if (intent != null) {
+            getContext().startActivity(intent);
+        }
+
+    }
 
     public static enum BUTTON {
         LEFT, CENTER, RIGHT
@@ -43,6 +70,9 @@ public class MenuLayout extends LinearLayout {
         buttonMy = (ImageButton) findViewById(R.id.menu_button_right);
         buttonView = (ImageButton) findViewById(R.id.menu_button_left);
         buttonData = (ImageButton) findViewById(R.id.menu_button_center);
+        buttonMy.setOnClickListener(this);
+        buttonView.setOnClickListener(this);
+        buttonData.setOnClickListener(this);
         resouces = context.getResources();
     }
 

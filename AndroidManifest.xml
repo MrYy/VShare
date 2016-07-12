@@ -15,8 +15,8 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <application
-        android:allowBackup="true"
         android:name=".bean.DashApplication"
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
@@ -24,19 +24,22 @@
         <!-- <uses-library android:name="android.test.runner" /> -->
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleInstance"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ViewVideoActivity"
+        <activity
+            android:name=".ViewVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleInstance"></activity>
+        <activity android:name=".util.StatisticsActivity" />
+        <activity android:name=".UserActivity"
             android:launchMode="singleInstance"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation">
-        </activity>
-        <activity android:name=".util.StatisticsActivity"></activity>
+            ></activity>
     </application>
 
 </manifest>
