@@ -1,12 +1,9 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
-import android.app.Activity;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,16 +14,12 @@ import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.android.volley.Response;
 import com.baoyz.actionsheet.ActionSheet;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -58,19 +51,15 @@ public class UserActivity extends FragmentActivity {
                 @Override
                 public void onError(String uploadId, Exception exception) {
                     Log.d("test", exception.getMessage());
-                    if (UserActivity.this != null) {
-                       closeDialog();
-                    }
+
                     Method.warnDialog(getApplicationContext(), "图片上传失败");
                 }
 
                 @Override
                 public void onCompleted(String uploadId, int serverResponseCode, byte[] serverResponseBody) {
 
-                        if (UserActivity.this != null) {
-                            closeDialog();
                             Method.display(getApplicationContext(), "头像设置成功");
-                        }
+
                 }
 
                 @Override
@@ -158,11 +147,13 @@ public class UserActivity extends FragmentActivity {
                 Method.uploadMultipart(UserActivity.this,url,userName);
                  b = BitmapFactory.decodeFile(url);
                 photo.setImageBitmap(b);
-                pDialog = new SweetAlertDialog(UserActivity.this, SweetAlertDialog.PROGRESS_TYPE);
-                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-                pDialog.setTitleText("图片上传中");
-                pDialog.setCancelable(false);
-                pDialog.show();
+
+
+//                pDialog = new SweetAlertDialog(UserActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+//                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+//                pDialog.setTitleText("图片上传中");
+//                pDialog.setCancelable(false);
+//                pDialog.show();
             }
         }
 

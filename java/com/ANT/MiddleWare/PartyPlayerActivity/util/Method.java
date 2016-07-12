@@ -402,8 +402,8 @@ public class Method {
 
             String uploadId =
                     new MultipartUploadRequest(context, DashApplication.UPLOAD)
-                            .addFileToUpload(path, "file")
-                            .addParameter("sid", sid)
+                            .addFileToUpload(path, "photo")
+                            .addParameter("name", sid)
                             .setNotificationConfig(config)
                             .setMaxRetries(2)
                             .startUpload();
