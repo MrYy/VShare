@@ -28,7 +28,7 @@ public class DashApplication extends Application {
         SharedPreferences preferences = getSharedPreferences(getString(R.string.user_save), MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(getString(R.string.user_save_name), user);
-        editor.putString(getString(R.string.user_save_password), user);
+        editor.putString(getString(R.string.user_save_password), password);
 
         editor.apply();
     }

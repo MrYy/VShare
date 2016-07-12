@@ -59,6 +59,7 @@
             android:id="@+id/edittext_password"
             android:layout_marginLeft="10dp"
             android:layout_width="180dp"
+            android:inputType="textPassword"
             android:layout_height="35dp"
             android:background="@drawable/bg_1"
             android:hint="请 输 入 密 码"
