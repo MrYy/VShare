@@ -2,6 +2,7 @@ package com.ANT.MiddleWare.PartyPlayerActivity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
@@ -48,15 +49,15 @@ public class MainActivity extends FragmentActivity {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-
-					StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).add(100);
+					Random random = new Random();
+					StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).add(random.nextInt(10));
 //						TimeUnit.SECONDS.sleep(1);
-						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).add(200);
+						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).add(random.nextInt(20));
 //						TimeUnit.SECONDS.sleep(1);
-						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).add(300);
+						StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).add(random.nextInt(30));
 				}
 			}
-		});
+		}).start();
 
 	}
 

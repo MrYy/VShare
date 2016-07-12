@@ -36,8 +36,12 @@
             android:name=".ViewVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleInstance"></activity>
-        <activity android:name=".util.StatisticsActivity" />
+        <activity android:name=".util.StatisticsActivity"
+            android:screenOrientation="portrait"
+
+            />
         <activity android:name=".UserActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleInstance"
             ></activity>
     </application>
