@@ -19,6 +19,8 @@ import android.view.Window;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Statistics;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 
+import io.vov.vitamio.Vitamio;
+
 public class MainActivity extends FragmentActivity {
 	private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -26,6 +28,7 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Vitamio.isInitialized(getApplicationContext());
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
