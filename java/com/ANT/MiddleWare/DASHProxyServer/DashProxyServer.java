@@ -80,11 +80,10 @@ public class DashProxyServer extends NanoHTTPD {
 									e.printStackTrace();
 								}
 										for (FileFragment ff : fragArray) {
-											IC.insert(i, ff);
-//											Log.d(TAG, "insert into stack:" + String.valueOf(ff.getSegmentID())+" "+String.valueOf(ff.getStartIndex()));
+//											IC.insert(i, ff);
 										}
 							} else {
-								IC.insert(i, f);
+//								IC.insert(i, f);
 							}
 
 							in.close();
@@ -98,10 +97,13 @@ public class DashProxyServer extends NanoHTTPD {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+//test code
+					int tmppl = Integer.parseInt(playist.substring(0, 1));
+					byte[] tmpl = IntegrityCheck.getInstance().getSegments(tmppl, CellularDown.CellType.GROUP);
+					return newFixedLengthResponse(Response.Status.OK,
+							"application/x-mpegurl", tmpl);
 
-
-
-					return localFile("/video/4/" + playist);
+//					return localFile("/video/4/" + playist);
 
 				case G_MDOE:
 					IntegrityCheck iTC = IntegrityCheck.getInstance();

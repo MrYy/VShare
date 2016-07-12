@@ -165,8 +165,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             userName = "ant";
         }
         Log.d("ServerThread", userName);
+        onLineUsers.add(userName);
         if (publishFlag) {
-            onLineUsers.add(userName);
             new SweetAlertDialog(this,SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("选择身份")
                     .setConfirmText("播主").setCancelText("看客")
