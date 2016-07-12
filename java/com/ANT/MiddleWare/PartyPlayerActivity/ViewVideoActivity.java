@@ -152,6 +152,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         init();
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
         userName = getIntent().getStringExtra(getString(R.string.user_name));
+        if (userName.equals("")) {
+            userName = "ant";
+        }
         Log.d("ServerThread", userName);
         if (publishFlag) {
             onLineUsers.add(userName);
