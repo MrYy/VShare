@@ -77,7 +77,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static final BlockingQueue<SendTask> sendMessageQueue = new LinkedBlockingQueue<SendTask>();
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
     public static final Set<String> onLineUsers = new ConcurrentSkipListSet<>();
-    public static String userName;
+    public static String userName="";
     public static boolean isAp = false;
     private ViewPager vp;
     private String path="http://127.0.0.1:9999/4/index.m3u8";

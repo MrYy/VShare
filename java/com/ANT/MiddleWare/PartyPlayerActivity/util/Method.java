@@ -13,6 +13,7 @@ import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
@@ -27,6 +28,9 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
@@ -52,6 +56,7 @@ import cn.finalteam.galleryfinal.CoreConfig;
 import cn.finalteam.galleryfinal.FunctionConfig;
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.ThemeConfig;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by David on 16/4/21.
@@ -387,5 +392,33 @@ public class Method {
 
     public static void display(Context context, CharSequence charSequence) {
         Toast.makeText(context, charSequence, Toast.LENGTH_SHORT).show();
+    }
+    public static void uploadMultipart(final Context context, String path, String sid) {
+        try {
+            UploadNotificationConfig config = new UploadNotificationConfig()
+                    .setCompletedMessage("上传成功")
+                    .setInProgressMessage("上传中")
+                    .setErrorMessage("上传失败");
+
+            String uploadId =
+                    new MultipartUploadRequest(context, DashApplication.UPLOAD)
+                            .addFileToUpload(path, "file")
+                            .addParameter("sid", sid)
+                            .setNotificationConfig(config)
+                            .setMaxRetries(2)
+                            .startUpload();
+            Log.d("test", uploadId);
+        } catch (Exception exc) {
+            Log.e("AndroidUploadService", exc.getMessage(), exc);
+        }
+    }
+    public static void successDialog(final Context context, String text, SweetAlertDialog.OnSweetClickListener onClick) {
+        new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE).setTitleText(text).
+                setConfirmText("确定").setConfirmClickListener(onClick).show();
+    }
+
+    public static void warnDialog(final Context context, String text) {
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE).setTitleText(text).
+                setConfirmText("确定").show();
     }
 }
