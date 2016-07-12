@@ -1,12 +1,15 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +18,22 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.LoginDialog;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
+import com.android.volley.Response;
 import com.baoyz.actionsheet.ActionSheet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
@@ -57,6 +71,7 @@ public class LoginFragment extends Fragment {
     private CheckBox checkBoxPublis;
     private EditText editText;
     private CircleImageView photo;
+    private Bitmap portrait;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -72,6 +87,47 @@ public class LoginFragment extends Fragment {
         checkBoxRem = (CheckBox) view.findViewById(R.id.checkbox_remember_account);
         checkBoxPublis = (CheckBox) view.findViewById(R.id.checkbox_publish_video);
         editText = (EditText) view.findViewById(R.id.edittext_name);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            String s1 = editText.getText().toString();
+                Map<String, String> req = new HashMap<>();
+                req.put("name", s1);
+                Method.postRequest(getActivity(), DashApplication.INFO, req, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        try {
+                            JSONObject res = new JSONObject(s);
+                            if (res.getString("code").equals("200")) {
+                                String testurl=res.getJSONObject("data").getString("thumb_url");
+                                if(!testurl.equals(null)) {
+                               try{ portrait = getBitmap(testurl);
+                                   photo.setImageBitmap(portrait);
+                                }catch (IOException io){
+                                   io.printStackTrace();
+                               }
+                                }
+                            }else {
+                                Method.display(getContext(),res.getString("msg"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+            }
+        });
         ((Button) view.findViewById(R.id.button_login)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,5 +183,20 @@ public class LoginFragment extends Fragment {
         });
         return view;
     }
+    @SuppressLint("NewApi")
+    public static Bitmap getBitmap(String path) throws IOException {
+
+        URL url = new URL(path);
+        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        conn.setConnectTimeout(5000);
+        conn.setRequestMethod("GET");
+        if(conn.getResponseCode() == 200){
+            InputStream inputStream = conn.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            return bitmap;
+        }
+        return null;
+    }
+
 
 }
