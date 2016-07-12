@@ -90,6 +90,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private LinearLayout playSetLayout;
     boolean isPortrait=true;
     private long mPosition=0;
+    private int vheight=0;
     private static Set<InetAddress> mClients = new HashSet<>();
 
     public static void sendMsg(Message msg) {
@@ -200,6 +201,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         //path=editVideoPath.getText().toString().trim();
         mVideoView= (VideoView) findViewById(R.id.buffer);
         frameLayout= (FrameLayout) findViewById(R.id.fragment_video_player);
+        vheight= frameLayout.getHeight();
+        Log.d(TAG, "initPlayVideo: frameLoyout"+frameLayout.getHeight()+" "+frameLayout.getWidth());
         if (path == "") {
             // Tell the user to provide a media file URL/path.
             Toast.makeText(this,"Please edit url",Toast.LENGTH_LONG).show();
@@ -228,7 +231,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                             frameLayout.getHeight();
                             LinearLayout.LayoutParams fl_lp = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
-                                    frameLayout.getHeight()
+                                    vheight
                                     //DensityUtil.dip2px(260,ViewVideoActivity.this)
                             );
                             frameLayout.setLayoutParams(fl_lp);
@@ -241,9 +244,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             });
             mVideoView.setMediaController(mc);
             mc.setVisibility(View.GONE);
-            //  mVideoView.setMediaController(new MediaController(this));
             mVideoView.requestFocus();
-//            mVideoView.setOnInfoListener(ViewVideoActivity.this);
+            mVideoView.setOnInfoListener(ViewVideoActivity.this);
             mVideoView.setOnCompletionListener(ViewVideoActivity.this);
             //mVideoView.setOnBufferingUpdateListener(ViewVideoActivity.this);
             mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -265,6 +267,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
                 break;
             case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                if(playSetLayout.getVisibility()!=View.GONE){
+                    playSetLayout.setVisibility(View.GONE);
+                }
                 mVideoView.start();
                 break;
         }
