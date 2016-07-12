@@ -45,6 +45,10 @@ public class ServerThread extends Thread {
         super.run();
         Log.d(TAG, "server is running");
         InetSocketAddress addr = new InetSocketAddress(ip.getHostAddress(), 12345);
+        Message nameMsg = new Message();
+        nameMsg.setName(ViewVideoActivity.userName);
+        nameMsg.setMessage(ViewVideoActivity.userName);
+        ViewVideoActivity.sendMsg(nameMsg);
         try {
             Selector selector = Selector.open();
             ServerSocketChannel ssc = ServerSocketChannel.open();

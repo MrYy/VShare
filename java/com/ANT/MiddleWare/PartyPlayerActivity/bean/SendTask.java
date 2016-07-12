@@ -1,5 +1,7 @@
 package com.ANT.MiddleWare.PartyPlayerActivity.bean;
 
+import android.annotation.SuppressLint;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -26,7 +28,9 @@ public class SendTask {
     public List<InetAddress> getmClients() {
         return mClients;
     }
+
     //deep copy
+    @SuppressLint("NewApi")
     public void setClients(Set<InetAddress> clients) {
         Iterator<InetAddress> iterator = clients.iterator();
         while (iterator.hasNext()) {

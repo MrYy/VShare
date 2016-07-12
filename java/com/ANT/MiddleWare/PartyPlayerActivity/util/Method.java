@@ -310,6 +310,12 @@ public class Method {
                             ViewVideoActivity.sendMessageQueue.add(sendTask);
                         }
                     }
+                    String mName;
+                    if (!(mName=msg.getName()).equals("")) {
+                        if (msg.getMessage().equals(mName)) {
+                            ViewVideoActivity.onLineUsers.add(mName);
+                        }
+                    }
                     break;
                 case Fragment:
                     FileFragment ff = msg.getFragment();

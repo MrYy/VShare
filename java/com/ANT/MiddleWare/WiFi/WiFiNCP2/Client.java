@@ -38,9 +38,10 @@ public class Client implements Runnable {
         SocketChannel sc = null;
         SelectionKey mKey = null;
         Log.d(TAG, "try to connect");
-//        Message name = new Message();
-//        name.setName(ViewVideoActivity.userName);
-//        ViewVideoActivity.sendMsg(name);
+        Message nameMsg = new Message();
+        nameMsg.setName(ViewVideoActivity.userName);
+        nameMsg.setMessage(ViewVideoActivity.userName);
+        ViewVideoActivity.sendMsg(nameMsg);
         try {
             sc = SocketChannel.open();
             sc.connect(new InetSocketAddress(remoteAddress.getHostAddress(), remotePort));
