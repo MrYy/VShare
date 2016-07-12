@@ -75,9 +75,9 @@ public class Client implements Runnable {
                                 msg.setName(ViewVideoActivity.userName);
                                 Method.send(msg,mSc);
                             }
-                            while (!ViewVideoActivity.getTaskQueue().isEmpty()) {
+                            while (!ViewVideoActivity.taskMessageQueue.isEmpty()) {
                                 //发送报文
-                                FileFragment ff = ViewVideoActivity.taskQueue.poll();
+                                FileFragment ff = ViewVideoActivity.taskMessageQueue.poll().getMsg().getFragment();
                                 Message msgObj = new Message();
                                 msgObj.setFragment(ff);
                                 Method.send(msgObj, mSc);

@@ -71,7 +71,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private WiFiReceiver wifiReceiver;
     private InetAddress serverAddr;
     private InetAddress mAddr;
-    public static final BlockingQueue<FileFragment> taskQueue = new LinkedBlockingQueue<FileFragment>();
     public static final BlockingQueue<SendTask> taskMessageQueue = new LinkedBlockingQueue<SendTask>();
     public static final BlockingQueue<SendTask> sendMessageQueue = new LinkedBlockingQueue<SendTask>();
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
@@ -109,14 +108,10 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static Message getMsg() {
         return receiveMessageQueue.poll();
     }
-    public static BlockingQueue<FileFragment> getTaskQueue() {
-        synchronized (taskQueue) {
-            return taskQueue;
-        }
-    }
+
     public static void insert(FileFragment ff) {
         synchronized (taskMessageQueue) {
-            Log.d(TAG, "taskQueue's length:" + String.valueOf(taskQueue.size()));
+            Log.d(TAG, "taskQueue's length:" + String.valueOf(taskMessageQueue.size()));
             Message msg = new Message();
             SendTask sendTask = new SendTask();
             sendTask.setMsg(msg);

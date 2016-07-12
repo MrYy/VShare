@@ -84,10 +84,10 @@ public class ServerThread extends Thread {
                         InetAddress mRemoteAddr = sc.socket().getInetAddress();
                         sc.socket().setTcpNoDelay(true);
                         Log.d(TAG, "server is writing");
-                        TimeUnit.SECONDS.sleep(2);
-                        Message testMsg = new Message();
-                        testMsg.setMessage(Method.getRandomString(300));
-                        ViewVideoActivity.sendMsg(testMsg);
+//                        TimeUnit.SECONDS.sleep(2);
+//                        Message testMsg = new Message();
+//                        testMsg.setMessage(Method.getRandomString(300));
+//                        ViewVideoActivity.sendMsg(testMsg);
                         try {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 Log.d(TAG, "message queue size:" + String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
@@ -135,8 +135,6 @@ public class ServerThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
