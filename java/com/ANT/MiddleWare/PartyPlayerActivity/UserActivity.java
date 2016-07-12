@@ -82,8 +82,7 @@ public class UserActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_information);
-        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
-        menuLayout.setFocuse(MenuLayout.BUTTON.RIGHT);
+
         username=(TextView)findViewById(R.id.username);
         contact=(TextView)findViewById(R.id.contact);
         about=(TextView)findViewById(R.id.about_us);
@@ -180,6 +179,8 @@ public class UserActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         uploadReceiver.register(this);
+        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
+        menuLayout.setFocuse(MenuLayout.BUTTON.RIGHT);
     }
 
     @Override
