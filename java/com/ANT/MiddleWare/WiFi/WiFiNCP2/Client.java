@@ -57,10 +57,10 @@ public class Client implements Runnable {
                     mKey = (SelectionKey) ite.next();
                         if (mKey.isReadable()) {
                         //在这里准备添加报头
-                            Log.d(TAG, "client is reading");
+//                            Log.d(TAG, "client is reading");
                             SocketChannel mSc = (SocketChannel) mKey.channel();
                         Method.read(mSc);
-                            Log.d(TAG, "finish reading");
+//                            Log.d(TAG, "finish reading");
                     } else if (mKey.isWritable()) {
 //                            Log.d(TAG, "client is writing");
                         SocketChannel mSc = (SocketChannel)mKey.channel();

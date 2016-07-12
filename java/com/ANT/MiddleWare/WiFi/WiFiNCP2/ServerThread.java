@@ -83,7 +83,7 @@ public class ServerThread extends Thread {
                         SocketChannel sc = (SocketChannel) mKey.channel();
                         InetAddress mRemoteAddr = sc.socket().getInetAddress();
                         sc.socket().setTcpNoDelay(true);
-                        Log.d(TAG, "server is writing");
+//                        Log.d(TAG, "server is writing");
 //                        TimeUnit.SECONDS.sleep(2);
 //                        Message testMsg = new Message();
 //                        testMsg.setMessage(Method.getRandomString(300));
@@ -105,7 +105,7 @@ public class ServerThread extends Thread {
                                     ViewVideoActivity.sendMessageQueue.poll();
                                 }
                             }
-                            Log.d(TAG, "after message"+" queue size "+String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
+//                            Log.d(TAG, "after message"+" queue size "+String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
 
                             while (!ViewVideoActivity.taskMessageQueue.isEmpty()) {
                                 //发送报文
