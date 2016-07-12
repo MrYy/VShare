@@ -8,4 +8,5 @@
     <dimen name="menu_layout_margin">20dp</dimen>
     <dimen name="button_height">30dp</dimen>
     <dimen name="button_to_button_margin">25dp</dimen>
+    <dimen name="menu_bottom_margin">10dp</dimen>
 </resources>
