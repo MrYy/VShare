@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by zxc on 2016/7/8.
  */
-public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = ColumnSurface.class.getSimpleName();
     private final SurfaceHolder sfh;
     private final Paint mPaint;
@@ -44,7 +44,6 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
         sfh.addCallback(this);
         mPaint = new Paint();
         setFocusable(true);
-        th = new Thread(this);
     }
 
     @Override
@@ -53,7 +52,57 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
         screenW = this.getWidth();
         columnW = screenW * 1 / 12;
         Log.d(TAG, "screen height:" + String.valueOf(screenH));
-        th.start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    canvas = sfh.lockCanvas();
+                    if (canvas == null) {
+                        Thread.yield();
+                        break;
+                    }
+                    canvas.drawColor(Color.WHITE);
+                    mPaint.setStrokeWidth(3);
+                    mPaint.setColor(Color.BLACK);
+                    canvas.drawLine(marginW - 10, 0, marginW - 10, screenH, mPaint);
+                    canvas.drawLine(0, screenH - marginW + 10, 2 * marginW + 4 * columnW, screenH - marginW + 10, mPaint);
+                    float h = 0;
+                    for (int i = 0; i < 3; i++) {
+                        Message msg = new Message();
+                        switch (i) {
+                            case 0:
+                                //3G下载
+                                mPaint.setColor(Color.BLUE);
+                                h = StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).getSpeed();
+                                msg.what = StatisticsActivity.gR;
+                                break;
+                            case 1:
+                                //wifi 下载
+                                mPaint.setColor(Color.GREEN);
+                                h = StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).getSpeed();
+                                msg.what = StatisticsActivity.wR;
+                                break;
+                            case 2:
+                                //wifi 上传
+                                mPaint.setColor(Color.YELLOW);
+                                h = StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).getSpeed();
+                                msg.what = StatisticsActivity.wS;
+                                break;
+                        }
+                        msg.arg1 = (int) h;
+                        StatisticsActivity.mHandler.sendMessage(msg);
+                        canvas.drawRect(marginW + i * columnW, (1 - h / maxSpeed) * screenH - marginW, marginW + (i + 1) * columnW, screenH - marginW, mPaint);
+                    }
+                    sfh.unlockCanvasAndPost(canvas);
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }).start();
     }
 
     @Override
@@ -66,53 +115,5 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            canvas = sfh.lockCanvas();
-            if (canvas == null) {
-                Thread.yield();
-                break;
-            }
-            canvas.drawColor(Color.WHITE);
-            mPaint.setStrokeWidth(3);
-            mPaint.setColor(Color.BLACK);
-            canvas.drawLine(marginW - 10, 0, marginW - 10, screenH, mPaint);
-            canvas.drawLine(0, screenH - marginW + 10, 2 * marginW + 4 * columnW, screenH - marginW + 10, mPaint);
-            float h = 0;
-            for (int i = 0; i < 3; i++) {
-                Message msg = new Message();
-                switch (i) {
-                    case 0:
-                        //3G下载
-                        mPaint.setColor(Color.BLUE);
-                        h = StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).getSpeed();
-                        msg.what = StatisticsActivity.gR;
-                        break;
-                    case 1:
-                        //wifi 下载
-                        mPaint.setColor(Color.GREEN);
-                        h = StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).getSpeed();
-                        msg.what = StatisticsActivity.wR;
-                        break;
-                    case 2:
-                        //wifi 上传
-                        mPaint.setColor(Color.YELLOW);
-                        h = StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).getSpeed();
-                        msg.what = StatisticsActivity.wS;
-                        break;
-                }
-                msg.arg1 = (int) h;
-                StatisticsActivity.mHandler.sendMessage(msg);
-                canvas.drawRect(marginW + i * columnW, (1 - h / maxSpeed) * screenH - marginW, marginW + (i + 1) * columnW, screenH - marginW, mPaint);
-            }
-            sfh.unlockCanvasAndPost(canvas);
-            try {
-                TimeUnit.MILLISECONDS.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
 
-    }
 }

@@ -44,13 +44,14 @@ public class StatisticsActivity extends Activity {
         textView1 = (TextView) findViewById(R.id.textView4);
         textView2 = (TextView) findViewById(R.id.textView5);
         textView3 = (TextView) findViewById(R.id.textView6);
-
+        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
+        menuLayout.setFocuse(MenuLayout.BUTTON.CENTER);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
-        menuLayout.setFocuse(MenuLayout.BUTTON.CENTER);
+        Log.d("TAG", "on resume");
+
     }
 }
