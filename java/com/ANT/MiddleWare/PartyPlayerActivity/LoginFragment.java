@@ -102,6 +102,7 @@ public class LoginFragment extends Fragment {
         if (user.size() > 0) {
             editText.setText(user.get("name"));
             password.setText(user.get("password"));
+            checkBoxRem.setChecked(true);
         }
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -156,6 +157,16 @@ public class LoginFragment extends Fragment {
                 Map<String, String> req = new HashMap<String, String>();
                 req.put("name", name);
                 req.put("password", pwd);
+                if(context.getString(R.string.test_mode).equals("test")){
+                    Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
+                    intent.putExtra(context.getString(R.string.user_name), name);
+                    intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
+                    intent.putExtra("保存用户昵称", checkBoxRem.isChecked());
+                    if (checkBoxRem.isChecked()) {
+                        app.setUser(name, pwd);
+                }
+                    startActivity(intent);
+                }
                 Method.postRequest(getActivity(), DashApplication.LOGIN, req, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
