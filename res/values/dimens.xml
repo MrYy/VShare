@@ -9,4 +9,5 @@
     <dimen name="button_height">30dp</dimen>
     <dimen name="button_to_button_margin">25dp</dimen>
     <dimen name="menu_bottom_margin">10dp</dimen>
+    <dimen name="text_size">18sp</dimen>
 </resources>
