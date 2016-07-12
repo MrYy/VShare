@@ -29,5 +29,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="user_name">user_name</string>
     <string name="publish_video">成为ap，发布视频</string>
+    <string name="user_save">用户信息存储</string>
+    <string name="user_save_name">用户名</string>
+    <string name="user_save_password">用户密码</string>
 
 </resources>

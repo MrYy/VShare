@@ -46,7 +46,7 @@
             android:textSize="@dimen/text_size"
             android:textStyle="bold"
             android:gravity="right"
-            android:text="name"
+            android:text="ant"
             android:textColor="@color/text_color"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

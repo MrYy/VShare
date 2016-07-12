@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -72,11 +73,18 @@ public class LoginFragment extends Fragment {
     private EditText editText;
     private CircleImageView photo;
     private Bitmap portrait;
+    private EditText password;
+    private DashApplication app;
 
     public LoginFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        app = (DashApplication)getActivity().getApplication();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +95,14 @@ public class LoginFragment extends Fragment {
         checkBoxRem = (CheckBox) view.findViewById(R.id.checkbox_remember_account);
         checkBoxPublis = (CheckBox) view.findViewById(R.id.checkbox_publish_video);
         editText = (EditText) view.findViewById(R.id.edittext_name);
+        password = (EditText) view.findViewById(R.id.edittext_password);
+        editText.clearFocus();
+        editText.setSelected(false);
+        Map<String,String> user = app.getUser();
+        if (user.size() > 0) {
+            editText.setText(user.get("name"));
+            password.setText(user.get("password"));
+        }
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -131,16 +147,42 @@ public class LoginFragment extends Fragment {
         ((Button) view.findViewById(R.id.button_login)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = editText.getText().toString().trim();
-                if (editText.equals("")) {
-                    name = "ant";
+                final String name = editText.getText().toString().trim();
+                final String pwd = password.getText().toString().trim();
+                if (name.equals("")||pwd.equals("")) {
+                    Method.display(getActivity(),"用户名或密码为空");
+                    return;
                 }
+                Map<String, String> req = new HashMap<String, String>();
+                req.put("name", name);
+                req.put("password", pwd);
+                Method.postRequest(getActivity(), DashApplication.LOGIN, req, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        try {
+                            JSONObject result = new JSONObject(s);
+                            String code = result.getString("code");
+                            String msg = result.getString("msg");
+                            if (code.equals("200")) {
+                                Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
+                                intent.putExtra(context.getString(R.string.user_name), name);
+                                intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
+                                intent.putExtra("保存用户昵称", checkBoxRem.isChecked());
+                                if (checkBoxRem.isChecked()) {
+                                    app.setUser(name, pwd);
+                                }
+                                startActivity(intent);
+                            }
+                            Method.display(getActivity(),msg);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
                 //test code
-                Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
-                intent.putExtra(context.getString(R.string.user_name), name);
-                intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
-                intent.putExtra("保存用户昵称", checkBoxRem.isChecked());
-                startActivity(intent);
+
             }
         });
         (view.findViewById(R.id.textview_register)).setOnClickListener(new View.OnClickListener() {
