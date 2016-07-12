@@ -66,5 +66,7 @@
 <com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout
     android:id="@+id/bottom_menu"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/button_height"></com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout>
+    android:layout_height="@dimen/button_height">
+
+</com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout>
 </LinearLayout>

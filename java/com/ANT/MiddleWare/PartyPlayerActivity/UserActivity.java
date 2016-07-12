@@ -10,7 +10,7 @@ public class UserActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_information);
+        setContentView(R.layout.user_activity);
 
     }
 
