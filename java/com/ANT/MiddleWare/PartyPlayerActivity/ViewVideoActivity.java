@@ -359,10 +359,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         isConnected = flag;
         if (!flag) return;
         unregisterReceiver(wifiReceiver);
-        DhcpInfo info = wifiManager.getDhcpInfo();
-        int serverAddress = info.serverAddress;
-        serverAddr = Method.intToInetAddress(serverAddress);
-        Log.d(TAG, "server's ip address:" + serverAddr);
+
         wifiManager.setWifiEnabled(false);
         try {
             proc = Runtime.getRuntime().exec("su");
@@ -378,6 +375,13 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        DhcpInfo info = wifiManager.getDhcpInfo();
+        int serverAddress = info.serverAddress;
+        serverAddr = Method.intToInetAddress(serverAddress);
+        Log.d(TAG, "server's ip address:" + serverAddr);
+        int mAddress = info.ipAddress;
+        Log.d(TAG, "my ip address:" + Method.intToInetAddress(mAddress));
+
         try {
             //获取服务端ap地址存在问题
             new Thread(new Client(InetAddress.getByName("192.168.43.1"), 12345)).start();
