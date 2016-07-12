@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Statistics;
 
 public class StatisticsActivity extends Activity {
@@ -43,6 +44,8 @@ public class StatisticsActivity extends Activity {
         textView1 = (TextView) findViewById(R.id.textView4);
         textView2 = (TextView) findViewById(R.id.textView5);
         textView3 = (TextView) findViewById(R.id.textView6);
+        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
+        menuLayout.setFocuse(MenuLayout.BUTTON.CENTER);
     }
 
 }
