@@ -27,11 +27,11 @@ public class Statistics {
     //add 传进来的是byte数
     public synchronized void add(int size) {
         totalSize += size;
-        dSize.add(totalSize);
-        dTime.add( System.currentTimeMillis());
-        if (dSize.size() == 2) {
-            currentSpeed = computeCurrentSpeed();
-        }
+//        dSize.add(totalSize);
+//        dTime.add( System.currentTimeMillis());
+//        if (dSize.size() == 2) {
+//            currentSpeed = computeCurrentSpeed();
+//        }
 //        Log.d("TAG", String.valueOf(dSize.size()));
     }
 
