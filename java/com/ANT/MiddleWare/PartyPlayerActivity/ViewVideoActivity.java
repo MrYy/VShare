@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
@@ -79,8 +80,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static String userName;
     public static boolean isAp = false;
     private ViewPager vp;
-    //private String path="http://127.0.0.1:9999/4/index.m3u8";
-    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
+    private String path="http://127.0.0.1:9999/4/index.m3u8";
+//    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
 //    private String path="";
     private VideoView mVideoView;
     private FrameLayout frameLayout;
@@ -176,6 +177,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
             }).show();
         }
+        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
+        menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
     }
 
     private void initPlayVideo() {

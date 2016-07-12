@@ -5,4 +5,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="dialog_layout_width">290dp</dimen>
     <dimen name="dialog_title_size">20dp</dimen>
+    <dimen name="menu_layout_margin">20dp</dimen>
+    <dimen name="button_height">30dp</dimen>
+    <dimen name="button_to_button_margin">25dp</dimen>
 </resources>
