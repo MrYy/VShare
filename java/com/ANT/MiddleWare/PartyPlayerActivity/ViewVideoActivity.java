@@ -27,8 +27,10 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
@@ -62,7 +64,7 @@ import io.vov.vitamio.widget.VideoView;
 
 public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnInfoListener {
     private static final String TAG = ViewVideoActivity.class.getSimpleName();
-    private Button play;
+    private ImageButton play;
     private EditText editVideoPath;
     private DashProxyServer server = new DashProxyServer();
     public static ConfigureData configureData = new ConfigureData(null);
@@ -89,7 +91,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 //    private String path="";
     private VideoView mVideoView;
     private FrameLayout frameLayout;
-    private LinearLayout playSetLayout;
+    private RelativeLayout playSetLayout;
     boolean isPortrait=true;
     private long mPosition=0;
     private int vheight=0;
@@ -353,9 +355,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             }
         });
         setMask();
-        play = (Button) findViewById(R.id.button_view_video);
+        play = (ImageButton) findViewById(R.id.button_view_video);
         editVideoPath = (EditText) findViewById(R.id.edittext_video_location);
-        playSetLayout= (LinearLayout) findViewById(R.id.playSet);
+        playSetLayout= (RelativeLayout) findViewById(R.id.playSet);
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
         vp=(ViewPager)findViewById(R.id.viewpager);
