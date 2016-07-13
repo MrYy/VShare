@@ -127,7 +127,7 @@ public class LoginFragment extends Fragment {
                             JSONObject res = new JSONObject(s);
                             if (res.getString("code").equals("200")) {
                                 String testurl=res.getJSONObject("data").getString("thumb_url");
-                                if(!testurl.equals(null)) {
+                                if(!testurl.equals("")) {
                                try{ portrait = getBitmap(testurl);
                                    photo.setImageBitmap(portrait);
                                 }catch (IOException io){
@@ -139,6 +139,7 @@ public class LoginFragment extends Fragment {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            photo.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.profile_default));
                         }
                     }
                 });
