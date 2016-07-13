@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.DhcpInfo;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -22,7 +25,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +48,8 @@ import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -96,11 +105,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private long mPosition=0;
     private int vheight=0;
     private static Set<InetAddress> mClients = new HashSet<>();
-    /** 初次进入时候的蒙版背景 */
-    private LinearLayout linearLayout_mask;
-    /** 初次进入时的蒙版图片 */
-    private ImageView imageView_mask;
     private MenuLayout menuLayout;
+    private ViewGroup mGroup;
+    private View mView;
 
     public static void sendMsg(Message msg) {
         SendTask sendTask = new SendTask();
@@ -177,34 +184,95 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         Log.d("ServerThread", userName);
         onLineUsers.add(userName);
         if (publishFlag) {
-            new SweetAlertDialog(this,SweetAlertDialog.SUCCESS_TYPE)
-                    .setTitleText("选择身份")
-                    .setConfirmText("播主").setCancelText("看客")
-                    .showCancelButton(true)
-                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            beHotPot();
-                            sweetAlertDialog.cancel();
-                        }
-                    }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    connectHotPot();
-                    sweetAlertDialog.cancel();
-                }
-            }).show();
+
+            mView = createView();
+            mGroup = (ViewGroup) ViewVideoActivity.this.getWindow().getDecorView();
+            mGroup.addView(mView);
+
         }
-        menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
+        MenuLayout menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
+        MenuLayout menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
     }
+
+    private View createView() {
+        FrameLayout parent = new FrameLayout(this);
+        parent.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
+        final View mBg = new View(ViewVideoActivity.this);
+        mBg.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
+        mBg.setBackgroundResource(R.drawable.mask);
+        mBg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGroup.removeView(mView);
+                getBaseContext().getSharedPreferences("Setting", Context.MODE_PRIVATE).edit().putBoolean("read_share", true).commit();
+                new SweetAlertDialog(ViewVideoActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("选择身份")
+                        .setConfirmText("播主").setCancelText("看客")
+                        .showCancelButton(true)
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                beHotPot();
+                                sweetAlertDialog.cancel();
+                            }
+                        }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        connectHotPot();
+                        sweetAlertDialog.cancel();
+                    }
+                }).show();
+
+            }
+        });
+
+        parent.setPadding(0, 0, 0, getNavBarHeight(this));
+        parent.addView(mBg);
+        return parent;
+    }
+    public int getNavBarHeight(Context c) {
+        int result = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            boolean hasMenuKey = ViewConfiguration.get(c).hasPermanentMenuKey();
+            boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+
+            if (!hasMenuKey && !hasBackKey) {
+                //The device has a navigation bar
+                Resources resources = c.getResources();
+
+                int orientation = getResources().getConfiguration().orientation;
+                int resourceId;
+                if (isTablet(c)) {
+                    resourceId = resources.getIdentifier(orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape", "dimen", "android");
+                } else {
+                    resourceId = resources.getIdentifier(orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_width", "dimen", "android");
+                }
+
+                if (resourceId > 0) {
+                    return getResources().getDimensionPixelSize(resourceId);
+                }
+            }
+        }
+        return result;
+    }
+    private boolean isTablet(Context c) {
+        return (c.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+
 
     private void initPlayVideo() {
 
@@ -345,16 +413,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     }
 
     private void init() {
-        linearLayout_mask = (LinearLayout)findViewById(R.id.linearLayout_mask);
-        imageView_mask = (ImageView)findViewById(R.id.imageView_mask);
-        imageView_mask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                linearLayout_mask.setVisibility(View.GONE);
-                getBaseContext().getSharedPreferences("Setting", Context.MODE_PRIVATE).edit().putBoolean("read_share", true).commit();
-            }
-        });
-        setMask();
         play = (ImageButton) findViewById(R.id.button_view_video);
         playSetLayout= (RelativeLayout) findViewById(R.id.playSet);
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -439,21 +497,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
         return apConfig;
     }
-    private void setMask() {
-        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(
-                "Setting", Context.MODE_PRIVATE);
-        boolean isread =  sharedPreferences.getBoolean("read_share", false);
-        if(!isread){
-            // 调整顶部背景图片的大小，适应不同分辨率的屏幕
-            DisplayMetrics dm = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(dm);
-            int width = dm.widthPixels;
-            int height = (int) ((float) width *1.6);
-            imageView_mask.setLayoutParams(new LinearLayout.LayoutParams(width, height));
-            linearLayout_mask.setVisibility(View.VISIBLE);
-        }else{
-            linearLayout_mask.setVisibility(View.GONE);
-        }
-    }
+
 
 }
