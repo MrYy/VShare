@@ -55,7 +55,7 @@ public class ServerThread extends Thread {
             while (true) {
                 int readChannel = selector.select();
                 if (readChannel == 0) continue;
-                ;
+                Log.d("TAG","ready chanel num:" + String.valueOf(readChannel));
                 Set<SelectionKey> selectedChannel = selector.selectedKeys();
                 Iterator ite = selectedChannel.iterator();
                 while (ite.hasNext()) {
@@ -67,6 +67,8 @@ public class ServerThread extends Thread {
                         Log.d(TAG, "client address:" + clientAddr.toString());
                         clients.add(clientAddr);
                         ViewVideoActivity.setClients(clients);
+                        Log.d(TAG, "server thread set:" + String.valueOf(clients.size()) + ":" + clients);
+                        Log.d(TAG, "view video set :" + String.valueOf(ViewVideoActivity.getClients().size()) + ViewVideoActivity.getClients());
                         ((Activity) context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -75,10 +77,14 @@ public class ServerThread extends Thread {
                         });
                         sc.configureBlocking(false);
                         sc.register(mKey.selector(), SelectionKey.OP_WRITE | SelectionKey.OP_READ);
-                        Message nameMsg = new Message();
-                        nameMsg.setName(ViewVideoActivity.userName);
-                        nameMsg.setMessage(ViewVideoActivity.userName);
-                        ViewVideoActivity.sendMsg(nameMsg);
+                        Iterator<String> iterator = ViewVideoActivity.onLineUsers.iterator();
+                        while (iterator.hasNext()) {
+                            Message nameMsg = new Message();
+                            String mName = iterator.next();
+                            nameMsg.setName(mName);
+                            nameMsg.setMessage(mName);
+                            ViewVideoActivity.sendMsg(nameMsg);
+                        }
                     } else if (mKey.isReadable()) {
 //                        Log.d(TAG, "server thread is readable");
                         SocketChannel mSc = (SocketChannel) mKey.channel();
@@ -97,10 +103,14 @@ public class ServerThread extends Thread {
                             while (!ViewVideoActivity.sendMessageQueue.isEmpty()) {
                                 SendTask sendTask = ViewVideoActivity.sendMessageQueue.peek();
                                 Message msg =sendTask .getMsg();
-                                Log.d(TAG,"send message: "+msg.getMessage());
-//                                Log.d(TAG, "msg type:"+String.valueOf(msg.getType())+"remote addr:" + String.valueOf(mRemoteAddr) + " setAddr:" + sendTask.getmClients().get(0)+
-//                                " set size:"+String.valueOf(sendTask.getmClients().size())
-//                                +" msg:"+msg.getMessage());
+
+                                count++;
+                                if (count < 15) {
+                                                                    Log.d(TAG, "msg type:"+String.valueOf(msg.getType())+"remote addr:" + String.valueOf(mRemoteAddr) + " setAddr:" + sendTask.getmClients()+
+                                " set size:"+String.valueOf(sendTask.getmClients().size())
+                                +" msg:"+msg.getMessage()+" msg queue:"+String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
+                                }
+
                                 if (sendTask.getmClients().contains(mRemoteAddr)) {
                                     msg.setName(ViewVideoActivity.userName);
                                     Method.send(msg, sc);
