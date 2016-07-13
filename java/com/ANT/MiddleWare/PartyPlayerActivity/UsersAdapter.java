@@ -2,14 +2,25 @@ package com.ANT.MiddleWare.PartyPlayerActivity;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
+import com.android.volley.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by David on 16/7/6.
@@ -23,12 +34,13 @@ public class UsersAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(final int position,View convertView,ViewGroup parent){
         View view;
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
         if (convertView==null){
             view= LayoutInflater.from(getContext()).inflate(resourceId,null);
             viewHolder=new ViewHolder();
             viewHolder.namelayout=(LinearLayout)view.findViewById(R.id.nameLayout);
             viewHolder.names=(TextView)view.findViewById(R.id.names);
+            viewHolder.photo = (ImageView) view.findViewById(R.id.chat_photo);
             view.setTag(viewHolder);}
         else{
             view=convertView;
@@ -36,7 +48,26 @@ public class UsersAdapter extends ArrayAdapter<String> {
         }
 
         viewHolder.namelayout.setVisibility(View.VISIBLE);
-        viewHolder.names.setText(getItem(position));
+        String name = getItem(position);
+        Map<String, String> req = new HashMap<>();
+        req.put("name", name);
+        Method.postRequest(getContext(), DashApplication.INFO, req, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                try {
+                    JSONObject res = new JSONObject(s);
+                    if (res.getString("code").equals("200")) {
+                        String url = res.getJSONObject("data").getString("thumb_url");
+                        if (!url.equals("")) {
+                            Method.getImage(url,viewHolder.photo,getContext());
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        viewHolder.names.setText(name);
         viewHolder.names.setTextColor(Color.BLACK);
 
 
@@ -44,7 +75,7 @@ public class UsersAdapter extends ArrayAdapter<String> {
     class ViewHolder{
         LinearLayout namelayout;
         TextView names;
-
+        ImageView photo;
     }
 
 

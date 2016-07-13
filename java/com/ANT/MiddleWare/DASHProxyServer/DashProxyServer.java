@@ -80,10 +80,10 @@ public class DashProxyServer extends NanoHTTPD {
 									e.printStackTrace();
 								}
 										for (FileFragment ff : fragArray) {
-//											IC.insert(i, ff);
+											IC.insert(i, ff);
 										}
 							} else {
-//								IC.insert(i, f);
+								IC.insert(i, f);
 							}
 
 							in.close();

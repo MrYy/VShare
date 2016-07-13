@@ -1,12 +1,15 @@
 package com.ANT.MiddleWare.PartyPlayerActivity.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
@@ -25,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
@@ -331,6 +335,7 @@ public class Method {
                             SendTask sendTask = new SendTask();
                             sendTask.setClients(ViewVideoActivity.getClients());
                             sendTask.setMsg(msg);
+                            Log.d(TAG, "forward message:" + msg.getMessage());
                             ViewVideoActivity.sendMessageQueue.add(sendTask);
                         }
                     }
@@ -420,5 +425,20 @@ public class Method {
     public static void warnDialog(final Context context, String text) {
         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE).setTitleText(text).
                 setConfirmText("确定").show();
+    }
+    public static void getImage(String url, ImageView imageView, Context context) {
+        Bitmap.Config config = Bitmap.Config.RGB_565;
+        DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnFail(R.drawable.ic_gf_default_photo)
+                .showImageForEmptyUri(R.drawable.ic_gf_default_photo)
+                .showImageOnLoading(R.drawable.ic_gf_default_photo)
+                .cacheInMemory(true)
+                .bitmapConfig(config)     //设置图片的解码类型
+                .build();
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        if (!imageLoader.isInited()) {
+            imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+        }
+
+        imageLoader.displayImage(url, imageView, options);
     }
 }

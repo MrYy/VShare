@@ -12,12 +12,14 @@
         android:background="#ffffff"
         android:orientation="horizontal"
         >
-        <ImageView
-            android:layout_gravity="center_vertical"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:background="@drawable/bbb"
-            android:layout_marginLeft="20sp"/>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_marginTop="5dp"
+        android:layout_width="40dp"
+        android:id="@+id/chat_photo"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/bbb"
+        android:layout_height="40dp" />
+
         <TextView
             android:id="@+id/names"
             android:layout_gravity="center_vertical"
