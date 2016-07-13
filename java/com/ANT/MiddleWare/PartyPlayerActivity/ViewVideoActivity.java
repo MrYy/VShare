@@ -118,6 +118,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         synchronized (taskMessageQueue) {
             Log.d(TAG, "taskQueue's length:" + String.valueOf(taskMessageQueue.size()));
             Message msg = new Message();
+            msg.setFragment(ff);
             SendTask sendTask = new SendTask();
             sendTask.setMsg(msg);
             sendTask.setClients(mClients);

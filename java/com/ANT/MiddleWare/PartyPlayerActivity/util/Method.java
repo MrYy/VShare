@@ -295,7 +295,7 @@ public class Method {
         Message msgHeader = new Message();
         msgHeader.setLength(msgBytes.length);
         byte[] headerBytes = msgHeader.getBytes();
-        Log.d(TAG, "header size:" + String.valueOf(headerBytes.length));
+        Log.d(TAG, "header size:" + String.valueOf(headerBytes.length)+" content size:"+String.valueOf(msgBytes.length));
         Method.sendMessage(sc, headerBytes);
         Method.sendMessage(sc, msgBytes);
     }
@@ -339,7 +339,7 @@ public class Method {
                 case Fragment:
                     FileFragment ff = msg.getFragment();
                     Log.d("insert fragment", String.valueOf(ff.getSegmentID()) + " " + String.valueOf(ff.getStartIndex()));
-                    Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
+//                    Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
                     IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, 0);
                     if (ViewVideoActivity.isAp) {
                         if (ViewVideoActivity.getClients().size() > 0) {
