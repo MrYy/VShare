@@ -19,7 +19,7 @@
         android:orientation="horizontal"
         android:layout_height="40dp"
         android:layout_weight="1"
-        android:background="@color/theme_color">
+        android:background="@drawable/theme_color">
         <EditText
             android:layout_width="0dp"
             android:layout_height="30dp"
@@ -47,6 +47,7 @@
         android:layout_height="240dp"
         android:layout_weight="6"
         android:layout_marginLeft="5dp"
+        android:background="@drawable/theme_color"
         android:layout_marginRight="5dp">
 
         <io.vov.vitamio.widget.CenterLayout

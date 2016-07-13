@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        android:background="@color/theme_color">
+        android:background="@drawable/theme_color">
         <EditText
             android:id="@+id/edit_main"
             android:layout_width="0dp"
