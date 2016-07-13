@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
@@ -40,7 +41,9 @@ public class StatisticsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_statistics);
+
         textView1 = (TextView) findViewById(R.id.textView4);
         textView2 = (TextView) findViewById(R.id.textView5);
         textView3 = (TextView) findViewById(R.id.textView6);

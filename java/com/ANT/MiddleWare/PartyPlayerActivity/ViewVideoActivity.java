@@ -98,6 +98,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private LinearLayout linearLayout_mask;
     /** 初次进入时的蒙版图片 */
     private ImageView imageView_mask;
+    private MenuLayout menuLayout;
 
     public static void sendMsg(Message msg) {
         SendTask sendTask = new SendTask();
@@ -192,7 +193,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
             }).show();
         }
-        MenuLayout menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
+        menuLayout = (MenuLayout)findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
     }
 
@@ -234,6 +235,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                             mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);//缩放参数，画面全屏
                             isPortrait = false;
+                            menuLayout.setVisibility(View.GONE);
+
                         } else {
                             LinearLayout.LayoutParams fl_lp = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -244,10 +247,12 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                             vp.setVisibility(View.VISIBLE);
                             isPortrait = true;
+                            menuLayout.setVisibility(View.VISIBLE);
                         }
                     }
                 }
             });
+
             mVideoView.setMediaController(mc);
             mc.setVisibility(View.GONE);
             mVideoView.requestFocus();
@@ -261,6 +266,18 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                     mediaPlayer.setPlaybackSpeed(1.0f);
                 }
             });
+
+            LinearLayout.LayoutParams fl_lp = new LinearLayout.LayoutParams(
+                    getHeightPixel(ViewVideoActivity.this),
+                    getWidthPixel(ViewVideoActivity.this)-getStatusBarHeight(ViewVideoActivity.this)
+            );
+            vp.setVisibility(View.GONE);
+            frameLayout.setLayoutParams(fl_lp);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);//缩放参数，画面全屏
+            isPortrait = false;
+            menuLayout.setVisibility(View.GONE);
+
         }
     }
 
