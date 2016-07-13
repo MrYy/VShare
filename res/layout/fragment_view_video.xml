@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
+        android:gravity="bottom"
     >
     <LinearLayout
         android:id="@+id/playSet"
@@ -69,4 +77,22 @@
     android:layout_height="@dimen/button_height">
 
 </com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout>
-</LinearLayout>
+    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout_mask"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/share_mask_back"
+            android:gravity="top"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:id="@+id/imageView_mask"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/share_mask"
+                android:scaleType="fitStart" >
+            </ImageView>
+        </LinearLayout>
+    </FrameLayout>
+</RelativeLayout>
