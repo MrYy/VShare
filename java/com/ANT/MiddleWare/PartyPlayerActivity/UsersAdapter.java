@@ -49,24 +49,7 @@ public class UsersAdapter extends ArrayAdapter<String> {
 
         viewHolder.namelayout.setVisibility(View.VISIBLE);
         String name = getItem(position);
-        Map<String, String> req = new HashMap<>();
-        req.put("name", name);
-        Method.postRequest(getContext(), DashApplication.INFO, req, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String s) {
-                try {
-                    JSONObject res = new JSONObject(s);
-                    if (res.getString("code").equals("200")) {
-                        String url = res.getJSONObject("data").getString("thumb_url");
-                        if (!url.equals("")) {
-                            Method.getImage(url,viewHolder.photo,getContext());
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        Method.setPhoto(getContext(),name,viewHolder.photo);
         viewHolder.names.setText(name);
         viewHolder.names.setTextColor(Color.BLACK);
 
