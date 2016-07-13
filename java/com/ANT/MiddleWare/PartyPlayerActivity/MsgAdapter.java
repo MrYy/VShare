@@ -1,24 +1,93 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
+import com.android.volley.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by David on 16/7/6.
  */
 public class MsgAdapter extends ArrayAdapter<Msg> {
+    private final Bitmap defaultBitmap;
     private int resourceId;
-    public MsgAdapter(Context context, int textViewResourceId, List<Msg> objects){
+    private boolean rightOk = false;
+    private boolean leftOK = false;
+    private Bitmap download;
+    private Bitmap rightBitmap;
+    private Bitmap leftBitmap;
+
+    public MsgAdapter(Context context, int textViewResourceId, List<Msg> objects, Bitmap bitmap){
         super(context,textViewResourceId,objects);
+        Iterator<String> ite = ViewVideoActivity.onLineUsers.iterator();
+        defaultBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.profile_default);
+        while (ite.hasNext()) {
+            final String name = ite.next();
+            Map<String, String> req = new HashMap<>();
+            req.put("name", name);
+            Method.postRequest(getContext(), DashApplication.INFO, req, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String s) {
+                    try {
+                        JSONObject res = new JSONObject(s);
+                        if (res.getString("code").equals("200")) {
+                            String photo = res.getJSONObject("data").getString("thumb_url");
+                            if (!photo.equals("")) {
+                                URL url = new URL(photo);
+                                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                                conn.setConnectTimeout(5000);
+                                conn.setRequestMethod("GET");
+                                if(conn.getResponseCode() == 200){
+                                    InputStream inputStream = conn.getInputStream();
+                                    if (name.equals(ViewVideoActivity.userName)) {
+                                        rightBitmap= BitmapFactory.decodeStream(inputStream);
+                                        rightBitmap = (rightBitmap == null)? defaultBitmap: rightBitmap;
+                                    }else {
+                                        leftBitmap = BitmapFactory.decodeStream(inputStream);
+                                        leftBitmap = (leftBitmap ==null)? defaultBitmap: leftBitmap;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (ProtocolException e) {
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
         resourceId=textViewResourceId;
     }
     @Override
@@ -36,22 +105,28 @@ public class MsgAdapter extends ArrayAdapter<Msg> {
             viewHolder.Sender=(TextView)view.findViewById(R.id.sender);
             viewHolder.Reciever=(TextView)view.findViewById(R.id.reciever);
             viewHolder.Timesamp=(TextView)view.findViewById(R.id.timesamp);
+            viewHolder.leftPhoto = (ImageView) view.findViewById(R.id.left_photo);
+            viewHolder.rightPhoto = (ImageView) view.findViewById(R.id.right_photo);
             view.setTag(viewHolder);}
         else{
             view=convertView;
             viewHolder=(ViewHolder)view.getTag();
         }
         viewHolder.Timesamp.setText(getChatTime(msg.getTimesamp()));
+        String name = msg.getName();
         if (msg.getType()==Msg.TYP_RECIEVED){
             viewHolder.leftLayout.setVisibility(View.VISIBLE);
             viewHolder.rightLayout.setVisibility(View.GONE);
             viewHolder.leftMsg.setText(msg.getContent());
-            viewHolder.Reciever.setText(msg.getName());;}
+            viewHolder.leftPhoto.setImageBitmap(leftBitmap);
+            viewHolder.Reciever.setText(name);;}
+
         else if(msg.getType()==Msg.TYP_SEND){
             viewHolder.leftLayout.setVisibility(View.GONE);
             viewHolder.rightLayout.setVisibility(View.VISIBLE);
             viewHolder.rightMsg.setText(msg.getContent());
-            viewHolder.Sender.setText(msg.getName());}
+            viewHolder.rightPhoto.setImageBitmap(rightBitmap);
+            viewHolder.Sender.setText(name);}
 
 
         return view;}
@@ -98,6 +173,8 @@ public class MsgAdapter extends ArrayAdapter<Msg> {
         TextView Sender;
         TextView Reciever;
         TextView Timesamp;
+        ImageView leftPhoto;
+        ImageView rightPhoto;
     }
 
 }

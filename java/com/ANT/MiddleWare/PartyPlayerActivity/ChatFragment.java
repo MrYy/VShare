@@ -1,6 +1,8 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -12,10 +14,24 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
+import com.android.volley.Response;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.getMsg;
@@ -34,6 +50,7 @@ public class ChatFragment extends Fragment {
     private ImageButton chat_btn;
     private List<Msg> msgList=new ArrayList<Msg>();
     private MsgAdapter msgAdapter;
+    private Bitmap bitmap;
 
 
     public ChatFragment() {
@@ -49,6 +66,7 @@ public class ChatFragment extends Fragment {
         listView=(ListView)view.findViewById(R.id.list_main);
         editText=(EditText)view.findViewById(R.id.edit_main);
         chat_btn=(ImageButton)view.findViewById(R.id.button_main);
+
         onTalkState();
         return view;
     }
@@ -75,7 +93,8 @@ public class ChatFragment extends Fragment {
                 }
             }
         });
-        msgAdapter = new MsgAdapter(getActivity(), R.layout.chat_item_message, msgList);
+
+        msgAdapter = new MsgAdapter(getActivity(), R.layout.chat_item_message, msgList,bitmap);
         listView.setAdapter(msgAdapter);
         startReceiveThread();
     }
