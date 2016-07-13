@@ -6,6 +6,32 @@
     android:background="@color/background_color"
     android:orientation="vertical"
     tools:context="com.ANT.MiddleWare.PartyPlayerActivity.util.StatisticsActivity">
+    <RelativeLayout
+        android:id="@+id/playSet"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="40dp"
+        android:background="@drawable/theme_color">
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:text="vShare"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content" />
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentEnd="true"
+            android:scaleType="center"
+            android:id="@+id/button_view_video"
+            android:layout_height="30dp"
+            android:background="@drawable/menu_icon"
+
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
 
     <com.ANT.MiddleWare.PartyPlayerActivity.bean.ColumnSurface
         android:id="@+id/view"

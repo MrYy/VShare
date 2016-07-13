@@ -5,7 +5,7 @@
     <color name="float_transparent">#00000000</color>
     <color name="sweet_dialog_bg_color">#FFFFFF</color>
     <color name="button_text_color">#fafafa</color>
-    <color name="background_color">#e1e1e1</color>
+    <color name="background_color">#f4f4f4</color>
     <color name="gray_btn_bg_pressed_color">#99ffff</color>
     <color name="theme_color">#0578ca</color>
     <color name="blue_btn_bg_pressed_color">#96BFD2</color>
