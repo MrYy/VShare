@@ -48,8 +48,7 @@ import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -190,7 +189,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             mGroup.addView(mView);
 
         }
-        MenuLayout menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
+        menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
