@@ -82,8 +82,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static String userName="";
     public static boolean isAp = false;
     private ViewPager vp;
-//    private String path="http://127.0.0.1:9999/4/index.m3u8";
-    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
+    private String path="http://127.0.0.1:9999/4/index.m3u8";
+//    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
 //    private String path="";
     private VideoView mVideoView;
     private FrameLayout frameLayout;
