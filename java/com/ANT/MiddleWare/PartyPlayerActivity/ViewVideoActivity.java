@@ -403,6 +403,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 frameLayout.setLayoutParams(fl_lp);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 vp.setVisibility(View.VISIBLE);
+                menuLayout.setVisibility(View.VISIBLE);
                 isPortrait=true;
                 return true;
             }
