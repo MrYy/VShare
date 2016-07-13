@@ -36,6 +36,9 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.File;
@@ -52,6 +55,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -431,7 +435,6 @@ public class Method {
         DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnFail(R.drawable.ic_gf_default_photo)
                 .showImageForEmptyUri(R.drawable.ic_gf_default_photo)
                 .showImageOnLoading(R.drawable.ic_gf_default_photo)
-                .cacheInMemory(true)
                 .bitmapConfig(config)     //设置图片的解码类型
                 .build();
         ImageLoader imageLoader = ImageLoader.getInstance();
@@ -440,5 +443,26 @@ public class Method {
         }
 
         imageLoader.displayImage(url, imageView, options);
+    }
+
+    public static void setPhoto(final Context context, String name, final ImageView imageView) {
+        Map<String, String> req = new HashMap<>();
+        req.put("name", name);
+        Method.postRequest(context, DashApplication.INFO, req, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                try {
+                    JSONObject res = new JSONObject(s);
+                    if (res.getString("code").equals("200")) {
+                        String url = res.getJSONObject("data").getString("thumb_url");
+                        if (!url.equals("")) {
+                            Method.getImage(url,imageView,context);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
