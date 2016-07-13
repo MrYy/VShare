@@ -359,9 +359,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
                 break;
             case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                if(playSetLayout.getVisibility()!=View.GONE){
-//                    playSetLayout.setVisibility(View.GONE);
-                }
+//                if(playSetLayout.getVisibility()!=View.GONE){
+////                    playSetLayout.setVisibility(View.GONE);
+//                }
                 mVideoView.start();
                 break;
         }
@@ -391,6 +391,26 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         int statusBarHeight = frame.top;
         return statusBarHeight;
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            if(!isPortrait){
+                LinearLayout.LayoutParams fl_lp=new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        vheight
+                );
+                frameLayout.setLayoutParams(fl_lp);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                vp.setVisibility(View.VISIBLE);
+                isPortrait=true;
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
 
     private void beHotPot() {
         isAp = true;
