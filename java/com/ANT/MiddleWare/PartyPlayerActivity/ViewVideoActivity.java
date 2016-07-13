@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Rect;
 import android.net.DhcpInfo;
@@ -26,6 +27,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -92,6 +94,10 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private long mPosition=0;
     private int vheight=0;
     private static Set<InetAddress> mClients = new HashSet<>();
+    /** 初次进入时候的蒙版背景 */
+    private LinearLayout linearLayout_mask;
+    /** 初次进入时的蒙版图片 */
+    private ImageView imageView_mask;
 
     public static void sendMsg(Message msg) {
         SendTask sendTask = new SendTask();
@@ -320,6 +326,16 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     }
 
     private void init() {
+        linearLayout_mask = (LinearLayout)findViewById(R.id.linearLayout_mask);
+        imageView_mask = (ImageView)findViewById(R.id.imageView_mask);
+        imageView_mask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearLayout_mask.setVisibility(View.GONE);
+                getBaseContext().getSharedPreferences("Setting", Context.MODE_PRIVATE).edit().putBoolean("read_share", true).commit();
+            }
+        });
+        setMask();
         play = (Button) findViewById(R.id.button_view_video);
         editVideoPath = (EditText) findViewById(R.id.edittext_video_location);
         playSetLayout= (LinearLayout) findViewById(R.id.playSet);
@@ -391,7 +407,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
 
     }
-    
+
     private WifiConfiguration setWifiParams(String ssid) {
         WifiConfiguration apConfig = new WifiConfiguration();
         apConfig.SSID = "\"" + ssid + "\"";
@@ -405,6 +421,21 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
         return apConfig;
     }
-
+    private void setMask() {
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(
+                "Setting", Context.MODE_PRIVATE);
+        boolean isread =  sharedPreferences.getBoolean("read_share", false);
+        if(!isread){
+            // 调整顶部背景图片的大小，适应不同分辨率的屏幕
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+            int width = dm.widthPixels;
+            int height = (int) ((float) width *1.6);
+            imageView_mask.setLayoutParams(new LinearLayout.LayoutParams(width, height));
+            linearLayout_mask.setVisibility(View.VISIBLE);
+        }else{
+            linearLayout_mask.setVisibility(View.GONE);
+        }
+    }
 
 }
