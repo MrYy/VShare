@@ -356,7 +356,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         });
         setMask();
         play = (ImageButton) findViewById(R.id.button_view_video);
-        editVideoPath = (EditText) findViewById(R.id.edittext_video_location);
         playSetLayout= (RelativeLayout) findViewById(R.id.playSet);
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
