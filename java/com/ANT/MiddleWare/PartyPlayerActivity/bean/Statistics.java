@@ -24,6 +24,7 @@ public class Statistics {
     }
     public void start() {
         startTime = (int) System.currentTimeMillis();
+        totalSize = 0;
     }
     public static synchronized Statistics getInstance() {
         return new Statistics();
