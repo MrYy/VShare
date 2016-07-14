@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class SplashActivity extends Activity implements ViewPager.OnPageChangeLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_start);
         SharedPreferences prefernces = SplashActivity.this.getSharedPreferences(getString(R.string.user_save), Context.MODE_PRIVATE);
         String first = prefernces.getString(getString(R.string.user_first_login), "");

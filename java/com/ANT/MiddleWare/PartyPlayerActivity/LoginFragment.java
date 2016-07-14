@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -155,19 +156,23 @@ public class LoginFragment extends Fragment {
                     Method.display(getActivity(),"用户名或密码为空");
                     return;
                 }
+                ConnectivityManager con=(ConnectivityManager)getContext().getSystemService(Activity.CONNECTIVITY_SERVICE);
+                boolean internet=con.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
+                if (!internet) {
+                    Method.display(getContext(),"当前没有移动网络，观看或分享本地视频");
+                        Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
+                        intent.putExtra(context.getString(R.string.user_name), name);
+                        intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
+                        intent.putExtra("保存用户昵称", checkBoxRem.isChecked());
+                        if (checkBoxRem.isChecked()) {
+                            app.setUser(name, pwd);
+                        }
+                        startActivity(intent);
+                }
                 Map<String, String> req = new HashMap<String, String>();
                 req.put("name", name);
                 req.put("password", pwd);
-                if(context.getString(R.string.test_mode).equals("test")){
-                    Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
-                    intent.putExtra(context.getString(R.string.user_name), name);
-                    intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
-                    intent.putExtra("保存用户昵称", checkBoxRem.isChecked());
-                    if (checkBoxRem.isChecked()) {
-                        app.setUser(name, pwd);
-                }
-                    startActivity(intent);
-                }
+
                 Method.postRequest(getActivity(), DashApplication.LOGIN, req, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
