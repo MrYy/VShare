@@ -110,7 +110,7 @@ public class ServerThread extends Thread {
                                 " set size:"+String.valueOf(sendTask.getmClients().size())
                                 +" msg:"+msg.getMessage()+" msg queue:"+String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
                                 }
-
+                                int oralSize = sendTask.getmClients().size();
                                 if (sendTask.getmClients().contains(mRemoteAddr)) {
                                     msg.setName(ViewVideoActivity.userName);
                                     Method.send(msg, sc);
@@ -119,6 +119,9 @@ public class ServerThread extends Thread {
                                 if (sendTask.getmClients().size() == 0) {
                                     ViewVideoActivity.sendMessageQueue.poll();
                                 }
+                                if (sendTask.getmClients().size() < oralSize) {
+                                    break;
+                                }
                             }
 //                            Log.d(TAG, "after message"+" queue size "+String.valueOf(ViewVideoActivity.sendMessageQueue.size()));
 
@@ -126,6 +129,8 @@ public class ServerThread extends Thread {
                                 //发送报文
                                 SendTask sendTask = ViewVideoActivity.taskMessageQueue.peek();
                                 Message msg = sendTask.getMsg();
+                                int oralSize = sendTask.getmClients().size();
+
                                 if (sendTask.getmClients().contains(mRemoteAddr)) {
                                     FileFragment ff = msg.getFragment();
                                     Message msgObj = new Message();
@@ -135,6 +140,9 @@ public class ServerThread extends Thread {
                                 }
                                 if (sendTask.getmClients().size() == 0) {
                                     ViewVideoActivity.taskMessageQueue.poll();
+                                }
+                                if (sendTask.getmClients().size() < oralSize) {
+                                    break;
                                 }
                             }
 //                            Log.d(TAG, "after task");
