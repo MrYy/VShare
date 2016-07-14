@@ -13,7 +13,7 @@ public class StatisticsFactory {
         gReceive,wifiSend,wifiReceive
     }
 
-    public static  Statistics getInstance(Type type) {
+    public synchronized static  Statistics getInstance(Type type) {
         Statistics instance = null;
         switch (type) {
             case gReceive:

@@ -46,7 +46,7 @@ public class Statistics {
     public synchronized float getSpeed() {
         int totalTime = (int) (System.currentTimeMillis() - startTime);
         if(totalTime == 0) return 0f;
-        return  totalSize / totalTime * 1000 * 8;
+        return  totalSize / totalTime * 1000 * 8 / 1024;
     }
 
     private float computeCurrentSpeed() {
