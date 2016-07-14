@@ -3,7 +3,8 @@
     <!--点击背景-->
     <item android:state_pressed="true">
         <shape>
-            <gradient android:startColor="@android:color/holo_blue_bright" />
+            <stroke android:color="#fff" android:width="2dp"/>
+            <solid android:color="#33ffffff"/>
             <corners android:radius="8dp" />
             <padding android:left="10dp" android:top="10dp"
                 android:bottom="10dp" android:right="10dp"/>
