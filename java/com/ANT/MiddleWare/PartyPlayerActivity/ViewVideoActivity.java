@@ -23,20 +23,24 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -110,6 +114,13 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private MenuLayout menuLayout;
     private ViewGroup mGroup;
     private View mView;
+    private String[] videoList;
+    private List<ContentModel> list;
+    private DrawerLayout mDrawerLayout;
+    private RelativeLayout leftLayout;
+    private ListView mDrawerList;
+    private ContentAdapter adapter;
+    private String vpath;
     private final static Lock lock = new ReentrantLock();
     private final static Condition condition = lock.newCondition();
     public static void sendMsg(Message msg) {
@@ -306,7 +317,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
 
 
-    private void initPlayVideo() {
+    private void initPlayVideo(String path) {
 
         //path=editVideoPath.getText().toString().trim();
         mVideoView= (VideoView) findViewById(R.id.buffer);
@@ -392,9 +403,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
                 break;
             case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                if(playSetLayout.getVisibility()!=View.GONE){
-                    playSetLayout.setVisibility(View.GONE);
-                }
+//                if(playSetLayout.getVisibility()!=View.GONE){
+//                    playSetLayout.setVisibility(View.GONE);
+//                }
                 mVideoView.start();
                 break;
         }
@@ -403,7 +414,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        playSetLayout.setVisibility(View.VISIBLE);
+        //playSetLayout.setVisibility(View.VISIBLE);
         mVideoView.seekTo(0);
     }
 
@@ -468,6 +479,17 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private void init() {
         play = (ImageButton) findViewById(R.id.button_view_video);
         playSetLayout= (RelativeLayout) findViewById(R.id.playSet);
+        mDrawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
+        leftLayout= (RelativeLayout) findViewById(R.id.left);
+        mDrawerList= (ListView) findViewById(R.id.left_drawer);
+        videoList=new String[]{path,"path2","path3"};
+        list=new ArrayList<ContentModel>();
+
+        list.add(new ContentModel(R.drawable.video, path));
+        list.add(new ContentModel(R.drawable.video, "path2"));
+        adapter=new ContentAdapter(this,list);
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(new DrawerIemClickListener());
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
         vp=(ViewPager)findViewById(R.id.viewpager);
@@ -485,8 +507,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initPlayVideo();
-                playSetLayout.setVisibility(View.GONE);
+//                initPlayVideo();
+//                playSetLayout.setVisibility(View.GONE);
+                 mDrawerLayout.openDrawer(Gravity.LEFT);
             }
         });
 
@@ -552,4 +575,14 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     }
 
 
+    private class DrawerIemClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            vpath=videoList[i];
+            Log.d(TAG, "onItemClick: path"+vpath);
+            initPlayVideo(vpath);
+            mDrawerList.setItemChecked(i,true);
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
+        }
+    }
 }
