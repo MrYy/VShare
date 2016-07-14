@@ -55,7 +55,7 @@ public class ServerThread extends Thread {
             while (true) {
                 int readChannel = selector.select();
                 if (readChannel == 0) continue;
-                Log.d("TAG","ready chanel num:" + String.valueOf(readChannel));
+//                Log.d("TAG","ready chanel num:" + String.valueOf(readChannel));
                 Set<SelectionKey> selectedChannel = selector.selectedKeys();
                 Iterator ite = selectedChannel.iterator();
                 while (ite.hasNext()) {
