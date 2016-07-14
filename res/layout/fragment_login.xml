@@ -65,44 +65,53 @@
             android:hint="请 输 入 密 码"
             />
     </LinearLayout>
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp">
-        <CheckBox
-            android:layout_marginLeft="230dp"
-            android:id="@+id/checkbox_remember_account"
+        android:layout_marginTop="15dp">
+        <LinearLayout
+            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/CustomCheckboxTheme"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:text="记住账户"
-            />
-    </LinearLayout>
-    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/checkbox_remember_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/CustomCheckboxTheme"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:text="记住账户"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp">
-        <CheckBox
-            android:layout_marginLeft="230dp"
+        android:layout_marginTop="10dp">
+        <LinearLayout
+            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:id="@+id/checkbox_publish_video"
-            android:layout_height="wrap_content"
-            style="@style/CustomCheckboxTheme"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:text="分享视频"
-            />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:id="@+id/checkbox_publish_video"
+                android:layout_height="wrap_content"
+                style="@style/CustomCheckboxTheme"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:text="分享视频"
+                />
+        </LinearLayout>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -116,26 +125,33 @@
             style="@style/CustomCheckboxTheme"/>
 
     </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp">
     <Button
-        android:layout_marginRight="55dp"
-        android:layout_gravity="right"
+        android:layout_centerInParent="true"
         android:id="@+id/button_login"
         android:layout_width="80dp"
         android:layout_height="45dp"
-        android:background="@drawable/button"
+        android:background="@drawable/button_invisiable"
         android:textColor="@android:color/white"
         android:text="登录"
         />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
     <TextView
         android:id="@+id/textview_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginRight="60dp"
+        android:layout_centerInParent="true"
         android:textColor="@android:color/holo_blue_bright"
         android:textSize="16sp"
-        android:layout_marginTop="30dp"
         android:text="注册账号"
         />
+    </RelativeLayout>
 </LinearLayout>
     </ScrollView>
