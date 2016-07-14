@@ -19,6 +19,7 @@ import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 import com.ANT.MiddleWare.WiFi.WiFiTCP.MyException;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -181,6 +182,7 @@ public class Method {
 
                 if (count != 0) Log.d(TAG, "接收的字节：" + String.valueOf(byteRead));
             }
+            StatisticsFactory.getInstance(StatisticsFactory.Type.wifiReceive).add(byteRead);
             if (byteRead > 0) {
                 buf.flip();
                 byte[] content = new byte[buf.limit()];
@@ -304,6 +306,7 @@ public class Method {
         msgHeader.setLength(msgBytes.length);
         byte[] headerBytes = msgHeader.getBytes();
         Log.d(TAG, "header size:" + String.valueOf(headerBytes.length)+" content size:"+String.valueOf(msgBytes.length));
+        StatisticsFactory.getInstance(StatisticsFactory.Type.wifiSend).add(msgBytes.length);
         Method.sendMessage(sc, headerBytes);
         Method.sendMessage(sc, msgBytes);
     }

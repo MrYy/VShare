@@ -31,4 +31,10 @@ public class StatisticsFactory {
         }
         return instance;
     }
+
+    public static void startStatistic() {
+        for (Type t : Type.values()) {
+            getInstance(t).start();
+        }
+    }
 }

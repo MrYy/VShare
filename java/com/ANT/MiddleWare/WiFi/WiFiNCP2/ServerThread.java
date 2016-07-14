@@ -72,7 +72,7 @@ public class ServerThread extends Thread {
                         ((Activity) context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(context, "has a client in", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "有人来啦", Toast.LENGTH_SHORT).show();
                             }
                         });
                         sc.configureBlocking(false);

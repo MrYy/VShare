@@ -48,6 +48,7 @@ import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
@@ -101,8 +102,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static String userName="";
     public static boolean isAp = false;
     private ViewPager vp;
-//    private String path="http://127.0.0.1:9999/4/index.m3u8";
-    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
+    private String path="http://127.0.0.1:9999/4/index.m3u8";
+//    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
 //    private String path="";
     private VideoView mVideoView;
     private FrameLayout frameLayout;
@@ -318,7 +319,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
 
     private void initPlayVideo(String path) {
-
+        StatisticsFactory.startStatistic();
         //path=editVideoPath.getText().toString().trim();
         mVideoView= (VideoView) findViewById(R.id.buffer);
         frameLayout= (FrameLayout) findViewById(R.id.fragment_video_player);

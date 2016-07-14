@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
+ * 计算速度的策略类
  * Created by zxc on 2016/7/8.
  */
 public class Statistics {
@@ -17,9 +18,12 @@ public class Statistics {
     private static Queue<Long> dTime;
     private float currentSpeed;
     public Statistics() {
-        startTime = (int) System.currentTimeMillis();
         dSize = new ArrayBlockingQueue<Float>(2);
         dTime = new ArrayBlockingQueue<Long>(2);
+        startTime = (int) System.currentTimeMillis();
+    }
+    public void start() {
+        startTime = (int) System.currentTimeMillis();
     }
     public static synchronized Statistics getInstance() {
         return new Statistics();
@@ -41,6 +45,7 @@ public class Statistics {
 
     public synchronized float getSpeed() {
         int totalTime = (int) (System.currentTimeMillis() - startTime);
+        if(totalTime == 0) return 0f;
         return  totalSize / totalTime * 1000 * 8;
     }
 

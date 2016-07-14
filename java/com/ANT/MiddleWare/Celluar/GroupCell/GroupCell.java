@@ -14,6 +14,7 @@ import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ConfigureData;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 
 public class GroupCell extends Thread {
 	private static final String TAG = GroupCell.class.getSimpleName();
@@ -64,7 +65,7 @@ public class GroupCell extends Thread {
 					int endOffset = Integer.parseInt(end);
 					int totalLength = Integer.parseInt(total);
 					int pieceLength = endOffset - startOffset;
-
+					StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).add(totalLength);
 					byte[] tmpbuff = new byte[pieceLength];
 					int hasRead = 0;
 					while (hasRead < pieceLength) {
