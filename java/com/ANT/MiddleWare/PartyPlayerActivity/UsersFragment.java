@@ -54,6 +54,7 @@ public class UsersFragment extends Fragment {
         UsersInit();
         chat_btn.setBackgroundResource(R.drawable.refresh);
         editText.setHint("  附近的人");
+        editText.setEnabled(false);
         usersAdapter = new UsersAdapter(getActivity(),R.layout.chat_item_users,usersList);
         listView.setAdapter(usersAdapter);
         listView.setSelection(usersList.size());
