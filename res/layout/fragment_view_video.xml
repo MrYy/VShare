@@ -45,7 +45,7 @@
         android:layout_height="240dp"
         android:layout_weight="6"
         android:layout_marginLeft="5dp"
-        android:background="@drawable/theme_color"
+        android:background="@color/background_color"
         android:layout_marginRight="5dp">
 
         <io.vov.vitamio.widget.CenterLayout
