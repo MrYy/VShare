@@ -3,8 +3,15 @@ package com.ANT.MiddleWare.PartyPlayerActivity.bean;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -29,6 +36,8 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
     private Canvas canvas;
     //速度单位为 kbit/s，最高50MB带宽估计
     private int maxSpeed = 5000;
+    private RectF rectf;
+    private int rectMargin;
 
     public ColumnSurface(Context context) {
         this(context, null);
@@ -51,6 +60,7 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
         screenH = this.getHeight();
         screenW = this.getWidth();
         columnW = screenW * 1 / 12;
+        final float scale = getResources().getDisplayMetrics().density;
         Log.d(TAG, "screen height:" + String.valueOf(screenH));
         new Thread(new Runnable() {
             @Override
@@ -65,8 +75,9 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
                     mPaint.setStrokeWidth(3);
                     mPaint.setColor(Color.BLACK);
                     canvas.drawLine(marginW - 10, 0, marginW - 10, screenH, mPaint);
-                    canvas.drawLine(0, screenH - marginW + 10, 2 * marginW + 4 * columnW, screenH - marginW + 10, mPaint);
+                    canvas.drawLine(0, screenH - marginW + 10, screenW, screenH - marginW + 10, mPaint);
                     float h = 0;
+                    int interval = 25;
                     for (int i = 0; i < 3; i++) {
                         Message msg = new Message();
                         switch (i) {
@@ -91,8 +102,15 @@ public class ColumnSurface extends SurfaceView implements SurfaceHolder.Callback
                         }
                         msg.arg1 = (int) h;
                         StatisticsActivity.mHandler.sendMessage(msg);
-                        canvas.drawRect(marginW + i * columnW, (1 - h / maxSpeed) * screenH - marginW, marginW + (i + 1) * columnW, screenH - marginW, mPaint);
+                        rectMargin = 100;
+                        canvas.drawRect(rectMargin + i * columnW + i*interval, (1 - h / maxSpeed) * screenH - marginW, rectMargin + (i + 1) * columnW+i*interval, screenH - marginW, mPaint);
                     }
+                    mPaint.reset();
+                    String text = "传输速度/kbps";
+                    mPaint.setStrokeWidth(3);
+                    mPaint.setTextSize(18*scale);
+                    mPaint.setAntiAlias(true);
+                    canvas.drawText(text,marginW+10,(int) (40 * scale + 0.5f),mPaint);
                     sfh.unlockCanvasAndPost(canvas);
                     try {
                         TimeUnit.MILLISECONDS.sleep(100);
