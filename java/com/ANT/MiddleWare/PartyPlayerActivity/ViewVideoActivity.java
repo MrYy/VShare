@@ -62,6 +62,9 @@ import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.vov.vitamio.LibsChecker;
@@ -107,7 +110,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private MenuLayout menuLayout;
     private ViewGroup mGroup;
     private View mView;
-
+    private final static Lock lock = new ReentrantLock();
+    private final static Condition condition = lock.newCondition();
     public static void sendMsg(Message msg) {
         SendTask sendTask = new SendTask();
         sendTask.setMsg(msg);
@@ -125,10 +129,30 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         mClients = clients;
     }
 
-    public static Message getMsg() {
-        return receiveMessageQueue.poll();
+    public  static Message getMsg() {
+        lock.lock();
+        try {
+            while (receiveMessageQueue.size() == 0) try {
+                condition.await();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return receiveMessageQueue.poll();
+        }finally {
+            lock.unlock();
+        }
     }
 
+    public static void insertReceiveMQ(Message msg) {
+        lock.lock();
+        try {
+            condition.signalAll();
+            receiveMessageQueue.add(msg);
+        }finally {
+            lock.unlock();
+        }
+    }
     public static void insert(FileFragment ff) {
         synchronized (taskMessageQueue) {
             Log.d(TAG, "taskQueue's length:" + String.valueOf(taskMessageQueue.size()));

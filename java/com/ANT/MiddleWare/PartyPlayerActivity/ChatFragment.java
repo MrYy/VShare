@@ -111,12 +111,6 @@ public class ChatFragment extends Fragment {
                              android.os.Message passmsg=new android.os.Message();
                              passmsg.what=1;
                              handler.sendMessage(passmsg);
-                    try {
-                        TimeUnit.SECONDS.sleep(5);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
             }
         }
         }).start();}

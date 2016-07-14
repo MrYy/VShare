@@ -333,7 +333,7 @@ public class Method {
 //                            }
                         }
                     }
-                    ViewVideoActivity.receiveMessageQueue.add(msg);
+                    ViewVideoActivity.insertReceiveMQ(msg);
                     if (ViewVideoActivity.isAp) {
                         if (ViewVideoActivity.getClients().size() > 0) {
                             SendTask sendTask = new SendTask();
