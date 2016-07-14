@@ -3,8 +3,7 @@
     <!--点击背景-->
     <item android:state_pressed="true">
         <shape>
-            <gradient android:startColor="#da893a" />
-            <stroke android:width="2dp" android:color="#e0cbbe" />
+            <stroke android:width="4dp" android:color="#fff" />
             <corners android:radius="8dp" />
             <padding android:left="10dp" android:top="10dp"
                 android:bottom="10dp" android:right="10dp"/>
@@ -12,7 +11,8 @@
     </item>
     <item>
         <shape>
-            <stroke android:width="2dp" android:color="#e0cbbe" />
+            <stroke android:width="4dp" android:color="#000"
+                android:dashGap="3dp" android:dashWidth="11dp"/>
             <corners android:radius="8dp" />
             <padding android:left="10dp" android:top="10dp"
                 android:bottom="10dp" android:right="10dp"/>

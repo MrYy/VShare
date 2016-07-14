@@ -5,22 +5,8 @@
     android:layout_height="match_parent">
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/nanmu">
+    android:layout_height="match_parent"
+    android:background="@drawable/build2">
 </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="#fff"
-        android:layout_alignParentBottom="true">
-        <ImageView
-            android:layout_width="280dp"
-            android:layout_height="160dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/background"/>
 
-
-
-    </RelativeLayout>
 </RelativeLayout>
