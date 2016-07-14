@@ -33,5 +33,6 @@
     <string name="user_save_name">用户名</string>
     <string name="user_save_password">用户密码</string>
     <string name="test_mode">test</string>
+    <string name="user_first_login">第一次登陆</string>
 
 </resources>
