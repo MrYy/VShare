@@ -369,9 +369,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
             }
             shareLocalVideo(path);
-        }else {
-            //切换3g下载模式
-            configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
         }
         mVideoView= (VideoView) findViewById(R.id.buffer);
         frameLayout= (FrameLayout) findViewById(R.id.fragment_video_player);
