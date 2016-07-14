@@ -20,17 +20,17 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content" />
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_alignParentEnd="true"
-            android:scaleType="center"
-            android:id="@+id/button_view_video"
-            android:layout_height="30dp"
-            android:background="@drawable/menu_icon"
+        <!--<ImageButton-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:scaleType="center"-->
+            <!--android:id="@+id/button_view_video"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:background="@drawable/menu_icon"-->
 
-            android:layout_alignParentRight="true" />
+            <!--android:layout_alignParentRight="true" />-->
     </RelativeLayout>
 
     <com.ANT.MiddleWare.PartyPlayerActivity.bean.ColumnSurface
