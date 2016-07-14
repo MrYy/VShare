@@ -403,9 +403,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
                 break;
             case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                if(playSetLayout.getVisibility()!=View.GONE){
-                    playSetLayout.setVisibility(View.GONE);
-                }
+//                if(playSetLayout.getVisibility()!=View.GONE){
+//                    playSetLayout.setVisibility(View.GONE);
+//                }
                 mVideoView.start();
                 break;
         }
@@ -414,7 +414,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        playSetLayout.setVisibility(View.VISIBLE);
+        //playSetLayout.setVisibility(View.VISIBLE);
         mVideoView.seekTo(0);
     }
 
