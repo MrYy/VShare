@@ -58,6 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:textColor="@android:color/holo_blue_dark"
                 android:text="3G   下载速度"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -85,6 +86,7 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/green"
                 android:layout_marginTop="20dp"
                 android:text="WIFI下载速度"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -110,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-
+                android:textColor="@color/yellow"
                 android:text="WIFI发送速度"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 

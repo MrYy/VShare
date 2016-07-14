@@ -373,7 +373,7 @@ public class Method {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Method.display(context, "网络连接有问题");
+//                Method.display(context, "网络连接有问题");
             }
         };
         StringRequest stringRequest;
