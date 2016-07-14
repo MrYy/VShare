@@ -49,6 +49,15 @@ public class DashProxyServer extends NanoHTTPD {
 				String playist = getFileName(session, ".mp4");
 				Log.v("TAG", "playist" + playist);
 				switch (ViewVideoActivity.configureData.getWorkingMode()) {
+					case FAKE_MODE:
+
+					String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/video/4/";
+					int i=Integer.parseInt(session.getUri().substring(1, 2).toString());
+					com.ANT.MiddleWare.PartyPlayerActivity.util.Method.shareLocalVideo(dir+i+".mp4");
+					int tmppl = Integer.parseInt(playist.substring(0, 1));
+					byte[] tmpl = IntegrityCheck.getInstance().getSegments(tmppl, CellularDown.CellType.GROUP);
+						return newFixedLengthResponse(Response.Status.OK,
+								"application/x-mpegurl", IntegrityCheck.getInstance().getSegments(tmppl));
 				case LOCAL_MODE:
 //					String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/video/4/";
 //					int i=Integer.parseInt(session.getUri().substring(1, 2).toString());

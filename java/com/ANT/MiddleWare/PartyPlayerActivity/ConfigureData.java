@@ -7,7 +7,8 @@ public class ConfigureData {
 	private boolean serviceAlive;
 	private WorkMode workingMode;
 	public static enum WorkMode {
-		LOCAL_MODE,G_MDOE,COOPERATIVE_MODE,JUNIT_TEST_MODE
+		LOCAL_MODE,G_MDOE,COOPERATIVE_MODE,JUNIT_TEST_MODE,
+		FAKE_MODE
 	}
 
 	public ConfigureData(String url) {
