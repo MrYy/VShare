@@ -183,10 +183,16 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         Log.d("ServerThread", userName);
         onLineUsers.add(userName);
         if (publishFlag) {
+            SharedPreferences preferences = getSharedPreferences(getString(R.string.user_save),MODE_PRIVATE);
+            String first = preferences.getString(getString(R.string.user_first_login), "");
+            if (first.equals("")) {
+                mView = createView();
+                mGroup = (ViewGroup) ViewVideoActivity.this.getWindow().getDecorView();
+                mGroup.addView(mView);
+            }else {
+                alertDialog();
+            }
 
-            mView = createView();
-            mGroup = (ViewGroup) ViewVideoActivity.this.getWindow().getDecorView();
-            mGroup.addView(mView);
 
         }
         menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
@@ -214,31 +220,34 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             @Override
             public void onClick(View v) {
                 mGroup.removeView(mView);
-                getBaseContext().getSharedPreferences("Setting", Context.MODE_PRIVATE).edit().putBoolean("read_share", true).commit();
-                new SweetAlertDialog(ViewVideoActivity.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("选择身份")
-                        .setConfirmText("播主").setCancelText("看客")
-                        .showCancelButton(true)
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                beHotPot();
-                                sweetAlertDialog.cancel();
-                            }
-                        }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        connectHotPot();
-                        sweetAlertDialog.cancel();
-                    }
-                }).show();
-
+                getBaseContext().getSharedPreferences(getString(R.string.user_save), Context.MODE_PRIVATE).edit().putString(getString(R.string.user_first_login),"ok").commit();
+                alertDialog();
             }
         });
 
         parent.setPadding(0, 0, 0, getNavBarHeight(this));
         parent.addView(mBg);
         return parent;
+    }
+
+    private void alertDialog() {
+        new SweetAlertDialog(ViewVideoActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("选择身份")
+                .setConfirmText("播主").setCancelText("看客")
+                .showCancelButton(true)
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        beHotPot();
+                        sweetAlertDialog.cancel();
+                    }
+                }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                connectHotPot();
+                sweetAlertDialog.cancel();
+            }
+        }).show();
     }
     public int getNavBarHeight(Context c) {
         int result = 0;
