@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="start_color">#1e95d6</color>
-    <color name="end_color">#274baf</color>
+    <color name="start_color">#0172ac</color>
+    <color name="end_color">#024385</color>
     <color name="float_transparent">#00000000</color>
     <color name="sweet_dialog_bg_color">#FFFFFF</color>
     <color name="button_text_color">#fafafa</color>

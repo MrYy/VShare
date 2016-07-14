@@ -35,7 +35,7 @@
             android:scaleType="center"
             android:id="@+id/button_view_video"
             android:layout_height="30dp"
-            android:background="@drawable/menu_icon"
+            android:background="@drawable/icon5"
 
             android:layout_alignParentRight="true" />
     </RelativeLayout>
