@@ -26,6 +26,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ClearCacheRequest;
+import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -371,11 +373,21 @@ public class Method {
             ViewVideoActivity.getClients().add(mClient);
         }
     }
+    private static RequestQueue getRequestQueue(Context context) {
+        RequestQueue mRequestQueue = Volley.newRequestQueue(context);
 
+        File cacheDir = new File(context.getCacheDir(), "volley");
+        DiskBasedCache cache = new DiskBasedCache(cacheDir);
+        mRequestQueue.start();
+
+        // clear all volley caches.
+        mRequestQueue.add(new ClearCacheRequest(cache, null));
+        return mRequestQueue;
+    }
     public static void postRequest(final Context context, final String url, final Map<String, String> request, final Response.Listener<String> listener) {
 
 
-        RequestQueue mQueue = Volley.newRequestQueue(context);
+        RequestQueue mQueue = getRequestQueue(context);
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {

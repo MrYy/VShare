@@ -575,7 +575,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     }
 
     private void initDashProxy() {
-        configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
+//        configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
     }
 
     private void connectToHotpot() {
@@ -652,7 +652,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
                 StreamListDialog dialog=new StreamListDialog(ViewVideoActivity.this,myListener);
                 dialog.show();
-                configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
+                configureData.setWorkingMode(ConfigureData.WorkMode.G_MDOE);
 
             }else{
                 LocalListDialog.MyListener myListener=new LocalListDialog.MyListener() {
