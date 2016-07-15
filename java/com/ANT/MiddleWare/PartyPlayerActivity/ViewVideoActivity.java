@@ -640,6 +640,10 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             initPlayVideo(vpath);
             mDrawerList.setItemChecked(i,true);
             mDrawerLayout.closeDrawer(Gravity.LEFT);
+            if (i ==0) {
+                configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
+
+            }
         }
     }
 }
