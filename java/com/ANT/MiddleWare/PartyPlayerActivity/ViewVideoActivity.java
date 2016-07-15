@@ -542,8 +542,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         videoList=new String[]{path,path2,"path3"};
         list=new ArrayList<ContentModel>();
 
-        list.add(new ContentModel(R.drawable.video, "网络视频"));
-        list.add(new ContentModel(R.drawable.video, "本地视频"));
+        list.add(new ContentModel(R.drawable.video, "共享网络视频"));
+        list.add(new ContentModel(R.drawable.video, "推送本地视频"));
         adapter=new ContentAdapter(this,list);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerIemClickListener());
