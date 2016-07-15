@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.DhcpInfo;
 import android.net.Uri;
@@ -45,6 +46,7 @@ import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
@@ -66,6 +68,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -126,14 +129,31 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private final static Lock lock = new ReentrantLock();
     private final static Condition condition = lock.newCondition();
     public  Handler mHandler = new Handler(){
+
         @Override
         public void handleMessage(android.os.Message msg) {
             super.handleMessage(msg);
             Log.d(TAG, "share local");
-            
-            initPlayVideo(shareLocalPath);
+            android.os.Message msgL = new android.os.Message();
+            switch (msg.what) {
+                case 1:
+                    //准备接收视频
+                    configureData.setWorkingMode(ConfigureData.WorkMode.LOCAL_MODE);
+                    Method.display(ViewVideoActivity.this,"播主开始推送视频啦");
+                    try {
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    initPlayVideo(shareLocalPath);
+                    break;
+                case 2:
+                    break;
+            }
+
         }
     };
+    private SweetAlertDialog pDialog;
 
     public Handler getmHandler() {
         return mHandler;
@@ -247,6 +267,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
         menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
+        pDialog = new SweetAlertDialog(ViewVideoActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
@@ -338,6 +360,14 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         Log.d(TAG, path);
         if (!path.startsWith("http")) {
             Log.d(TAG, "local video");
+            if (isAp) {
+                Method.display(ViewVideoActivity.this,"开始推送视频");
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             shareLocalVideo(path);
         }
         mVideoView= (VideoView) findViewById(R.id.buffer);
@@ -512,8 +542,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         videoList=new String[]{path,path2,"path3"};
         list=new ArrayList<ContentModel>();
 
-        list.add(new ContentModel(R.drawable.video, path));
-        list.add(new ContentModel(R.drawable.video, "path2"));
+        list.add(new ContentModel(R.drawable.video, "网络视频"));
+        list.add(new ContentModel(R.drawable.video, "本地视频"));
         adapter=new ContentAdapter(this,list);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerIemClickListener());
@@ -543,7 +573,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     }
 
     private void initDashProxy() {
-        configureData.setWorkingMode(ConfigureData.WorkMode.LOCAL_MODE);
+        configureData.setWorkingMode(ConfigureData.WorkMode.G_MDOE);
     }
 
     private void connectToHotpot() {
