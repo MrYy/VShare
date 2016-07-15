@@ -103,7 +103,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static boolean isAp = false;
     private ViewPager vp;
     private String path="http://127.0.0.1:9999/4/index.m3u8";
-//    private String path= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
+    private String path2= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
 //    private String path="";
     private VideoView mVideoView;
     private FrameLayout frameLayout;
@@ -321,6 +321,11 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private void initPlayVideo(String path) {
         StatisticsFactory.startStatistic();
         //path=editVideoPath.getText().toString().trim();
+        Log.d(TAG, path);
+        if (!path.startsWith("http")) {
+            Log.d(TAG, "local video");
+            shareLocalVideo(path);
+        }
         mVideoView= (VideoView) findViewById(R.id.buffer);
         frameLayout= (FrameLayout) findViewById(R.id.fragment_video_player);
         vheight= frameLayout.getHeight();
@@ -395,6 +400,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
     }
 
+    private void shareLocalVideo(String path) {
+        Method.shareLocalVideo(path);
+    }
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
         switch(what){
@@ -484,7 +492,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         mDrawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
         leftLayout= (RelativeLayout) findViewById(R.id.left);
         mDrawerList= (ListView) findViewById(R.id.left_drawer);
-        videoList=new String[]{path,"path2","path3"};
+        videoList=new String[]{path,path2,"path3"};
         list=new ArrayList<ContentModel>();
 
         list.add(new ContentModel(R.drawable.video, path));
