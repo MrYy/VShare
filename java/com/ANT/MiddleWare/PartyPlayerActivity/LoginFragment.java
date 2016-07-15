@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.LoginDialog;
@@ -147,7 +148,7 @@ public class LoginFragment extends Fragment {
 
             }
         });
-        ((Button) view.findViewById(R.id.button_login)).setOnClickListener(new View.OnClickListener() {
+        ((TextView) view.findViewById(R.id.button_login)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String name = editText.getText().toString().trim();
@@ -210,36 +211,6 @@ public class LoginFragment extends Fragment {
             }
         });
         photo = (CircleImageView) view.findViewById(R.id.profile_image);
-        photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActionSheet.createBuilder(getActivity(), getActivity().getSupportFragmentManager())
-                        .setCancelButtonTitle("取消")
-                        .setOtherButtonTitles("上传本地头像", "拍照上传头像")
-                        .setCancelableOnTouchOutside(true)
-                        .setListener(new ActionSheet.ActionSheetListener() {
-                            @Override
-                            public void onDismiss(ActionSheet actionSheet, boolean b) {
-
-                            }
-
-                            @Override
-                            public void onOtherButtonClick(ActionSheet actionSheet, int i) {
-                                switch (i) {
-                                    case 0:
-                                        Method.selectPicture(getActivity(), mOnHanlderResultCallback, Method.USE_LOCAL_PICTURE);
-                                        break;
-                                    case 1:
-                                        Method.selectPicture(getActivity(), mOnHanlderResultCallback, Method.USER_CAMERA);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                        }).show();
-
-            }
-        });
         return view;
     }
     @SuppressLint("NewApi")
