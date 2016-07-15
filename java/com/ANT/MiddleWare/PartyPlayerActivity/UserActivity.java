@@ -1,5 +1,6 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.ContactDialog;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.android.volley.Response;
 import com.baoyz.actionsheet.ActionSheet;
@@ -133,6 +135,20 @@ public class UserActivity extends FragmentActivity {
                             }
                         }).show();
 
+            }
+        });
+        contact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContactDialog contactDialog=new ContactDialog(UserActivity.this);
+                contactDialog.show();
+            }
+        });
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(UserActivity.this,ExtraActivity.class);
+                startActivity(intent2);
             }
         });
 
