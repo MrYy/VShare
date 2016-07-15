@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--点击背景-->
+
+    <item>
+        <shape>
+            <stroke android:width="4dp" android:color="@color/text_color"
+                android:dashGap="3dp" android:dashWidth="11dp"/>
+            <corners android:radius="8dp" />
+            <padding android:left="10dp" android:top="10dp"
+                android:bottom="10dp" android:right="10dp"/>
+        </shape>
+    </item>
+</selector>
