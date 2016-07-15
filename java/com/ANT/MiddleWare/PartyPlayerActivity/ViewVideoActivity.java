@@ -51,7 +51,9 @@ import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.LocalListDialog;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.StreamListDialog;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 
@@ -635,15 +637,35 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private class DrawerIemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            vpath=videoList[i];
-            Log.d(TAG, "onItemClick: path"+vpath);
-            initPlayVideo(vpath);
+//            vpath=videoList[i];
+            Log.d(TAG, "onItemClick: path"+i);
+//            initPlayVideo(vpath);
             mDrawerList.setItemChecked(i,true);
             mDrawerLayout.closeDrawer(Gravity.LEFT);
-            if (i ==0) {
-                configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
+            if(i==0){
+                StreamListDialog.MyListener myListener=new StreamListDialog.MyListener() {
+                    @Override
+                    public void deliver(String path) {
+                        initPlayVideo(path);
+                    }
+                };
+
+                StreamListDialog dialog=new StreamListDialog(ViewVideoActivity.this,myListener);
+                dialog.show();
+            }else{
+                LocalListDialog.MyListener myListener=new LocalListDialog.MyListener() {
+                    @Override
+                    public void deliver(String path) {
+                        vpath=path;
+                        initPlayVideo(vpath);
+
+                    }
+                };
+                LocalListDialog dialog=new LocalListDialog(ViewVideoActivity.this,myListener);
+                dialog.show();
 
             }
+
         }
     }
 }
