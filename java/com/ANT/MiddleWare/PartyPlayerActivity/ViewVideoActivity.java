@@ -652,6 +652,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
                 StreamListDialog dialog=new StreamListDialog(ViewVideoActivity.this,myListener);
                 dialog.show();
+                configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
+
             }else{
                 LocalListDialog.MyListener myListener=new LocalListDialog.MyListener() {
                     @Override
