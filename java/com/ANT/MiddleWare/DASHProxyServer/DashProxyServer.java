@@ -17,6 +17,7 @@ import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.test.CellularDownTest;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -49,62 +50,15 @@ public class DashProxyServer extends NanoHTTPD {
 				Log.v("TAG", "playist" + playist);
 				switch (ViewVideoActivity.configureData.getWorkingMode()) {
 				case LOCAL_MODE:
-					String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/video/4/";
-					int i=Integer.parseInt(session.getUri().substring(1, 2).toString());
-					Log.d("pianming",Integer.toString(i));
-//					if (i > 1) {
-//						while (!IntegrityCheck.getInstance().getSeg(i - 1).checkIntegrity()) {}
-//					}
-						File file=new File(dir, i+".mp4");
-						int len=(int) file.length();
-						try {
-							BufferedInputStream in = null;
-							in = new BufferedInputStream(new FileInputStream(file));
-							ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+//					String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/video/4/";
+//					int i=Integer.parseInt(session.getUri().substring(1, 2).toString());
+//					com.ANT.MiddleWare.PartyPlayerActivity.util.Method.shareLocalVideo(dir+i+".mp4");
+//					int tmppl = Integer.parseInt(playist.substring(0, 1));
+//					byte[] tmpl = IntegrityCheck.getInstance().getSegments(tmppl, CellularDown.CellType.GROUP);
 
-							byte[] temp = new byte[1024];
-							int size = 0;
-							while ((size = in.read(temp)) != -1) {
-								out.write(temp, 0, size);
-							}
-							Log.d("TAG", "len:" + len + "in.avaiable():" + in.available());
-							byte[] content = out.toByteArray();
-							FileFragment f =new FileFragment(0,len,i,len);
-							f.setData(content);
-							IntegrityCheck IC = IntegrityCheck.getInstance();
-								if (f.isTooBig()) {
-								FileFragment[] fragArray = null;
-								try {
-									fragArray = f.split();
-								} catch (FileFragment.FileFragmentException e) {
-									e.printStackTrace();
-								}
-										for (FileFragment ff : fragArray) {
-											IC.insert(i, ff);
-										}
-							} else {
-								IC.insert(i, f);
-							}
 
-							in.close();
-						} catch (FileNotFoundException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (FileFragment.FileFragmentException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-//test code
-					int tmppl = Integer.parseInt(playist.substring(0, 1));
-					byte[] tmpl = IntegrityCheck.getInstance().getSegments(tmppl, CellularDown.CellType.GROUP);
 					return newFixedLengthResponse(Response.Status.OK,
-							"application/x-mpegurl", tmpl);
-
-//					return localFile("/video/4/" + playist);
-
+							"application/x-mpegurl", IntegrityCheck.getInstance().getSegments(com.ANT.MiddleWare.PartyPlayerActivity.util.Method.LOCAL_VIDEO_SEGID));
 				case G_MDOE:
 					IntegrityCheck iTC = IntegrityCheck.getInstance();
 					int tmpp = Integer.parseInt(playist.substring(0, 1));

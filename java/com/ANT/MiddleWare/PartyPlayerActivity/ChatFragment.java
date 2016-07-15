@@ -51,6 +51,7 @@ public class ChatFragment extends Fragment {
     private List<Msg> msgList=new ArrayList<Msg>();
     private MsgAdapter msgAdapter;
     private Bitmap bitmap;
+    private  ViewVideoActivity viewActivity;
 
 
     public ChatFragment() {
@@ -66,7 +67,7 @@ public class ChatFragment extends Fragment {
         listView=(ListView)view.findViewById(R.id.list_main);
         editText=(EditText)view.findViewById(R.id.edit_main);
         chat_btn=(ImageButton)view.findViewById(R.id.button_main);
-
+        viewActivity =(ViewVideoActivity) getActivity();
         onTalkState();
         return view;
     }
@@ -105,7 +106,14 @@ public class ChatFragment extends Fragment {
                 while(true) {
                             Message message = getMsg();
                             if(message!=null){
-                            Msg receivedmsg = new Msg(message.getMessage(),Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
+                                String msgR = message.getMessage();
+                                if(msgR.equals(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_LOCAL)){
+                                    android.os.Message msg = new android.os.Message();
+                                    msg.what = 1;
+                                    viewActivity.getmHandler().sendMessage(msg);
+                                    return;
+                                }
+                            Msg receivedmsg = new Msg(msgR,Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
 //                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
                             msgList.add(receivedmsg);}
                              android.os.Message passmsg=new android.os.Message();

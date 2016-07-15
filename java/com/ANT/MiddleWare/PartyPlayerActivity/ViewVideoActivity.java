@@ -17,6 +17,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -34,11 +35,9 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -47,13 +46,12 @@ import android.widget.Toast;
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
-import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
-import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
-
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -66,6 +64,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -74,7 +73,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
-import io.vov.vitamio.Vitamio;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 
@@ -102,6 +100,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static String userName="";
     public static boolean isAp = false;
     private ViewPager vp;
+    private String shareLocalPath = "http://127.0.0.1:9999/local";
     private String path="http://127.0.0.1:9999/4/index.m3u8";
     private String path2= Environment.getExternalStorageDirectory()+"/video/4/1.mp4";
 //    private String path="";
@@ -122,8 +121,23 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private ListView mDrawerList;
     private ContentAdapter adapter;
     private String vpath;
+    public static final String SYSTEM_MESSAGE_SHARE_LOCAL = "asdfnvlxczvoj3asfpizfj323fsadf[]]adfadsf,./";
+    private static CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
     private final static Lock lock = new ReentrantLock();
     private final static Condition condition = lock.newCondition();
+    public  Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            Log.d(TAG, "share local");
+            
+            initPlayVideo(shareLocalPath);
+        }
+    };
+
+    public Handler getmHandler() {
+        return mHandler;
+    }
     public static void sendMsg(Message msg) {
         SendTask sendTask = new SendTask();
         sendTask.setMsg(msg);
@@ -401,6 +415,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     }
 
     private void shareLocalVideo(String path) {
+        Message msg = new Message();
+        msg.setMessage(SYSTEM_MESSAGE_SHARE_LOCAL);
+        sendMsg(msg);
         Method.shareLocalVideo(path);
     }
     @Override
