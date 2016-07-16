@@ -335,10 +335,7 @@ public class Method {
                     if (!(mName = msg.getName()).equals("")) {
                         if (msg.getMessage().equals(mName)) {
                             ViewVideoActivity.onLineUsers.add(mName);
-//                            Iterator<String> iterator = ViewVideoActivity.onLineUsers.iterator();
-//                            while (iterator.hasNext()) {
-//                                Log.d(TAG, iterator.next());
-//                            }
+
                         }
                     }
                     ViewVideoActivity.insertReceiveMQ(msg);
