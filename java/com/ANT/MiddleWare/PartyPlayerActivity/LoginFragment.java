@@ -106,48 +106,6 @@ public class LoginFragment extends Fragment {
             password.setText(user.get("password"));
             checkBoxRem.setChecked(true);
         }
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            String s1 = editText.getText().toString();
-                Map<String, String> req = new HashMap<>();
-                req.put("name", s1);
-                Method.postRequest(getActivity(), DashApplication.INFO, req, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        try {
-                            JSONObject res = new JSONObject(s);
-                            if (res.getString("code").equals("200")) {
-                                String testurl=res.getJSONObject("data").getString("thumb_url");
-                                if(!testurl.equals("")) {
-                               try{ portrait = getBitmap(testurl);
-                                   photo.setImageBitmap(portrait);
-                                }catch (IOException io){
-                                   io.printStackTrace();
-                               }
-                                }
-                            }else {
-                                Method.display(getContext(),res.getString("msg"));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            photo.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.profile_default));
-                        }
-                    }
-                });
-
-            }
-        });
         ((TextView) view.findViewById(R.id.button_login)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,8 +117,7 @@ public class LoginFragment extends Fragment {
                 }
                 ConnectivityManager con=(ConnectivityManager)getContext().getSystemService(Activity.CONNECTIVITY_SERVICE);
                 boolean internet=con.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
-                if (!internet) {
-                    Method.display(getContext(),"当前没有移动网络，观看或分享本地视频");
+//                if (!internet) {
                         Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
                         intent.putExtra(context.getString(R.string.user_name), name);
                         intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
@@ -169,36 +126,8 @@ public class LoginFragment extends Fragment {
                             app.setUser(name, pwd);
                         }
                         startActivity(intent);
-                }
-                Map<String, String> req = new HashMap<String, String>();
-                req.put("name", name);
-                req.put("password", pwd);
+//                }
 
-                Method.postRequest(getActivity(), DashApplication.LOGIN, req, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        try {
-                            JSONObject result = new JSONObject(s);
-                            String code = result.getString("code");
-                            String msg = result.getString("msg");
-                            if (code.equals("200")) {
-                                Intent intent = new Intent(getActivity(), ViewVideoActivity.class);
-                                intent.putExtra(context.getString(R.string.user_name), name);
-                                intent.putExtra(context.getString(R.string.publish_video), checkBoxPublis.isChecked());
-                                intent.putExtra("保存用户昵称", checkBoxRem.isChecked());
-                                if (checkBoxRem.isChecked()) {
-                                    app.setUser(name, pwd);
-                                }
-                                startActivity(intent);
-                            }
-                            Method.display(getActivity(),msg);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
                 //test code
 
             }
