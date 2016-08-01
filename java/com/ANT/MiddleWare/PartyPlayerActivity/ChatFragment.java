@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.getMsg;
@@ -53,6 +56,7 @@ public class ChatFragment extends Fragment {
     private MsgAdapter msgAdapter;
     private Bitmap bitmap;
     private  ViewVideoActivity viewActivity;
+    private ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
 
     public ChatFragment() {
@@ -106,7 +110,6 @@ public class ChatFragment extends Fragment {
             public void run() {
                 while(true) {
                             Message message = getMsg();
-                    Log.d("ChatFragment", "receive thread start");
                             if(message!=null){
                                 Log.d("ChatFragment", "receive message:" + String.valueOf(message.getMessage()));
                                 String msgR = message.getMessage();
@@ -114,7 +117,7 @@ public class ChatFragment extends Fragment {
                                     android.os.Message msg = new android.os.Message();
                                     msg.what = 1;
                                     viewActivity.getmHandler().sendMessage(msg);
-                                    new Thread(this).start();
+                                    threadPool.execute(this);
                                     return;
                                 }
                             Msg receivedmsg = new Msg(msgR,Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
