@@ -49,7 +49,7 @@ public class UsersAdapter extends ArrayAdapter<String> {
 
         viewHolder.namelayout.setVisibility(View.VISIBLE);
         String name = getItem(position);
-//        Method.setPhoto(getContext(),name,viewHolder.photo);
+        Method.setPhoto(getContext(),name,viewHolder.photo);
         viewHolder.names.setText(name);
         viewHolder.names.setTextColor(Color.BLACK);
 
