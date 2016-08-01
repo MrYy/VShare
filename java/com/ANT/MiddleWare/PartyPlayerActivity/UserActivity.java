@@ -81,31 +81,31 @@ public class UserActivity extends FragmentActivity {
         about=(TextView)findViewById(R.id.about_us);
         photo=(CircleImageView)findViewById(R.id.profile_image_set);
         username.setText(userName);
-//        String s1 = userName;
-//        Map<String, String> req = new HashMap<>();
-//        req.put("name", s1);
-//        Method.postRequest(UserActivity.this, DashApplication.INFO, req, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String s) {
-//                try {
-//                    JSONObject res = new JSONObject(s);
-//                    if (res.getString("code").equals("200")) {
-//                        String testurl=res.getJSONObject("data").getString("thumb_url");
-//                        if(!testurl.equals(null)) {
-//                            try{ Bitmap portrait = getBitmap(testurl);
-//                                photo.setImageBitmap(portrait);
-//                            }catch (IOException io){
-//                                io.printStackTrace();
-//                            }
-//                        }
-//                    }else {
-//                        Method.display(UserActivity.this,res.getString("msg"));
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        String s1 = userName;
+        Map<String, String> req = new HashMap<>();
+        req.put("name", s1);
+        Method.postRequest(UserActivity.this, DashApplication.INFO, req, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                try {
+                    JSONObject res = new JSONObject(s);
+                    if (res.getString("code").equals("200")) {
+                        String testurl=res.getJSONObject("data").getString("thumb_url");
+                        if(!testurl.equals(null)) {
+                            try{ Bitmap portrait = getBitmap(testurl);
+                                photo.setImageBitmap(portrait);
+                            }catch (IOException io){
+                                io.printStackTrace();
+                            }
+                        }
+                    }else {
+                        Method.display(UserActivity.this,res.getString("msg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         photo.setOnClickListener(new View.OnClickListener() {
 
             @Override
