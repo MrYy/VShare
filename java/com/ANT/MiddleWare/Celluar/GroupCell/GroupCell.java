@@ -56,7 +56,7 @@ public class GroupCell extends Thread {
 					InputStream in = connection.getInputStream();
 					String contentRange = connection.getHeaderField(
 							"Content-Range").toString();
-//					Log.d(TAG, "Content-Range " + contentRange);
+					Log.d(TAG, "Content-Range " + contentRange);
 					String range = contentRange.split(" ")[1].trim();
 					String start = range.split("-")[0];
 					String end = range.split("-")[1].split("/")[0];
