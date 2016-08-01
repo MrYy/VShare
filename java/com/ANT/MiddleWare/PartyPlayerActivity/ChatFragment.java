@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,12 +106,15 @@ public class ChatFragment extends Fragment {
             public void run() {
                 while(true) {
                             Message message = getMsg();
+                    Log.d("ChatFragment", "receive thread start");
                             if(message!=null){
+                                Log.d("ChatFragment", "receive message:" + String.valueOf(message.getMessage()));
                                 String msgR = message.getMessage();
                                 if(msgR.equals(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_LOCAL)){
                                     android.os.Message msg = new android.os.Message();
                                     msg.what = 1;
                                     viewActivity.getmHandler().sendMessage(msg);
+                                    new Thread(this).start();
                                     return;
                                 }
                             Msg receivedmsg = new Msg(msgR,Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
