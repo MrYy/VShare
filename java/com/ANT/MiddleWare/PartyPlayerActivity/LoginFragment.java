@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -30,6 +31,10 @@ import com.baoyz.actionsheet.ActionSheet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -48,6 +53,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class LoginFragment extends Fragment {
     private static final String TAG = LoginFragment.class.getSimpleName();
+    public static final String cachePath = Environment.getExternalStorageDirectory().getPath()+"/dash/";
     private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
         @Override
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
@@ -89,7 +95,7 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_login, container, false);
@@ -97,12 +103,15 @@ public class LoginFragment extends Fragment {
         checkBoxRem = (CheckBox) view.findViewById(R.id.checkbox_remember_account);
         checkBoxPublis = (CheckBox) view.findViewById(R.id.checkbox_publish_video);
         editText = (EditText) view.findViewById(R.id.edittext_name);
+        photo = (CircleImageView) view.findViewById(R.id.profile_image);
         password = (EditText) view.findViewById(R.id.edittext_password);
         editText.clearFocus();
         editText.setSelected(false);
         Map<String,String> user = app.getUser();
         if (user.size() > 0) {
-            editText.setText(user.get("name"));
+            String s = user.get("name");
+            editText.setText(s);
+            loadCache(new File(cachePath+s));
             password.setText(user.get("password"));
             checkBoxRem.setChecked(true);
         }
@@ -119,32 +128,68 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-            String s1 = editText.getText().toString();
-                Map<String, String> req = new HashMap<>();
-                req.put("name", s1);
-                Method.postRequest(getActivity(), DashApplication.INFO, req, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        try {
-                            JSONObject res = new JSONObject(s);
-                            if (res.getString("code").equals("200")) {
-                                String testurl=res.getJSONObject("data").getString("thumb_url");
-                                if(!testurl.equals("")) {
-                               try{ portrait = getBitmap(testurl);
-                                   photo.setImageBitmap(portrait);
-                                }catch (IOException io){
-                                   io.printStackTrace();
-                               }
+            final String s1 = editText.getText().toString();
+
+                File file = new File(cachePath);
+                if (!file.isDirectory()) {
+                    file.mkdir();
+                }else {
+                    file = new File(cachePath+ s1);
+                    if (file.isFile()) {
+                        loadCache(file);
+                    }else {
+                        Map<String, String> req = new HashMap<>();
+                        req.put("name", s1);
+                        final File finalFile = file;
+                        Method.postRequest(getActivity(), DashApplication.INFO, req, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String s) {
+                                try {
+                                    JSONObject res = new JSONObject(s);
+                                    if (res.getString("code").equals("200")) {
+                                        String testurl=res.getJSONObject("data").getString("thumb_url");
+                                        if(!testurl.equals("")) {
+                                            try{
+                                                URL url = new URL(testurl);
+                                                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                                                conn.setConnectTimeout(5000);
+                                                conn.setRequestMethod("GET");
+                                                if(conn.getResponseCode() == 200){
+                                                    InputStream inputStream = conn.getInputStream();
+                                                    try {
+                                                        FileOutputStream fos = new FileOutputStream(finalFile);
+                                                        byte[] buffer = new byte[8192];
+                                                        int cnt = 0;
+                                                        while ((cnt = inputStream.read(buffer)) != -1) {
+                                                            fos.write(buffer, 0, cnt);
+                                                        }
+                                                        InputStream fileIs = new FileInputStream(finalFile);
+                                                        portrait  = BitmapFactory.decodeStream(fileIs);
+                                                        photo.setImageBitmap(portrait);
+                                                        fos.close();
+                                                        inputStream.close();
+                                                        fileIs.close();
+                                                    } catch (FileNotFoundException e) {
+                                                        e.printStackTrace();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }catch (IOException io){
+                                                io.printStackTrace();
+                                            }
+                                        }
+                                    }else {
+                                        Method.display(getContext(),res.getString("msg"));
+                                    }
+                                } catch (JSONException e) {
+                                    photo.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.profile_default));
                                 }
-                            }else {
-                                Method.display(getContext(),res.getString("msg"));
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            photo.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.profile_default));
-                        }
+                        });
                     }
-                });
+                }
+
 
             }
         });
@@ -210,7 +255,6 @@ public class LoginFragment extends Fragment {
                 dialog.show();
             }
         });
-        photo = (CircleImageView) view.findViewById(R.id.profile_image);
         return view;
     }
     @SuppressLint("NewApi")
@@ -226,6 +270,16 @@ public class LoginFragment extends Fragment {
             return bitmap;
         }
         return null;
+    }
+
+    private void loadCache(File file) {
+        Log.d(TAG, "find cache");
+        try {
+            InputStream is = new FileInputStream(file);
+            photo.setImageBitmap(BitmapFactory.decodeStream(is));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 
