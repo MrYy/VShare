@@ -371,6 +371,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
             }
             shareLocalVideo(path);
+        }else {
+            IntegrityCheck.getInstance().clear();
         }
         mVideoView= (VideoView) findViewById(R.id.buffer);
         frameLayout= (FrameLayout) findViewById(R.id.fragment_video_player);

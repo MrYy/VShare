@@ -26,6 +26,10 @@ public class IntegrityCheck {
 		urlMap = new SparseArray<Segment>();
 	}
 
+	public void clear() {
+		urlMap = null;
+		urlMap = new SparseArray<Segment>();
+	}
 	public static synchronized IntegrityCheck getInstance() {
 		if (instance == null) {
 			instance = new IntegrityCheck();

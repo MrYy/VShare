@@ -76,7 +76,7 @@ public class GroupCell extends Thread {
 					IC.setSegLength(url, totalLength);
 					FileFragment fm = new FileFragment(startOffset, endOffset,
 							url,totalLength);
-//					Log.d(TAG, "" + url + " " + fm);
+					Log.d(TAG, "" + url + " " + fm);
 					fm.setData(tmpbuff);
 					IC.insert(url, fm);
 					IC.getSeg(url).checkIntegrity();
