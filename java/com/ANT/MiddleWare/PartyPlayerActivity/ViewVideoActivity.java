@@ -26,6 +26,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,6 +39,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -51,6 +55,9 @@ import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.DanmukuItem;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.DanmukuView;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.IDanmukuItem;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.LocalListDialog;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.StreamListDialog;
@@ -62,6 +69,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,6 +134,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private ListView mDrawerList;
     private ContentAdapter adapter;
     private String vpath;
+    private DanmukuView mDanmukuView;
+    private Button switchBtn;
     public static final String SYSTEM_MESSAGE_SHARE_LOCAL = "asdfnvlxczvoj3asfpizfj323fsadf[]]adfadsf,./";
     public static final String SYSTEM_MESSAGE_SHARE_NETWORK = "asdfxczv;asfde[asdfqwer324asfd~";
     private static CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
@@ -282,7 +292,18 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
     @Override
     protected void onResume() {
+//        if (mPosition > 0) {
+//            mVideoView.seekTo(mPosition);
+//            mPosition = 0;
+//        }
         super.onResume();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                mVideoView.start();
+//            }
+//        }).start();
+       // mVideoView.start();
         MenuLayout menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
     }
@@ -376,6 +397,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
             }
             shareLocalVideo(path);
+        }else{
+
         }
         mVideoView= (VideoView) findViewById(R.id.buffer);
         frameLayout= (FrameLayout) findViewById(R.id.fragment_video_player);
@@ -482,6 +505,13 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         mVideoView.seekTo(0);
     }
 
+//    @Override
+//    protected void onStop() {
+//        mPosition = mVideoView.getCurrentPosition();
+//        mVideoView.pause();
+//        super.onStop();
+//    }
+
     private int getHeightPixel(FragmentActivity activity) {
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
@@ -554,6 +584,23 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         adapter=new ContentAdapter(this,list);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerIemClickListener());
+        mDanmukuView = (DanmukuView) findViewById(R.id.danmukuView);
+        switchBtn= (Button) findViewById(R.id.switcher);
+        List<IDanmukuItem> list = initDanmuItems();
+        Collections.shuffle(list);
+        mDanmukuView.addItem(list, true);
+        switchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDanmukuView.isPaused()) {
+                    switchBtn.setText("hide");
+                    mDanmukuView.show();
+                } else {
+                    switchBtn.setText("show");
+                    mDanmukuView.hide();
+                }
+            }
+        });
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
         vp=(ViewPager)findViewById(R.id.viewpager);
@@ -577,6 +624,17 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             }
         });
 
+    }
+
+    private List<IDanmukuItem> initDanmuItems() {
+        List<IDanmukuItem> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            IDanmukuItem item = new DanmukuItem(this, i + " : plain text danmuku", mDanmukuView.getWidth());
+            list.add(item);
+        }
+
+
+        return list; 
     }
 
     private void initDashProxy() {
@@ -617,7 +675,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
         try {
             //获取服务端ap地址存在问题
-            new Thread(new Client(InetAddress.getByName("192.168.43.1"), 12345)).start();
+            new Thread(new Client(InetAddress.getByName("192.168.1.1"), 12345)).start();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
