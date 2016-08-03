@@ -127,6 +127,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private ContentAdapter adapter;
     private String vpath;
     public static final String SYSTEM_MESSAGE_SHARE_LOCAL = "asdfnvlxczvoj3asfpizfj323fsadf[]]adfadsf,./";
+    public static final String SYSTEM_MESSAGE_SHARE_NETWORK = "asdfxczv;asfde[asdfqwer324asfd~";
     private static CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
     private final static Lock lock = new ReentrantLock();
     private final static Condition condition = lock.newCondition();
@@ -135,8 +136,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         @Override
         public void handleMessage(android.os.Message msg) {
             super.handleMessage(msg);
-            Log.d(TAG, "share local");
-            android.os.Message msgL = new android.os.Message();
+            Log.d(TAG, "share");
             switch (msg.what) {
                 case 1:
                     //准备接收视频
@@ -150,6 +150,11 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                     initPlayVideo(shareLocalPath);
                     break;
                 case 2:
+                    configureData.setWorkingMode(ConfigureData.WorkMode.G_MDOE);
+                    Method.display(ViewVideoActivity.this,"播主开始推送视频啦");
+                    String path = msg.obj.toString();
+                    Log.d(TAG, "path is :" + path);
+                    initPlayVideo(path);
                     break;
             }
 
@@ -371,8 +376,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 }
             }
             shareLocalVideo(path);
-        }else {
-            IntegrityCheck.getInstance().clear();
         }
         mVideoView= (VideoView) findViewById(R.id.buffer);
         frameLayout= (FrameLayout) findViewById(R.id.fragment_video_player);

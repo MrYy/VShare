@@ -119,6 +119,13 @@ public class ChatFragment extends Fragment {
                                     viewActivity.getmHandler().sendMessage(msg);
                                     threadPool.execute(this);
                                     return;
+                                } else if (msgR.startsWith(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_NETWORK)) {
+                                    android.os.Message msg = new android.os.Message();
+                                    msg.what = 2;
+                                    msg.obj=msgR.split("~")[1];
+                                    viewActivity.getmHandler().sendMessage(msg);
+                                    threadPool.execute(this);
+                                    return;
                                 }
                             Msg receivedmsg = new Msg(msgR,Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
 //                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());

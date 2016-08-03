@@ -16,6 +16,7 @@ import com.ANT.MiddleWare.Celluar.CellularDown;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.test.CellularDownTest;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 
@@ -42,6 +43,14 @@ public class DashProxyServer extends NanoHTTPD {
 		try {
 			if (!getFileName(session, ".m3u8").equals("")) {
 				Log.v("TAG", "filename" + session.getUri());
+				if(ViewVideoActivity.isAp){
+					IntegrityCheck.getInstance().clear();
+					//send message
+					Message msg = new Message();
+					msg.setMessage(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_NETWORK+"http://127.0.0.1:9999"+session.getUri());
+					Log.d("TAG", msg.getMessage());
+					ViewVideoActivity.sendMsg(msg);
+				}
 				return localFile("/video/4/index.m3u8");
 
 			} else {
@@ -110,6 +119,7 @@ public class DashProxyServer extends NanoHTTPD {
 					return newFixedLengthResponse(Response.Status.OK,
 							"application/x-mpegurl", IntegrityCheck.getInstance().getSegments(com.ANT.MiddleWare.PartyPlayerActivity.util.Method.LOCAL_VIDEO_SEGID));
 				case G_MDOE:
+
 					IntegrityCheck iTC = IntegrityCheck.getInstance();
 					int tmpp = Integer.parseInt(playist.substring(0, 1));
 					byte[] tmp = iTC.getSegments(tmpp, CellularDown.CellType.GROUP);
