@@ -129,68 +129,8 @@ public class LoginFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
             final String s1 = editText.getText().toString();
-
-                File file = new File(cachePath);
-                if (!file.isDirectory()) {
-                    file.mkdir();
-                }else {
-                    file = new File(cachePath+ s1);
-                    if (file.isFile()) {
-                        loadCache(file);
-                    }else {
-                        Map<String, String> req = new HashMap<>();
-                        req.put("name", s1);
-                        final File finalFile = file;
-                        Method.postRequest(getActivity(), DashApplication.INFO, req, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String s) {
-                                try {
-                                    JSONObject res = new JSONObject(s);
-                                    if (res.getString("code").equals("200")) {
-                                        String testurl=res.getJSONObject("data").getString("thumb_url");
-                                        if(!testurl.equals("")) {
-                                            try{
-                                                URL url = new URL(testurl);
-                                                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                                                conn.setConnectTimeout(5000);
-                                                conn.setRequestMethod("GET");
-                                                if(conn.getResponseCode() == 200){
-                                                    InputStream inputStream = conn.getInputStream();
-                                                    try {
-                                                        FileOutputStream fos = new FileOutputStream(finalFile);
-                                                        byte[] buffer = new byte[8192];
-                                                        int cnt = 0;
-                                                        while ((cnt = inputStream.read(buffer)) != -1) {
-                                                            fos.write(buffer, 0, cnt);
-                                                        }
-                                                        InputStream fileIs = new FileInputStream(finalFile);
-                                                        portrait  = BitmapFactory.decodeStream(fileIs);
-                                                        photo.setImageBitmap(portrait);
-                                                        fos.close();
-                                                        inputStream.close();
-                                                        fileIs.close();
-                                                    } catch (FileNotFoundException e) {
-                                                        e.printStackTrace();
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            }catch (IOException io){
-                                                io.printStackTrace();
-                                            }
-                                        }
-                                    }else {
-                                        Method.display(getContext(),res.getString("msg"));
-                                    }
-                                } catch (JSONException e) {
-                                    photo.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.profile_default));
-                                }
-                            }
-                        });
-                    }
-                }
-
-
+            // 这里抽象出一个公用的缓存方法
+                Method.cachePhoto(context,photo,s1);
             }
         });
         ((TextView) view.findViewById(R.id.button_login)).setOnClickListener(new View.OnClickListener() {

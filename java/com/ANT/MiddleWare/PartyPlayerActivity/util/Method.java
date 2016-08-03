@@ -2,6 +2,7 @@ package com.ANT.MiddleWare.PartyPlayerActivity.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiConfiguration;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
+import com.ANT.MiddleWare.PartyPlayerActivity.LoginFragment;
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
@@ -51,11 +53,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -460,25 +465,74 @@ public class Method {
         imageLoader.displayImage(url, imageView, options);
     }
 
-    public static void setPhoto(final Context context, String name, final ImageView imageView) {
-        Map<String, String> req = new HashMap<>();
-        req.put("name", name);
-        Method.postRequest(context, DashApplication.INFO, req, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String s) {
+    public static void cachePhoto(final Context context, final ImageView photo, String s1) {
+        File file = new File(LoginFragment.cachePath);
+        if (!file.isDirectory()) {
+            file.mkdir();
+        }else {
+            file = new File(LoginFragment.cachePath+ s1);
+            if (file.isFile()) {
                 try {
-                    JSONObject res = new JSONObject(s);
-                    if (res.getString("code").equals("200")) {
-                        String url = res.getJSONObject("data").getString("thumb_url");
-                        if (!url.equals("")) {
-                            Method.getImage(url,imageView,context);
-                        }
-                    }
-                } catch (JSONException e) {
+                    InputStream is = new FileInputStream(file);
+                    photo.setImageBitmap(BitmapFactory.decodeStream(is));
+                } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+            }else {
+                Map<String, String> req = new HashMap<>();
+                req.put("name", s1);
+                final File finalFile = file;
+                Method.postRequest(context, DashApplication.INFO, req, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        try {
+                            JSONObject res = new JSONObject(s);
+                            if (res.getString("code").equals("200")) {
+                                String testurl=res.getJSONObject("data").getString("thumb_url");
+                                if(!testurl.equals("")) {
+                                    try{
+                                        URL url = new URL(testurl);
+                                        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                                        conn.setConnectTimeout(5000);
+                                        conn.setRequestMethod("GET");
+                                        if(conn.getResponseCode() == 200){
+                                            InputStream inputStream = conn.getInputStream();
+                                            try {
+                                                FileOutputStream fos = new FileOutputStream(finalFile);
+                                                byte[] buffer = new byte[8192];
+                                                int cnt = 0;
+                                                while ((cnt = inputStream.read(buffer)) != -1) {
+                                                    fos.write(buffer, 0, cnt);
+                                                }
+                                                InputStream fileIs = new FileInputStream(finalFile);
+                                                photo.setImageBitmap(BitmapFactory.decodeStream(fileIs));
+                                                fos.close();
+                                                inputStream.close();
+                                                fileIs.close();
+                                            } catch (FileNotFoundException e) {
+                                                e.printStackTrace();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }catch (IOException io){
+                                        io.printStackTrace();
+                                    }
+                                }
+                            }else {
+                                Method.display(context,res.getString("msg"));
+                            }
+                        } catch (JSONException e) {
+                            photo.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.profile_default));
+                        }
+                    }
+                });
             }
-        });
+        }
+    }
+    //此处添加图片缓存
+    public static void setPhoto(final Context context, String name, final ImageView imageView) {
+        cachePhoto(context,imageView,name);
     }
     public final static int LOCAL_VIDEO_SEGID = 1;
     public static void shareLocalVideo(String path) {
