@@ -51,8 +51,10 @@ public class IntegrityCheck {
 			if (segment.checkIntegrity()) {
 				return segment.getData();
 			} else {
-				CellularDown.queryFragment(ct, id);
-				Log.v(TAG, "url" + id);
+				if (ViewVideoActivity.internet) {
+					CellularDown.queryFragment(ct, id);
+					Log.v(TAG, "url" + id);
+				}
 			}
 		}
 		while (true) {

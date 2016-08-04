@@ -1,5 +1,6 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
@@ -56,7 +58,6 @@ import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.DanmukuItem;
-import com.ANT.MiddleWare.PartyPlayerActivity.util.DanmukuView;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.IDanmukuItem;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.LocalListDialog;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
@@ -134,7 +135,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private ListView mDrawerList;
     private ContentAdapter adapter;
     private String vpath;
-    private DanmukuView mDanmukuView;
     private Button switchBtn;
     public static final String SYSTEM_MESSAGE_SHARE_LOCAL = "asdfnvlxczvoj3asfpizfj323fsadf[]]adfadsf,./";
     public static final String SYSTEM_MESSAGE_SHARE_NETWORK = "asdfxczv;asfde[asdfqwer324asfd~";
@@ -171,6 +171,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
     };
     private SweetAlertDialog pDialog;
+    public static boolean internet;
 
     public Handler getmHandler() {
         return mHandler;
@@ -245,6 +246,13 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 connectToHotpot();
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ConnectivityManager con=(ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+        internet=con.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
     }
 
     @Override
@@ -584,23 +592,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         adapter=new ContentAdapter(this,list);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerIemClickListener());
-        mDanmukuView = (DanmukuView) findViewById(R.id.danmukuView);
-        switchBtn= (Button) findViewById(R.id.switcher);
-        List<IDanmukuItem> list = initDanmuItems();
-        Collections.shuffle(list);
-        mDanmukuView.addItem(list, true);
-        switchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mDanmukuView.isPaused()) {
-                    switchBtn.setText("hide");
-                    mDanmukuView.show();
-                } else {
-                    switchBtn.setText("show");
-                    mDanmukuView.hide();
-                }
-            }
-        });
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
         vp=(ViewPager)findViewById(R.id.viewpager);
@@ -626,16 +617,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
     }
 
-    private List<IDanmukuItem> initDanmuItems() {
-        List<IDanmukuItem> list = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            IDanmukuItem item = new DanmukuItem(this, i + " : plain text danmuku", mDanmukuView.getWidth());
-            list.add(item);
-        }
 
-
-        return list; 
-    }
 
     private void initDashProxy() {
 //        configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
