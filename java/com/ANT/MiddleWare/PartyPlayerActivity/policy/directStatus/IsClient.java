@@ -54,13 +54,20 @@ public class IsClient implements Status {
     };
     @Override
     public void findPeers() {
-        if (isConnected){
-            wifiManager.stopPeerDiscovery(wifichannel, searchListener);
-            return;
-        }
         wifiManager.requestPeers(wifichannel, new WifiP2pManager.PeerListListener() {
             @Override
             public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
+                if (isConnected){
+                    wifiManager.stopPeerDiscovery(wifichannel, new WifiP2pManager.ActionListener() {
+                        @Override
+                        public void onSuccess() {
+                        }
+                        @Override
+                        public void onFailure(int i) {
+                        }
+                    });
+                    return;
+                }
                 Collection<WifiP2pDevice> aList = wifiP2pDeviceList.getDeviceList();
                 peers.addAll(aList);
                 for (WifiP2pDevice device : peers) {
@@ -99,6 +106,7 @@ public class IsClient implements Status {
 
         @Override
         public void onFailure(int reason) {
+            Log.d(TAG, "connect fail");
             Method.display(context,"连接失败，正在重试");
             try {
                 TimeUnit.MILLISECONDS.sleep(800);
