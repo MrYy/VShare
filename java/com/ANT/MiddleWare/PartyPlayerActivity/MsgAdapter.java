@@ -40,53 +40,12 @@ public class MsgAdapter extends ArrayAdapter<Msg> {
     private boolean rightOk = false;
     private boolean leftOK = false;
     private Bitmap download;
-    private Bitmap rightBitmap;
-    private Bitmap leftBitmap;
 
-    public MsgAdapter(Context context, int textViewResourceId, List<Msg> objects, Bitmap bitmap){
+    public MsgAdapter(Context context, int textViewResourceId, List<Msg> objects){
         super(context,textViewResourceId,objects);
         Iterator<String> ite = ViewVideoActivity.onLineUsers.iterator();
         defaultBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.profile_default);
-        while (ite.hasNext()) {
-            final String name = ite.next();
-            Map<String, String> req = new HashMap<>();
-            req.put("name", name);
-            Method.postRequest(getContext(), DashApplication.INFO, req, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String s) {
-                    try {
-                        JSONObject res = new JSONObject(s);
-                        if (res.getString("code").equals("200")) {
-                            String photo = res.getJSONObject("data").getString("thumb_url");
-                            if (!photo.equals("")) {
-                                URL url = new URL(photo);
-                                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                                conn.setConnectTimeout(5000);
-                                conn.setRequestMethod("GET");
-                                if(conn.getResponseCode() == 200){
-                                    InputStream inputStream = conn.getInputStream();
-                                    if (name.equals(ViewVideoActivity.userName)) {
-                                        rightBitmap= BitmapFactory.decodeStream(inputStream);
-                                        rightBitmap = (rightBitmap == null)? defaultBitmap: rightBitmap;
-                                    }else {
-                                        leftBitmap = BitmapFactory.decodeStream(inputStream);
-                                        leftBitmap = (leftBitmap ==null)? defaultBitmap: leftBitmap;
-                                    }
-                                }
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (ProtocolException e) {
-                        e.printStackTrace();
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
+
 
         resourceId=textViewResourceId;
     }
@@ -118,14 +77,14 @@ public class MsgAdapter extends ArrayAdapter<Msg> {
             viewHolder.leftLayout.setVisibility(View.VISIBLE);
             viewHolder.rightLayout.setVisibility(View.GONE);
             viewHolder.leftMsg.setText(msg.getContent());
-            viewHolder.leftPhoto.setImageBitmap(leftBitmap);
+            Method.cachePhoto(getContext(),viewHolder.leftPhoto,name);
             viewHolder.Reciever.setText(name);;}
 
         else if(msg.getType()==Msg.TYP_SEND){
             viewHolder.leftLayout.setVisibility(View.GONE);
             viewHolder.rightLayout.setVisibility(View.VISIBLE);
             viewHolder.rightMsg.setText(msg.getContent());
-            viewHolder.rightPhoto.setImageBitmap(rightBitmap);
+            Method.cachePhoto(getContext(),viewHolder.rightPhoto,name);
             viewHolder.Sender.setText(name);}
 
 

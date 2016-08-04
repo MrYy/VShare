@@ -100,7 +100,7 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        msgAdapter = new MsgAdapter(getActivity(), R.layout.chat_item_message, msgList,bitmap);
+        msgAdapter = new MsgAdapter(getActivity(), R.layout.chat_item_message, msgList);
         listView.setAdapter(msgAdapter);
         startReceiveThread();
     }
