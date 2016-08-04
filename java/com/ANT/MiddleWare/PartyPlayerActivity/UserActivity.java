@@ -23,6 +23,7 @@ import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -84,28 +85,7 @@ public class UserActivity extends FragmentActivity {
         String s1 = userName;
         Map<String, String> req = new HashMap<>();
         req.put("name", s1);
-        Method.postRequest(UserActivity.this, DashApplication.INFO, req, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String s) {
-                try {
-                    JSONObject res = new JSONObject(s);
-                    if (res.getString("code").equals("200")) {
-                        String testurl=res.getJSONObject("data").getString("thumb_url");
-                        if(!testurl.equals(null)) {
-                            try{ Bitmap portrait = getBitmap(testurl);
-                                photo.setImageBitmap(portrait);
-                            }catch (IOException io){
-                                io.printStackTrace();
-                            }
-                        }
-                    }else {
-                        Method.display(UserActivity.this,res.getString("msg"));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        Method.cachePhoto(UserActivity.this,photo,userName);
         photo.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -162,6 +142,10 @@ public class UserActivity extends FragmentActivity {
             if (resultList != null) {
                 photoInfo = resultList.get(0);
                 url = photoInfo.getPhotoPath();
+                File file = new File(LoginFragment.cachePath + userName);
+                if (file.isFile()) {
+                    file.delete();
+                }
                 Method.uploadMultipart(UserActivity.this,url,userName);
                  b = BitmapFactory.decodeFile(url);
                 photo.setImageBitmap(b);
