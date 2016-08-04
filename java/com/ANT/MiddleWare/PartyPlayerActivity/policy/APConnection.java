@@ -35,8 +35,9 @@ public class APConnection implements ConnectionPolicy {
     private Process proc;
     private InetAddress serverAddr;
 
-    public APConnection(Context context,WifiManager wifiManager) {
-        this.wifiManager = wifiManager;
+    public APConnection(Context context) {
+        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
         this.context = context;
     }
 

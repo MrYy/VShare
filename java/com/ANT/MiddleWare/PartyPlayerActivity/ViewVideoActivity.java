@@ -1,22 +1,14 @@
 package com.ANT.MiddleWare.PartyPlayerActivity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
-import android.net.DhcpInfo;
 import android.net.Uri;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,9 +20,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -52,27 +41,18 @@ import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
-import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 import com.ANT.MiddleWare.PartyPlayerActivity.policy.APConnection;
 import com.ANT.MiddleWare.PartyPlayerActivity.policy.ConnectionPolicy;
-import com.ANT.MiddleWare.PartyPlayerActivity.util.DanmukuItem;
-import com.ANT.MiddleWare.PartyPlayerActivity.util.IDanmukuItem;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.LocalListDialog;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.StreamListDialog;
-import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
-import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,7 +78,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private EditText editVideoPath;
     private DashProxyServer server = new DashProxyServer();
     public static ConfigureData configureData = new ConfigureData(null);
-    private WifiManager wifiManager;
     private Timer mTimer;
     private static final String CMD_GET_WPA = "cat data/misc/wifi/wpa_supplicant.conf\n";
     private final String file_path = "data/misc/wifi/wpa_supplicant.conf";
@@ -249,7 +228,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
         init();
         //选择连接方式
-        policy = new APConnection(ViewVideoActivity.this, wifiManager);
+        policy = new APConnection(ViewVideoActivity.this);
 
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
         userName = getIntent().getStringExtra(getString(R.string.user_name));
@@ -557,8 +536,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         adapter=new ContentAdapter(this,list);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerIemClickListener());
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(false);
+
         vp=(ViewPager)findViewById(R.id.viewpager);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
