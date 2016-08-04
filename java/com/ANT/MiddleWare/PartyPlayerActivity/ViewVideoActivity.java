@@ -47,6 +47,7 @@ import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 import com.ANT.MiddleWare.PartyPlayerActivity.policy.APConnection;
 import com.ANT.MiddleWare.PartyPlayerActivity.policy.ConnectionPolicy;
+import com.ANT.MiddleWare.PartyPlayerActivity.policy.WifiDirectConnection;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.LocalListDialog;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.StreamListDialog;
@@ -228,8 +229,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
         init();
         //选择连接方式
-        policy = new APConnection(ViewVideoActivity.this);
-
+//        policy = new APConnection(ViewVideoActivity.this);
+        policy = new WifiDirectConnection(ViewVideoActivity.this);
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
         userName = getIntent().getStringExtra(getString(R.string.user_name));
         if (userName.equals("")) {

@@ -29,8 +29,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.util.Log;
+
+import com.ANT.MiddleWare.PartyPlayerActivity.policy.directStatus.Status;
+import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 
 /*
 Some of this code is developed from samples from the Google WiFi Direct API Guide 
@@ -38,19 +43,18 @@ http://developer.android.com/guide/topics/connectivity/wifip2p.html
 */
 
 
-public class WiFiServerBroadcastReceiver extends BroadcastReceiver {
-
+public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
+    private static final String TAG = "WIFI DIRECT";
     private WifiP2pManager manager;
     private Channel channel;
-    private Context activity;
-
-    public WiFiServerBroadcastReceiver(WifiP2pManager manager, Channel channel,Context context) {
+    private Context context;
+    private Status status;
+    public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel, Context context,Status status) {
         super();
         this.manager = manager;
         this.channel = channel;
-        this.activity = context;
-        
-
+        this.context = context;
+        this.status = status;
     }
 
     @Override
@@ -62,25 +66,37 @@ public class WiFiServerBroadcastReceiver extends BroadcastReceiver {
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
+                Method.display(context,"支持wifi直连模式");
+                status.supportWifiDirect();
             } else {
+                Method.display(context,"当前设置不支持wifi直连，请打开wifi或切换ap模式");
             }
             
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             // Call WifiP2pManager.requestPeers() to get a list of current peers
+            Log.d(TAG, "p2p peers changed");
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
         	NetworkInfo networkState = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
         	
         	if(networkState.isConnected())
         	{
+               //和其他设备连接，获取owner 的ip
+                manager.requestConnectionInfo(channel, new WifiP2pManager.ConnectionInfoListener() {
+                    @Override
+                    public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
+                        Log.d(TAG, "group owner ip is :" + wifiP2pInfo.groupOwnerAddress.getHostAddress());
+                    }
+                });
+
         	}
         	else
         	{
-        		manager.cancelConnect(channel, null);
-
-        	}
+                Log.d(TAG, "not connect");
+            }
             
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // Respond to this device's wifi state changing
+
         }
     }
 }
