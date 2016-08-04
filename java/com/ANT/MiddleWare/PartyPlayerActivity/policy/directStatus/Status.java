@@ -6,4 +6,6 @@ package com.ANT.MiddleWare.PartyPlayerActivity.policy.directStatus;
 public interface Status {
     //初始化方法
     public void supportWifiDirect();
+
+    public void findPeers();
 }

@@ -4,12 +4,8 @@ import android.content.Context;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
-import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -50,6 +46,12 @@ public class IsOwner implements Status {
             }
         });
     }
+
+    @Override
+    public void findPeers() {
+
+    }
+
     public void changeWifiDirectName(final String newName){
         Method m=null;
         try{
