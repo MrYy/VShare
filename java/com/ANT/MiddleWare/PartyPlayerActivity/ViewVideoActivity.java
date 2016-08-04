@@ -57,6 +57,8 @@ import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
+import com.ANT.MiddleWare.PartyPlayerActivity.policy.APConnection;
+import com.ANT.MiddleWare.PartyPlayerActivity.policy.ConnectionPolicy;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.DanmukuItem;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.IDanmukuItem;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.LocalListDialog;
@@ -97,16 +99,10 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private DashProxyServer server = new DashProxyServer();
     public static ConfigureData configureData = new ConfigureData(null);
     private WifiManager wifiManager;
-    private Process proc;
-    private ArrayList<String> passableHotsPot;
     private Timer mTimer;
     private static final String CMD_GET_WPA = "cat data/misc/wifi/wpa_supplicant.conf\n";
     private final String file_path = "data/misc/wifi/wpa_supplicant.conf";
-    private List<ScanResult> wifiList;
-    private boolean isConnected = false;
-    private WiFiReceiver wifiReceiver;
-    private InetAddress serverAddr;
-    private InetAddress mAddr;
+    public static boolean isConnected = false;
     public static final BlockingQueue<SendTask> taskMessageQueue = new LinkedBlockingQueue<SendTask>();
     public static final BlockingQueue<SendTask> sendMessageQueue = new LinkedBlockingQueue<SendTask>();
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
@@ -136,6 +132,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private ContentAdapter adapter;
     private String vpath;
     private Button switchBtn;
+    private ConnectionPolicy policy;
     public static final String SYSTEM_MESSAGE_SHARE_LOCAL = "asdfnvlxczvoj3asfpizfj323fsadf[]]adfadsf,./";
     public static final String SYSTEM_MESSAGE_SHARE_NETWORK = "asdfxczv;asfde[asdfqwer324asfd~";
     private static CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
@@ -228,25 +225,6 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             taskMessageQueue.add(sendTask);
         }
     }
-    private final class WiFiReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            wifiList = wifiManager.getScanResults();
-            if (wifiList == null || wifiList.size() == 0 || isConnected) return;
-            onReceiveNewNetworks(wifiList);
-        }
-        public void onReceiveNewNetworks(List<ScanResult> wifiList) {
-            passableHotsPot = new ArrayList<String>();
-            for (ScanResult result : wifiList) {
-                System.out.println("wifi ssid is:"+result.SSID);
-                if ((result.SSID).contains(getString(R.string.ap_ssid)))
-                    passableHotsPot.add(result.SSID);
-            }
-            synchronized (this) {
-                connectToHotpot();
-            }
-        }
-    }
 
     @Override
     protected void onStart() {
@@ -270,6 +248,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             StrictMode.setThreadPolicy(policy);
         }
         init();
+        //选择连接方式
+        policy = new APConnection(ViewVideoActivity.this, wifiManager);
+
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
         userName = getIntent().getStringExtra(getString(R.string.user_name));
         if (userName.equals("")) {
@@ -346,13 +327,14 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        beHotPot();
+                        policy.establish();
+                        isAp = true;
                         sweetAlertDialog.cancel();
                     }
                 }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
-                connectHotPot();
+                policy.connect();
                 sweetAlertDialog.cancel();
             }
         }).show();
@@ -559,24 +541,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
 
 
-    private void beHotPot() {
-        isAp = true;
-        wifiManager.setWifiEnabled(false);
-        Method.changeApState(ViewVideoActivity.this, wifiManager, true);
-        DhcpInfo info = wifiManager.getDhcpInfo();
-        int serverAddress = info.ipAddress;
-        mAddr = Method.intToInetAddress(serverAddress);
-        Log.d(TAG, mAddr.toString());
-        new ServerThread(mAddr, ViewVideoActivity.this).start();
-    }
 
-    private void connectHotPot() {
-        Method.changeApState(ViewVideoActivity.this, wifiManager, false);
-        wifiManager.setWifiEnabled(true);
-        wifiManager.startScan();
-        wifiReceiver = new WiFiReceiver();
-        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-    }
 
     private void init() {
         play = (ImageButton) findViewById(R.id.button_view_video);
@@ -623,60 +588,9 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 //        configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
     }
 
-    private void connectToHotpot() {
-        if (passableHotsPot == null || passableHotsPot.size() == 0)
-            return;
-        WifiConfiguration wifiConfig = setWifiParams(passableHotsPot.get(0));
-        int wcgID = wifiManager.addNetwork(wifiConfig);
-        boolean flag = wifiManager.enableNetwork(wcgID, true);
-        isConnected = flag;
-        if (!flag) return;
-        unregisterReceiver(wifiReceiver);
 
-        wifiManager.setWifiEnabled(false);
-        try {
-            proc = Runtime.getRuntime().exec("su");
-            DataOutputStream os = new DataOutputStream(proc.getOutputStream());
-            os.writeBytes("netcfg wlan0 up\n");
-            os.writeBytes("wpa_supplicant -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf -B\n");
-            os.writeBytes("netcfg wlan0 dhcp\n");
-            os.writeBytes("exit\n");
-            os.flush();
-            proc.waitFor();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        DhcpInfo info = wifiManager.getDhcpInfo();
-        int serverAddress = info.serverAddress;
-        serverAddr = Method.intToInetAddress(serverAddress);
-        Log.d(TAG, "server's ip address:" + serverAddr);
-        int mAddress = info.ipAddress;
-        Log.d(TAG, "my ip address:" + Method.intToInetAddress(mAddress));
 
-        try {
-            //获取服务端ap地址存在问题
-            new Thread(new Client(InetAddress.getByName("192.168.43.1"), 12345)).start();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
 
-    }
-
-    private WifiConfiguration setWifiParams(String ssid) {
-        WifiConfiguration apConfig = new WifiConfiguration();
-        apConfig.SSID = "\"" + ssid + "\"";
-        apConfig.preSharedKey = "\"" + getString(R.string.ap_password) + "\"";
-        apConfig.hiddenSSID = true;
-        apConfig.status = WifiConfiguration.Status.ENABLED;
-        apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-        apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-        apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-        apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-        apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-        return apConfig;
-    }
 
 
     private class DrawerIemClickListener implements android.widget.AdapterView.OnItemClickListener {
