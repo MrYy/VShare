@@ -87,7 +87,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static final BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingQueue<Message>();
     public static final Set<String> onLineUsers = new ConcurrentSkipListSet<>();
     public static String userName="";
-    public static boolean isAp = false;
+    public static boolean isOwner = false;
     private ViewPager vp;
     private String shareLocalPath = "http://127.0.0.1:9999/local";
     private String path="http://127.0.0.1:9999/4/index.m3u8";
@@ -155,7 +155,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     public static void sendMsg(Message msg) {
         SendTask sendTask = new SendTask();
         sendTask.setMsg(msg);
-        if (isAp) {
+        if (isOwner) {
             sendTask.setClients(mClients);
         }
         sendMessageQueue.add(sendTask);
@@ -274,6 +274,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
        // mVideoView.start();
         MenuLayout menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
+        policy.resume();
     }
 
     private View createView() {
@@ -306,8 +307,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        isOwner = true;
                         policy.establish();
-                        isAp = true;
                         sweetAlertDialog.cancel();
                     }
                 }).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -357,7 +358,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         Log.d(TAG, path);
         if (!path.startsWith("http")) {
             Log.d(TAG, "local video");
-            if (isAp) {
+            if (isOwner) {
                 Method.display(ViewVideoActivity.this,"开始推送视频");
                 try {
                     TimeUnit.SECONDS.sleep(2);
@@ -566,10 +567,11 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 //        configureData.setWorkingMode(ConfigureData.WorkMode.FAKE_MODE);
     }
 
-
-
-
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        policy.pause();
+    }
 
     private class DrawerIemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override

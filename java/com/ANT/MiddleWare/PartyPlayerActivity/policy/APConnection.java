@@ -60,6 +60,18 @@ public class APConnection implements ConnectionPolicy {
         wifiReceiver = new WiFiReceiver();
         context.registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+
     private final class WiFiReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

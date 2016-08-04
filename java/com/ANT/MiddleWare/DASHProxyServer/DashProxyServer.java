@@ -18,7 +18,6 @@ import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.test.CellularDownTest;
-import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -43,7 +42,7 @@ public class DashProxyServer extends NanoHTTPD {
 		try {
 			if (!getFileName(session, ".m3u8").equals("")) {
 				Log.v("TAG", "filename" + session.getUri());
-				if(ViewVideoActivity.isAp){
+				if(ViewVideoActivity.isOwner){
 					IntegrityCheck.getInstance().clear();
 					//send message
 					Message msg = new Message();

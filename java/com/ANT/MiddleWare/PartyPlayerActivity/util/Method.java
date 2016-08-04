@@ -9,7 +9,6 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -67,7 +66,6 @@ import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -344,7 +342,7 @@ public class Method {
                         }
                     }
                     ViewVideoActivity.insertReceiveMQ(msg);
-                    if (ViewVideoActivity.isAp) {
+                    if (ViewVideoActivity.isOwner) {
                         if (ViewVideoActivity.getClients().size() > 0) {
                             SendTask sendTask = new SendTask();
                             sendTask.setClients(ViewVideoActivity.getClients());
@@ -360,7 +358,7 @@ public class Method {
                     Log.d("insert fragment", String.valueOf(ff.getSegmentID()) + " " + String.valueOf(ff.getStartIndex()));
 //                    Log.d("check integrity", String.valueOf(IntegrityCheck.getInstance().getSeg(ff.getSegmentID()).checkIntegrity()));
                     IntegrityCheck.getInstance().insert(ff.getSegmentID(), ff, 0);
-                    if (ViewVideoActivity.isAp) {
+                    if (ViewVideoActivity.isOwner) {
                         if (ViewVideoActivity.getClients().size() > 0) {
                             Message mMsg = new Message();
                             mMsg.setFragment(ff);
