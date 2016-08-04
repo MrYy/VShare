@@ -675,7 +675,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
         try {
             //获取服务端ap地址存在问题
-            new Thread(new Client(InetAddress.getByName("192.168.1.1"), 12345)).start();
+            new Thread(new Client(InetAddress.getByName("192.168.43.1"), 12345)).start();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
