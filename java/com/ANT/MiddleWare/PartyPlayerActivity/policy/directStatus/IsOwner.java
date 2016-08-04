@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
+import com.ANT.MiddleWare.PartyPlayerActivity.R;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
@@ -34,7 +36,7 @@ public class IsOwner implements Status {
             public void onSuccess() {
                 Log.d(TAG, "owner start");
                 ExecutorService es = Executors.newFixedThreadPool(1);
-                changeWifiDirectName("yuyuyu");
+                changeWifiDirectName(context.getString(R.string.ssid));
                 //开启serverthread
 //                    es.execute(new ServerThread(InetAddress.getByName(ip),context));
 
@@ -49,6 +51,11 @@ public class IsOwner implements Status {
 
     @Override
     public void findPeers() {
+
+    }
+
+    @Override
+    public void connectSuccess() {
 
     }
 

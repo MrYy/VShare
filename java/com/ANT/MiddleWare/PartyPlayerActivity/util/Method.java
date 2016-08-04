@@ -235,7 +235,7 @@ public class Method {
 
     public static void changeApState(Context context, WifiManager wifiManager, Boolean open) {
         WifiConfiguration apConfig = new WifiConfiguration();
-        apConfig.SSID = context.getString(R.string.ap_ssid);
+        apConfig.SSID = context.getString(R.string.ssid);
         apConfig.preSharedKey = context.getString(R.string.ap_password);
         apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
         try {

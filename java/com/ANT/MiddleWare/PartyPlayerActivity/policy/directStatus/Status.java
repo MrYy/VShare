@@ -8,4 +8,6 @@ public interface Status {
     public void supportWifiDirect();
 
     public void findPeers();
+
+    public void connectSuccess();
 }

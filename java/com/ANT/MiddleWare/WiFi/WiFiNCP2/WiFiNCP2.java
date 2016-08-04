@@ -72,7 +72,7 @@ public class WiFiNCP2 extends WiFiPulic {
         passableHotsPot = new ArrayList<String>();
         for (ScanResult result : wifiList) {
             System.out.println("wifi ssid is:"+result.SSID);
-            if ((result.SSID).contains(contect.getString(R.string.ap_ssid)))
+            if ((result.SSID).contains(contect.getString(R.string.ssid)))
                 passableHotsPot.add(result.SSID);
         }
         synchronized (this) {

@@ -75,18 +75,18 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             // Call WifiP2pManager.requestPeers() to get a list of current peers
             status.findPeers();
-
-            Log.d(TAG, "p2p peers changed");
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
+
         	NetworkInfo networkState = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
         	
         	if(networkState.isConnected())
         	{
+                status.connectSuccess();
                //和其他设备连接，获取owner 的ip
                 manager.requestConnectionInfo(channel, new WifiP2pManager.ConnectionInfoListener() {
                     @Override
                     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
-                        Log.d(TAG, "group owner ip is :" + wifiP2pInfo.groupOwnerAddress.getHostAddress());
+                        Log.d("owner", "group owner ip is :" + wifiP2pInfo.groupOwnerAddress.getHostAddress());
                     }
                 });
 

@@ -85,7 +85,7 @@ public class APConnection implements ConnectionPolicy {
         passableHotsPot = new ArrayList<String>();
         for (ScanResult result : wifiList) {
             System.out.println("wifi ssid is:"+result.SSID);
-            if ((result.SSID).contains(context.getString(R.string.ap_ssid)))
+            if ((result.SSID).contains(context.getString(R.string.ssid)))
                 passableHotsPot.add(result.SSID);
         }
         synchronized (this) {
