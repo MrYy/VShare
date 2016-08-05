@@ -5,10 +5,15 @@ package com.ANT.MiddleWare.PartyPlayerActivity.policy;
  */
 public interface ConnectionPolicy {
     //server,establish connection
-    public void establish();
+    void establish();
+
     //client ,connect to others
-    public void connect();
+    void connect();
+
     //view video pause
-    public void pause();
-    public void resume();
+    void pause();
+
+    void resume();
+
+    void die();
 }

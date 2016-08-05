@@ -59,5 +59,10 @@ public class WifiDirectConnection implements ConnectionPolicy {
     public void resume() {
     }
 
+    @Override
+    public void die() {
+        context.unregisterReceiver(wiFiDirectBroadcastReceiver);
+    }
+
 
 }

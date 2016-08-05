@@ -71,6 +71,11 @@ public class APConnection implements ConnectionPolicy {
 
     }
 
+    @Override
+    public void die() {
+
+    }
+
 
     private final class WiFiReceiver extends BroadcastReceiver {
         @Override

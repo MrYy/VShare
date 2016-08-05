@@ -119,7 +119,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private final static Lock lock = new ReentrantLock();
     private final static Condition condition = lock.newCondition();
     //选择是否是wifi直连
-    private boolean isWifiDirect = false;
+    private boolean isWifiDirect = true;
     public  Handler mHandler = new Handler(){
 
         @Override
@@ -481,12 +481,10 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         mVideoView.seekTo(0);
     }
 
-//    @Override
-//    protected void onStop() {
-//        mPosition = mVideoView.getCurrentPosition();
-//        mVideoView.pause();
-//        super.onStop();
-//    }
+    @Override
+    protected void onStop() {
+        policy.die();
+    }
 
     private int getHeightPixel(FragmentActivity activity) {
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
