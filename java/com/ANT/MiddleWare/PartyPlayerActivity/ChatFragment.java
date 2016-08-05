@@ -47,7 +47,7 @@ import static com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity.userName;
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends Fragment {
-
+    private static final String TAG = ChatFragment.class.getSimpleName();
     private View view;
     private ListView listView;
     private EditText editText;
@@ -110,10 +110,10 @@ public class ChatFragment extends Fragment {
             public void run() {
                 while(true) {
                             Message message = getMsg();
-                            if(message!=null){
+                            if(message!=null) {
                                 Log.d("ChatFragment", "receive message:" + String.valueOf(message.getMessage()));
                                 String msgR = message.getMessage();
-                                if(msgR.equals(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_LOCAL)){
+                                if (msgR.equals(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_LOCAL)) {
                                     android.os.Message msg = new android.os.Message();
                                     msg.what = 1;
                                     viewActivity.getmHandler().sendMessage(msg);
@@ -122,17 +122,20 @@ public class ChatFragment extends Fragment {
                                 } else if (msgR.startsWith(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_NETWORK)) {
                                     android.os.Message msg = new android.os.Message();
                                     msg.what = 2;
-                                    msg.obj=msgR.split("~")[1];
+                                    msg.obj = msgR.split("~")[1];
                                     viewActivity.getmHandler().sendMessage(msg);
                                     threadPool.execute(this);
                                     return;
                                 }
-                            Msg receivedmsg = new Msg(msgR,Msg.TYP_RECIEVED,message.getName(),System.currentTimeMillis());
+                                Log.d(TAG, "receive and refresh list");
+                                Msg receivedmsg = new Msg(msgR, Msg.TYP_RECIEVED, message.getName(), System.currentTimeMillis());
 //                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
-                            msgList.add(receivedmsg);}
-                             android.os.Message passmsg=new android.os.Message();
-                             passmsg.what=1;
-                             handler.sendMessage(passmsg);
+                                msgList.add(receivedmsg);
+                                android.os.Message passmsg=new android.os.Message();
+                                passmsg.what=1;
+                                handler.sendMessage(passmsg);
+                            }
+
             }
         }
         }).start();}
