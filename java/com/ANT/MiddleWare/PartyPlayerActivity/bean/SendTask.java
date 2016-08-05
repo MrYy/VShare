@@ -35,7 +35,7 @@ public class SendTask {
         Iterator<InetAddress> iterator = clients.iterator();
         while (iterator.hasNext()) {
             try {
-                mClients.add(InetAddress.getByName(iterator.next().getHostName()));
+                mClients.add(InetAddress.getByName(iterator.next().getHostAddress()));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
