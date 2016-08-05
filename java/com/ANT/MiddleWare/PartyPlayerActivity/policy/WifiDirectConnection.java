@@ -21,6 +21,8 @@ public class WifiDirectConnection implements ConnectionPolicy {
     private Context context;
     private boolean isOwner = false;
     private Status status;
+    private boolean isRegistered = false;
+    private boolean isInit = false;
     //在oncreate中实例化的策略，在onresume中注册监听器
     public WifiDirectConnection(Context context) {
         this.context = context;
@@ -40,29 +42,45 @@ public class WifiDirectConnection implements ConnectionPolicy {
         isOwner = true;
         status = new IsOwner(context,wifiManager,wifichannel);
         wiFiDirectBroadcastReceiver = new WiFiDirectBroadcastReceiver(wifiManager, wifichannel, context,status);
-        context.registerReceiver(wiFiDirectBroadcastReceiver, wifiServerReceiverIntentFilter);
-
+        isInit = true;
+        registerBroadcast();
     }
 
     @Override
     public void connect() {
         status = new IsClient(context,wifiManager,wifichannel);
         wiFiDirectBroadcastReceiver = new WiFiDirectBroadcastReceiver(wifiManager, wifichannel, context, status);
-        context.registerReceiver(wiFiDirectBroadcastReceiver, wifiServerReceiverIntentFilter);
+        isInit = true;
+        registerBroadcast();
     }
 
     @Override
     public void pause() {
+        if(!isInit) return;
+        unregisterBroadcast();
     }
 
     @Override
     public void resume() {
+        if(!isInit) return;
+        registerBroadcast();
     }
 
     @Override
     public void die() {
-        context.unregisterReceiver(wiFiDirectBroadcastReceiver);
+        if(!isInit) return;
+        unregisterBroadcast();
     }
 
+    private void registerBroadcast() {
+        if(isRegistered) return;
+        context.registerReceiver(wiFiDirectBroadcastReceiver, wifiServerReceiverIntentFilter);
+        isRegistered = true;
+    }
 
+    private void unregisterBroadcast() {
+        if(!isRegistered) return;
+        context.unregisterReceiver(wiFiDirectBroadcastReceiver);
+        isRegistered = false;
+    }
 }
