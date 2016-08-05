@@ -483,6 +483,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
     @Override
     protected void onStop() {
+        super.onStop();
         policy.die();
     }
 
