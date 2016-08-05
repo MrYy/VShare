@@ -534,7 +534,9 @@ public class Method {
     }
     public final static int LOCAL_VIDEO_SEGID = 1;
     public static void shareLocalVideo(String path) {
+
         File file=new File(path);
+        if(!file.isFile()) return;
         int len=(int) file.length();
         try {
             BufferedInputStream in = null;
