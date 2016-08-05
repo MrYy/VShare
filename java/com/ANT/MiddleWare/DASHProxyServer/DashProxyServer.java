@@ -1,12 +1,16 @@
 package com.ANT.MiddleWare.DASHProxyServer;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Stack;
 
 import android.os.Environment;
@@ -26,7 +30,7 @@ import fi.iki.elonen.NanoHTTPD;
  */
 public class DashProxyServer extends NanoHTTPD {
 	private static final String TAG = DashProxyServer.class.getSimpleName();
-
+	public static final String SERVER_ADDR = "http://yyzwt.cn:12345/dash";
 	public DashProxyServer() {
 		super(9999);
 		try {
@@ -50,7 +54,7 @@ public class DashProxyServer extends NanoHTTPD {
 					Log.d("TAG", msg.getMessage());
 					ViewVideoActivity.sendMsg(msg);
 				}
-				return localFile("/video/4/index.m3u8");
+				return downloadM3U8(session.getUri());
 
 			} else {
 				Log.v("TAG", "DashProxy uri:" + session.getUri());
@@ -148,6 +152,36 @@ public class DashProxyServer extends NanoHTTPD {
 		}
 	}
 
+	private Response downloadM3U8(String uri) throws IOException {
+		String path = "/video"+uri;
+		String remotePath = SERVER_ADDR + path;
+		String localPath = Environment.getExternalStorageDirectory() + path;
+		File file = new File(localPath);
+		if (!file.isFile()){
+			URL urlfile;
+			HttpURLConnection httpUrl;
+			BufferedInputStream bis;
+			BufferedOutputStream bos;
+			urlfile = new URL(remotePath);
+			httpUrl = (HttpURLConnection)urlfile.openConnection();
+			httpUrl.connect();
+			bis = new BufferedInputStream(httpUrl.getInputStream());
+			bos = new BufferedOutputStream(new FileOutputStream(file));
+			File f = new File(localPath);
+			int len = 1024;
+			byte[] b = new byte[len];
+			while ((len = bis.read(b)) != -1) {
+				bos.write(b,0,len);
+			}
+			bos.flush();
+			bis.close();
+			httpUrl.disconnect();
+			Log.d(TAG, "finish download m3u8");
+		}
+		return localFile(localPath);
+	}
+
+
 	private String getFileName(IHTTPSession session, String key) {
 		String uri = session.getUri();
 		String playlist = "";
@@ -161,12 +195,11 @@ public class DashProxyServer extends NanoHTTPD {
 
 	private Response localFile(String str) throws IOException {
 		FileInputStream fis = new FileInputStream(
-				Environment.getExternalStorageDirectory() + str);
+				str);
 		int length = fis.available();
 		return newFixedLengthResponse(Response.Status.OK,
 				"application/x-mpegurl", fis, length);
 	}
-
 	private Response newFixedLengthResponse(Response.IStatus status,
 			String mimeType, byte[] bytes) {
 		return newFixedLengthResponse(status, mimeType,

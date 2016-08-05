@@ -118,6 +118,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private static CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
     private final static Lock lock = new ReentrantLock();
     private final static Condition condition = lock.newCondition();
+    //选择是否是wifi直连
+    private boolean isWifiDirect = false;
     public  Handler mHandler = new Handler(){
 
         @Override
@@ -229,8 +231,11 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         }
         init();
         //选择连接方式
-//        policy = new APConnection(ViewVideoActivity.this);
-        policy = new WifiDirectConnection(ViewVideoActivity.this);
+        if (!isWifiDirect) {
+            policy = new APConnection(ViewVideoActivity.this);
+        }else {
+            policy = new WifiDirectConnection(ViewVideoActivity.this);
+        }
         boolean publishFlag = getIntent().getBooleanExtra(getString(R.string.publish_video), false);
         userName = getIntent().getStringExtra(getString(R.string.user_name));
         if (userName.equals("")) {
