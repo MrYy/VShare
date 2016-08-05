@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,7 +53,7 @@ public class ChatFragment extends Fragment {
     private ListView listView;
     private EditText editText;
     private ImageButton chat_btn;
-    private List<Msg> msgList=new ArrayList<Msg>();
+    private List<Msg> msgList=new CopyOnWriteArrayList<>();
     private MsgAdapter msgAdapter;
     private Bitmap bitmap;
     private  ViewVideoActivity viewActivity;
@@ -131,6 +132,7 @@ public class ChatFragment extends Fragment {
                                 Msg receivedmsg = new Msg(msgR, Msg.TYP_RECIEVED, message.getName(), System.currentTimeMillis());
 //                            Msg receivedmsg = new Msg("hello", Msg.TYP_RECIEVED, "bbb", System.currentTimeMillis());
                                 msgList.add(receivedmsg);
+                                Log.d(TAG,receivedmsg.getContent());
                                 android.os.Message passmsg=new android.os.Message();
                                 passmsg.what=1;
                                 handler.sendMessage(passmsg);
@@ -146,6 +148,8 @@ public class ChatFragment extends Fragment {
             if(msg.what==1){
                 msgAdapter.notifyDataSetChanged();
                 listView.setSelection(msgList.size());
+                Log.d(TAG,String.valueOf(msgList.size())+":"
+                +msgList.get(msgList.size()-1).getContent());
             }
         }
     };
