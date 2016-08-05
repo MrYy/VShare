@@ -10,10 +10,15 @@ import android.util.Log;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
+import com.ANT.MiddleWare.WiFi.WiFiNCP2.Client;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -84,7 +89,12 @@ public class IsClient implements Status {
 
     @Override
     public void connectSuccess() {
-
+        ExecutorService es = Executors.newFixedThreadPool(1);
+        try {
+            es.execute(new Client(InetAddress.getByName(IsOwner.ip), 12345));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     private void connect() {

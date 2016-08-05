@@ -5,9 +5,12 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
 import com.ANT.MiddleWare.PartyPlayerActivity.R;
+import com.ANT.MiddleWare.WiFi.WiFiNCP2.ServerThread;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,7 +19,7 @@ import java.util.concurrent.Executors;
  */
 public class IsOwner implements Status {
     private WifiP2pManager manager;
-    private String ip = "192.168.49.1";
+    public static final String ip = "192.168.49.1";
     private WifiP2pManager.Channel channel;
     private Context context;
     private static final String TAG = "WIFI DIRECT";
@@ -56,7 +59,12 @@ public class IsOwner implements Status {
 
     @Override
     public void connectSuccess() {
-
+        ExecutorService es = Executors.newFixedThreadPool(1);
+        try {
+            es.execute(new ServerThread(InetAddress.getByName(ip),context));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     public void changeWifiDirectName(final String newName){
