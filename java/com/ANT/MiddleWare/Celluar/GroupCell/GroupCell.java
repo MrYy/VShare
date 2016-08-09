@@ -37,7 +37,7 @@ public class GroupCell extends Thread {
 			} else {
 				uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=" + url
 						+ ".mp4&sessionid=lykfr9oyqipq2q3tvy14616291918cw"+
-						 "&rate=" + "");
+						 "&user_name=" + ViewVideoActivity.userName);
 			}
 			Log.d(TAG, "" + uurl);
 			while (true) {
