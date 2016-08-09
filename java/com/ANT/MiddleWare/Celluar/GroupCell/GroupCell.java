@@ -12,6 +12,7 @@ import android.util.Log;
 import com.ANT.MiddleWare.Celluar.CellularDown;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Entities.FileFragment.FileFragmentException;
+import com.ANT.MiddleWare.Entities.Segment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ConfigureData;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
@@ -38,6 +39,10 @@ public class GroupCell extends Thread {
 
 			Log.d(TAG, "" + uurl);
 			while (true) {
+				Segment Seg = IC.getSeg(url);
+				if(Seg.checkIntegrity()){
+					break;
+				}
 				connection = (HttpURLConnection) uurl.openConnection();
 				connection.setRequestMethod("POST");
 				connection.setConnectTimeout(5000);
@@ -77,12 +82,6 @@ public class GroupCell extends Thread {
 					fm.setData(tmpbuff);
 					IC.insert(url, fm);
 					IC.getSeg(url).checkIntegrity();
-				} else if (connection.getResponseCode() == 200) {
-					//php should change ,otherwise only one host get the 200,and the others don't know download ends.
-					Log.d(TAG, "finish download");
-					CellularDown.queryFragment(CellularDown.CellType.CellMore,
-							url);
-					break;
 				}
 			}
 		} catch (MalformedURLException e) {
