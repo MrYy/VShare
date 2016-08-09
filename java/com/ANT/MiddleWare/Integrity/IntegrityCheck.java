@@ -89,6 +89,7 @@ public class IntegrityCheck {
 		ViewVideoActivity.insert(fm);
 //		WiFiFactory.insertF(fm);
 	}
+
 	public void insert(int id, FileFragment fm,int n) {
 		synchronized (this) {
 			if (urlMap.indexOfKey(id) < 0) {

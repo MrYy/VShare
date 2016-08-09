@@ -32,14 +32,10 @@ public class GroupCell extends Thread {
 		HttpURLConnection connection = null;
 		IntegrityCheck IC = IntegrityCheck.getInstance();
 		try {
-			URL uurl;
-			if (ViewVideoActivity.configureData.getWorkingMode() == ConfigureData.WorkMode.JUNIT_TEST_MODE) {
-				uurl = new URL(IntegrityCheck.JUNIT_TAG);
-			} else {
-				uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=" + url
+			URL uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=" + url
 						+ ".mp4&sessionid="+groupSession+
 						 "&user_name=" + ViewVideoActivity.userName);
-			}
+
 			Log.d(TAG, "" + uurl);
 			while (true) {
 				connection = (HttpURLConnection) uurl.openConnection();
