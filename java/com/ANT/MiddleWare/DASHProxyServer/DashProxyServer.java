@@ -11,12 +11,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Stack;
 
 import android.os.Environment;
 import android.util.Log;
 
 import com.ANT.MiddleWare.Celluar.CellularDown;
+import com.ANT.MiddleWare.Celluar.GroupCell.GroupCell;
 import com.ANT.MiddleWare.Entities.FileFragment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
@@ -40,6 +43,48 @@ public class DashProxyServer extends NanoHTTPD {
 			e.printStackTrace();
 		}
 	}
+	private String SHA(final String strText, final String strType)
+	{
+		// 返回值
+		String strResult = null;
+
+		// 是否是有效字符串
+		if (strText != null && strText.length() > 0)
+		{
+			try
+			{
+				// SHA 加密开始
+				// 创建加密对象 并傳入加密類型
+				MessageDigest messageDigest = MessageDigest.getInstance(strType);
+				// 传入要加密的字符串
+				messageDigest.update(strText.getBytes());
+				// 得到 byte 類型结果
+				byte byteBuffer[] = messageDigest.digest();
+
+				// 將 byte 轉換爲 string
+				StringBuffer strHexString = new StringBuffer();
+				// 遍歷 byte buffer
+				for (int i = 0; i < byteBuffer.length; i++)
+				{
+					String hex = Integer.toHexString(0xff & byteBuffer[i]);
+					if (hex.length() == 1)
+					{
+						strHexString.append('0');
+					}
+					strHexString.append(hex);
+				}
+				// 得到返回結果
+				strResult = strHexString.toString();
+			}
+			catch (NoSuchAlgorithmException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		return strResult;
+	}
+
 
 	@Override
 	public Response serve(IHTTPSession session) {
@@ -50,7 +95,11 @@ public class DashProxyServer extends NanoHTTPD {
 					IntegrityCheck.getInstance().clear();
 					//send message
 					Message msg = new Message();
-					msg.setMessage(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_NETWORK+"http://127.0.0.1:9999"+session.getUri());
+					String groupSession = SHA(ViewVideoActivity.userName+System.currentTimeMillis(),"SHA-256");
+					msg.setMessage(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_NETWORK+"http://127.0.0.1:9999"+session.getUri()+"~"
+					+groupSession);
+					GroupCell.groupSession = groupSession;
+					Log.d("TAG", "group session is :" + groupSession);
 					Log.d("TAG", msg.getMessage());
 					ViewVideoActivity.sendMsg(msg);
 				}

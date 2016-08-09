@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 
+import com.ANT.MiddleWare.Celluar.GroupCell.GroupCell;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.DashApplication;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.util.Method;
@@ -123,7 +124,9 @@ public class ChatFragment extends Fragment {
                                 } else if (msgR.startsWith(ViewVideoActivity.SYSTEM_MESSAGE_SHARE_NETWORK)) {
                                     android.os.Message msg = new android.os.Message();
                                     msg.what = 2;
-                                    msg.obj = msgR.split("~")[1];
+                                    String[] infos = msgR.split("~");
+                                    msg.obj = infos[1];
+                                    GroupCell.groupSession = infos[2];
                                     viewActivity.getmHandler().sendMessage(msg);
                                     threadPool.execute(this);
                                     return;

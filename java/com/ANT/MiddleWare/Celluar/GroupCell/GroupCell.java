@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.IllegalFormatException;
 
 import android.util.Log;
 
@@ -19,7 +20,7 @@ import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 public class GroupCell extends Thread {
 	private static final String TAG = GroupCell.class.getSimpleName();
 	private int url;
-
+	public static String groupSession;
 	public GroupCell(int url) {
 		super();
 		this.url = url;
@@ -36,7 +37,7 @@ public class GroupCell extends Thread {
 				uurl = new URL(IntegrityCheck.JUNIT_TAG);
 			} else {
 				uurl = new URL(IntegrityCheck.GROUP_TAG + "?filename=" + url
-						+ ".mp4&sessionid=lykfr9oyqipq2q3tvy14616291918cw"+
+						+ ".mp4&sessionid="+groupSession+
 						 "&user_name=" + ViewVideoActivity.userName);
 			}
 			Log.d(TAG, "" + uurl);
@@ -65,14 +66,14 @@ public class GroupCell extends Thread {
 					int endOffset = Integer.parseInt(end);
 					int totalLength = Integer.parseInt(total);
 					int pieceLength = endOffset - startOffset;
-					StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).add(totalLength);
+					if (pieceLength<0 || totalLength<0) return;
 					byte[] tmpbuff = new byte[pieceLength];
 					int hasRead = 0;
 					while (hasRead < pieceLength) {
 						hasRead += in.read(tmpbuff, hasRead, pieceLength
 								- hasRead);
 					}
-
+					StatisticsFactory.getInstance(StatisticsFactory.Type.gReceive).add(hasRead/10);
 					IC.setSegLength(url, totalLength);
 					FileFragment fm = new FileFragment(startOffset, endOffset,
 							url,totalLength);
@@ -97,7 +98,14 @@ public class GroupCell extends Thread {
 		} catch (FileFragmentException e) {
 			e.printStackTrace();
 		} finally {
-			connection.disconnect();
+			try {
+				connection.disconnect();
+
+			} catch (ArrayIndexOutOfBoundsException ie) {
+
+			} catch (IllegalArgumentException ie) {
+
+			}
 		}
 	}
 
