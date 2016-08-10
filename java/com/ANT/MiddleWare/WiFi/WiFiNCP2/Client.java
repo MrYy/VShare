@@ -40,6 +40,11 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         SocketChannel sc = null;
         SelectionKey mKey = null;
         Log.d(TAG, "try to connect");
