@@ -130,6 +130,12 @@ public class ChatFragment extends Fragment {
                                     viewActivity.getmHandler().sendMessage(msg);
                                     threadPool.execute(this);
                                     return;
+                                } else if (msgR.startsWith(ViewVideoActivity.SYSTEM_MESSAGE)) {
+                                    android.os.Message msg = new android.os.Message();
+                                    msg.what = 4;
+                                    msg.obj = msgR.split("~")[1];
+                                    viewActivity.getmHandler().sendMessage(msg);
+                                    threadPool.execute(this);
                                 }
                                 Log.d(TAG, "receive and refresh list");
                                 Msg receivedmsg = new Msg(msgR, Msg.TYP_RECIEVED, message.getName(), System.currentTimeMillis());

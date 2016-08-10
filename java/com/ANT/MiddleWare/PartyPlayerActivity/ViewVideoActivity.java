@@ -115,6 +115,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     private ConnectionPolicy policy;
     public static final String SYSTEM_MESSAGE_SHARE_LOCAL = "asdfnvlxczvoj3asfpizfj323fsadf[]]adfadsf,./";
     public static final String SYSTEM_MESSAGE_SHARE_NETWORK = "asdfxczv;asfde[asdfqwer324asfd~";
+    public static final String SYSTEM_MESSAGE = "asfsadwaasdfxczvasdfqqweqwr~";
     private static CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
     private final static Lock lock = new ReentrantLock();
     private final static Condition condition = lock.newCondition();
@@ -144,6 +145,10 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                     String path = msg.obj.toString();
                     Log.d(TAG, "path is :" + path);
                     initPlayVideo(path);
+                    break;
+
+                case 4:
+                    Method.display(ViewVideoActivity.this,msg.obj.toString()+"bps");
                     break;
             }
 

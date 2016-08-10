@@ -16,6 +16,7 @@ import com.ANT.MiddleWare.Entities.Segment;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ConfigureData;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 
 public class GroupCell extends Thread {
@@ -55,6 +56,12 @@ public class GroupCell extends Thread {
 //								+ connection.getResponseCode());
 
 				if (connection.getResponseCode() == 206) {
+					String videoName = connection.getHeaderField("video-name");
+					String videoRate = videoName.split("/")[1];
+					Log.d(TAG, "video rate:" + String.valueOf(videoRate));
+					Message msg = new Message();
+					msg.setMessage(ViewVideoActivity.SYSTEM_MESSAGE+videoRate);
+					ViewVideoActivity.insertReceiveMQ(msg);
 					InputStream in = connection.getInputStream();
 					String contentRange = connection.getHeaderField(
 							"Content-Range").toString();

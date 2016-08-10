@@ -9,6 +9,7 @@ import com.ANT.MiddleWare.Entities.Segment;
 import com.ANT.MiddleWare.Entities.Segment.SegmentException;
 import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.ViewVideoActivity;
+import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.StatisticsFactory;
 
 import java.io.IOException;
@@ -60,6 +61,12 @@ public class CellularMore extends Thread {
 
                     if (connection.getResponseCode() == 206) {
                         InputStream in = connection.getInputStream();
+                        String videoName = connection.getHeaderField("video-name");
+                        String videoRate = videoName.split("/")[1];
+                        Log.d(TAG, "video rate:" + String.valueOf(videoRate));
+                        Message msg = new Message();
+                        msg.setMessage(ViewVideoActivity.SYSTEM_MESSAGE+videoRate);
+                        ViewVideoActivity.insertReceiveMQ(msg);
                         String contentRange = connection.getHeaderField(
                                 "Content-Range").toString();
 //					Log.d(TAG, "Content-Range " + contentRange);
