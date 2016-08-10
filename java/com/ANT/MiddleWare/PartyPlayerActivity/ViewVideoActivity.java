@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
@@ -148,7 +150,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                     break;
 
                 case 4:
-                    Method.display(ViewVideoActivity.this,msg.obj.toString()+"bps");
+                    if(mRateTextView!=null) mRateTextView.setText(msg.obj.toString()+"/bps");
                     break;
             }
 
@@ -156,6 +158,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
     };
     private SweetAlertDialog pDialog;
     public static boolean internet;
+    private View mRateView;
+    private TextView mRateTextView;
 
     public Handler getmHandler() {
         return mHandler;
@@ -264,9 +268,12 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         menuLayout = (MenuLayout) findViewById(R.id.bottom_menu);
         menuLayout.setFocuse(MenuLayout.BUTTON.LEFT);
         pDialog = new SweetAlertDialog(ViewVideoActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        mRateView = createRateText();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
+
+
     }
 
     @Override
@@ -288,10 +295,12 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
         policy.resume();
     }
 
+    private View createRateText() {
+        View parent = LayoutInflater.from(ViewVideoActivity.this).inflate(R.layout.video_rate, null);
+        parent.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        return parent;
+    }
     private View createView() {
-        FrameLayout parent = new FrameLayout(this);
-        parent.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT));
         final View mBg = new View(ViewVideoActivity.this);
         mBg.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT));
@@ -304,10 +313,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                 alertDialog();
             }
         });
-
-        parent.setPadding(0, 0, 0, getNavBarHeight(this));
-        parent.addView(mBg);
-        return parent;
+        return mBg;
     }
 
     private void alertDialog() {
@@ -364,6 +370,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
 
 
     private void initPlayVideo(String path) {
+        mGroup = (ViewGroup) ViewVideoActivity.this.getWindow().getDecorView();
         StatisticsFactory.startStatistic();
         //path=editVideoPath.getText().toString().trim();
         Log.d(TAG, path);
@@ -410,7 +417,10 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                             mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);//缩放参数，画面全屏
                             isPortrait = false;
                             menuLayout.setVisibility(View.GONE);
-
+                            if (mRateTextView == null) {
+                                mGroup.addView(mRateView);
+                                mRateTextView = (TextView)mRateView.findViewById(R.id.video_rate);
+                            }
                         } else {
                             LinearLayout.LayoutParams fl_lp = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -422,6 +432,8 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
                             vp.setVisibility(View.VISIBLE);
                             isPortrait = true;
                             menuLayout.setVisibility(View.VISIBLE);
+                            mGroup.removeView(mRateView);
+                            mRateTextView = null;
                         }
                     }
                 }
@@ -451,9 +463,13 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);//缩放参数，画面全屏
             isPortrait = false;
             menuLayout.setVisibility(View.GONE);
-
+            if (mRateTextView == null) {
+                mGroup.addView(mRateView);
+                mRateTextView = (TextView)mRateView.findViewById(R.id.video_rate);
+            }
         }
     }
+
 
     private void shareLocalVideo(String path) {
         Message msg = new Message();
