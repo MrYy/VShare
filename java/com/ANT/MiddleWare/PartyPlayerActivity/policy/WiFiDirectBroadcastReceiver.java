@@ -66,10 +66,10 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                Method.display(context,"支持wifi直连模式");
+                Method.display(context,"wifi直连已启用");
                 status.supportWifiDirect();
             } else {
-                Method.display(context,"当前设置不支持wifi直连，请打开wifi或切换ap模式");
+                Method.display(context,"正在打开wifi直连");
             }
             
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {

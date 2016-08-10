@@ -338,7 +338,7 @@ public class Method {
                     if (!(mName = msg.getName()).equals("")) {
                         if (msg.getMessage().equals(mName)) {
                             ViewVideoActivity.onLineUsers.add(mName);
-
+                            msg.setMessage(msg.getName()+"已接入");
                         }
                     }
                     ViewVideoActivity.insertReceiveMQ(msg);
