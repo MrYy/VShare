@@ -136,6 +136,7 @@ public class ChatFragment extends Fragment {
                                     msg.obj = msgR.split("~")[1];
                                     viewActivity.getmHandler().sendMessage(msg);
                                     threadPool.execute(this);
+                                    return;
                                 }
                                 Log.d(TAG, "receive and refresh list");
                                 Msg receivedmsg = new Msg(msgR, Msg.TYP_RECIEVED, message.getName(), System.currentTimeMillis());
