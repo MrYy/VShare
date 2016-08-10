@@ -58,9 +58,10 @@ public class GroupCell extends Thread {
 				if (connection.getResponseCode() == 206) {
 					String videoName = connection.getHeaderField("video-name");
 					String videoRate = videoName.split("/")[1];
+					String videoSegment = videoName.split("-")[1];
 					Log.d(TAG, "video rate:" + String.valueOf(videoRate));
 					Message msg = new Message();
-					msg.setMessage(ViewVideoActivity.SYSTEM_MESSAGE+videoRate);
+					msg.setMessage(ViewVideoActivity.SYSTEM_MESSAGE+videoSegment+" "+videoRate);
 					ViewVideoActivity.insertReceiveMQ(msg);
 					InputStream in = connection.getInputStream();
 					String contentRange = connection.getHeaderField(
