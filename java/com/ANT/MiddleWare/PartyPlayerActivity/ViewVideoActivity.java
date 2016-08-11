@@ -43,6 +43,7 @@ import android.widget.Toast;
 
 import com.ANT.MiddleWare.DASHProxyServer.DashProxyServer;
 import com.ANT.MiddleWare.Entities.FileFragment;
+import com.ANT.MiddleWare.Integrity.IntegrityCheck;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.MenuLayout;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.Message;
 import com.ANT.MiddleWare.PartyPlayerActivity.bean.SendTask;
@@ -132,6 +133,7 @@ public class ViewVideoActivity extends FragmentActivity implements MediaPlayer.O
             switch (msg.what) {
                 case 1:
                     //准备接收视频
+                    IntegrityCheck.getInstance().clear();
                     configureData.setWorkingMode(ConfigureData.WorkMode.LOCAL_MODE);
                     Method.display(ViewVideoActivity.this,"播主开始推送视频啦");
                     try {

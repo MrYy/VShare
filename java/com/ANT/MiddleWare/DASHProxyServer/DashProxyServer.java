@@ -91,8 +91,9 @@ public class DashProxyServer extends NanoHTTPD {
 		try {
 			if (!getFileName(session, ".m3u8").equals("")) {
 				Log.v("TAG", "filename" + session.getUri());
+				IntegrityCheck.getInstance().clear();
+				ViewVideoActivity.sendMessageQueue.clear();
 				if(ViewVideoActivity.isOwner){
-					IntegrityCheck.getInstance().clear();
 					//send message
 					Message msg = new Message();
 					String groupSession = SHA(ViewVideoActivity.userName+System.currentTimeMillis(),"SHA-256");

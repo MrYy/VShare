@@ -17,6 +17,7 @@ public class StreamListDialog extends Dialog {
     private ListView streamList;
     private String[] list;
     private String path="http://127.0.0.1:9999/4/index.m3u8";
+    private String[] titles = new String[]{"老九门"};
     private String spath;
     private MyListener myListener;
 
@@ -41,7 +42,7 @@ public class StreamListDialog extends Dialog {
         setContentView(R.layout.stream_video_list);
         streamList= (ListView) findViewById(R.id.stream_list);
         list=new String[]{path};
-        streamList.setAdapter(new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,list));
+        streamList.setAdapter(new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,titles));
         streamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
