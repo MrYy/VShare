@@ -93,6 +93,7 @@ public class DashProxyServer extends NanoHTTPD {
 				Log.v("TAG", "filename" + session.getUri());
 				IntegrityCheck.getInstance().clear();
 				ViewVideoActivity.sendMessageQueue.clear();
+				ViewVideoActivity.taskMessageQueue.clear();
 				if(ViewVideoActivity.isOwner){
 					//send message
 					Message msg = new Message();
